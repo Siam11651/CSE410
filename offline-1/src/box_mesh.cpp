@@ -23,7 +23,7 @@ box_mesh::box_mesh(const float &size_x, const float &size_y, const float &size_z
         std::array<vector3, 3>{top_left_front, bot_left_back, bot_left_front},    // left face
         std::array<vector3, 3>{top_right_back, bot_right_back, bot_left_back},    // rear face
         std::array<vector3, 3>{top_right_back, bot_left_back, top_left_back},     // rear face
-        std::array<vector3, 3>{top_left_back, top_right_back, bot_left_back},     // top face
+        std::array<vector3, 3>{top_left_back, top_right_back, top_left_front},     // top face
         std::array<vector3, 3>{top_right_back, top_right_front, top_left_front},  // top face
         std::array<vector3, 3>{bot_left_front, bot_right_front, bot_left_back},   // bot face
         std::array<vector3, 3>{bot_right_front, bot_right_back, bot_left_back}    // bot face
