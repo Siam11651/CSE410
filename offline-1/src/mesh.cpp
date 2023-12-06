@@ -44,7 +44,7 @@ void mesh::draw() const
 
         for(const vector3 &vertex_item : *face_item.get_vertices_ptr())
         {
-            glVertex3f(vertex_item.get_x(), vertex_item.get_y(), vertex_item.get_z());
+            glVertex3f(vertex_item.const_x(), vertex_item.const_y(), vertex_item.const_z());
         }
 
         ++index;

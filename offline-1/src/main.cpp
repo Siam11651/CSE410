@@ -18,16 +18,13 @@ std::chrono::steady_clock::time_point frame_begin_time_point;
 std::chrono::steady_clock::time_point frame_end_time_point;
 double delta_time = 0.0;
 box_mesh box_mesh0;
-float i = 0.0f;
-float s = 30.0f;
+float speed = 100.0f;
 transform main_camera_transform(
     vector3(0.0f, 0.0f, -2.0f),
     vector3(0.0f, 0.0f, 0.0f));
 
 void ascii_key_callback(unsigned char key, int x, int y)
 {
-    std::cout << key << std::endl;
-
     if(key == '1')
     {
 
@@ -56,8 +53,6 @@ void ascii_key_callback(unsigned char key, int x, int y)
 
 void special_key_callback(int key, int x, int y)
 {
-    std::cout << key << std::endl;
-
     if(key == GLUT_KEY_LEFT)
     {
 
@@ -68,18 +63,17 @@ void special_key_callback(int key, int x, int y)
     }
     else if(key == GLUT_KEY_UP)
     {
-        main_camera_transform.position() += main_camera_transform.get_forward();
+        main_camera_transform.position() += main_camera_transform.get_forward() * speed * delta_time;
     }
     else if(key == GLUT_KEY_DOWN)
     {
-
+        main_camera_transform.position() -= main_camera_transform.get_forward() * speed * delta_time;
     }
 }
 
 void display_callback()  // draw each frame
 {
     frame_begin_time_point = std::chrono::steady_clock::now();
-    i += s * delta_time;
     vector3 main_camera_position = main_camera_transform.position();
     vector3 main_camera_forward = main_camera_transform.get_forward();
 
@@ -87,13 +81,12 @@ void display_callback()  // draw each frame
     glLoadIdentity();
     gluPerspective(90.0f, aspect_ratio, 0.01f, 100.0f);
     gluLookAt(
-        main_camera_position.get_x(), main_camera_position.get_y(), main_camera_position.get_z(),
-        main_camera_position.get_x() + main_camera_forward.get_x(),
-        main_camera_position.get_y() + main_camera_forward.get_y(),
-        main_camera_position.get_z() + main_camera_forward.get_z(),
+        main_camera_position.const_x(), main_camera_position.const_y(), main_camera_position.const_z(),
+        main_camera_position.const_x() + main_camera_forward.const_x(),
+        main_camera_position.const_y() + main_camera_forward.const_y(),
+        main_camera_position.const_z() + main_camera_forward.const_z(),
         0.0f, 1.0f, 0.0f);
     glPushMatrix();
-    glRotatef(i, 0.0f, 1.0f, 0.0f);
     box_mesh0.draw();
     glPopMatrix();
     glutSwapBuffers();
