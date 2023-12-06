@@ -21,7 +21,8 @@ std::chrono::steady_clock::time_point frame_begin_time_point;
 std::chrono::steady_clock::time_point frame_end_time_point;
 double delta_time = 0.0;
 box_mesh box_mesh0;
-float speed = 1.0f;
+float camera_speed = 1.0f;
+float camera_rotation_speed = 1.0f;
 transform main_camera_transform(
     vector3(0.0f, 0.0f, -2.0f),
     vector3(0.0f, 0.0f, 0.0f));
@@ -30,11 +31,13 @@ void ascii_key_callback(unsigned char key, int x, int y)
 {
     if(key == '1')
     {
-
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_up(),
+            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
     else if(key == '2')
     {
-
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_up(),
+            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
     else if(key == '3')
     {
@@ -58,27 +61,27 @@ void special_key_callback(int key, int x, int y)
 {
     if(key == GLUT_KEY_LEFT)
     {
-        main_camera_transform.position() += main_camera_transform.get_right() * speed * delta_time;
+        main_camera_transform.position() += main_camera_transform.get_right() * camera_speed * delta_time;
     }
     else if(key == GLUT_KEY_RIGHT)
     {
-        main_camera_transform.position() -= main_camera_transform.get_right() * speed * delta_time;
+        main_camera_transform.position() -= main_camera_transform.get_right() * camera_speed * delta_time;
     }
     else if(key == GLUT_KEY_UP)
     {
-        main_camera_transform.position() += main_camera_transform.get_forward() * speed * delta_time;
+        main_camera_transform.position() += main_camera_transform.get_forward() * camera_speed * delta_time;
     }
     else if(key == GLUT_KEY_DOWN)
     {
-        main_camera_transform.position() -= main_camera_transform.get_forward() * speed * delta_time;
+        main_camera_transform.position() -= main_camera_transform.get_forward() * camera_speed * delta_time;
     }
     else if(key == GLUT_KEY_PAGE_UP)
     {
-        main_camera_transform.position() += main_camera_transform.get_up() * speed * delta_time;
+        main_camera_transform.position() += main_camera_transform.get_up() * camera_speed * delta_time;
     }
     else if(key == GLUT_KEY_PAGE_DOWN)
     {
-        main_camera_transform.position() -= main_camera_transform.get_up() * speed * delta_time;
+        main_camera_transform.position() -= main_camera_transform.get_up() * camera_speed * delta_time;
     }
 }
 

@@ -10,6 +10,14 @@ quaternion::quaternion()
     m_z = 0.0f;
 }
 
+quaternion::quaternion(const vector3 &axis, const float &angle)
+{
+    m_w = std::cos(angle / 2.0f);
+    m_x = axis.const_x() * std::sin(angle / 2.0f);
+    m_y = axis.const_y() * std::sin(angle / 2.0f);
+    m_z = axis.const_z() * std::sin(angle / 2.0f);
+}
+
 quaternion::quaternion(const float &w, const float &x, const float &y, const float &z)
 {
     m_w = w;

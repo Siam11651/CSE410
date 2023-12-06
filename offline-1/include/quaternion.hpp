@@ -10,6 +10,7 @@ private:
 
 public:
     quaternion();
+    quaternion(const vector3 &axis, const float &angle);
     quaternion(const float &w, const float &x, const float &y, const float &z);
     float &w();
     float &x();
