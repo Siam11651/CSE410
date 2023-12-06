@@ -74,11 +74,11 @@ void special_key_callback(int key, int x, int y)
     }
     else if(key == GLUT_KEY_PAGE_UP)
     {
-        
+        main_camera_transform.position() += main_camera_transform.get_up() * speed * delta_time;
     }
     else if(key == GLUT_KEY_PAGE_DOWN)
     {
-
+        main_camera_transform.position() -= main_camera_transform.get_up() * speed * delta_time;
     }
 }
 
@@ -92,6 +92,7 @@ void display_callback()  // draw each frame
     frame_begin_time_point = std::chrono::steady_clock::now();
     vector3 main_camera_position = main_camera_transform.position();
     vector3 main_camera_forward = main_camera_transform.get_forward();
+    vector3 main_camera_up = main_camera_transform.get_up();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -101,7 +102,7 @@ void display_callback()  // draw each frame
         main_camera_position.const_x() + main_camera_forward.const_x(),
         main_camera_position.const_y() + main_camera_forward.const_y(),
         main_camera_position.const_z() + main_camera_forward.const_z(),
-        0.0f, 1.0f, 0.0f);
+        main_camera_up.const_x(), main_camera_up.const_y(), main_camera_up.const_z());
     glPushMatrix();
     box_mesh0.draw();
     glPopMatrix();

@@ -3,6 +3,16 @@
 
 const float transform::DEG2RAD = (float)M_PI / 180.0f;
 
+void transform::rotate(float &x, float &y, float &z) const
+{
+    z = std::cos(m_euler_rotation.const_x()) * z + std::sin(m_euler_rotation.const_x()) * y;
+    y = std::sin(m_euler_rotation.const_x()) * z + std::cos(m_euler_rotation.const_x()) * y;
+    x = std::cos(m_euler_rotation.const_y()) * x - std::sin(m_euler_rotation.const_y()) * z;
+    z = -std::sin(m_euler_rotation.const_y()) * x + std::cos(m_euler_rotation.const_y()) * z;
+    x = std::cos(m_euler_rotation.const_z()) * x + std::sin(m_euler_rotation.const_z()) * y;
+    y = std::sin(m_euler_rotation.const_z()) * x + std::cos(m_euler_rotation.const_z()) * y;
+}
+
 transform::transform()
 {
 
@@ -39,22 +49,21 @@ vector3 transform::get_forward() const
     float x = 0.0f;
     float y = 0.0f;
     float z = 1.0f;
-    float plane_magnitude = 1.0f;
-    z = std::cos(m_euler_rotation.const_x()) * plane_magnitude;
-    y = std::sin(m_euler_rotation.const_x()) * plane_magnitude;
-    plane_magnitude = z;
-    z = std::cos(m_euler_rotation.const_y()) * plane_magnitude;
-    x = -std::sin(m_euler_rotation.const_y()) * plane_magnitude;
-    plane_magnitude = std::sqrt(x * x + y * y);
-    x = std::cos(m_euler_rotation.const_z()) * plane_magnitude;
-    y = std::sin(m_euler_rotation.const_z()) * plane_magnitude;
+    
+    rotate(x, y, z);
 
     return vector3(x, y, z);
 }
 
 vector3 transform::get_up() const
 {
+    float x = 0.0f;
+    float y = 1.0f;
+    float z = 0.0f;
     
+    rotate(x, y, z);
+
+    return vector3(x, y, z);
 }
 
 vector3 transform::get_right() const
@@ -62,12 +71,8 @@ vector3 transform::get_right() const
     float x = 1.0f;
     float y = 0.0f;
     float z = 0.0f;
-    float plane_magnitude = 1.0f;
-    z = std::sin(m_euler_rotation.const_y()) * plane_magnitude;
-    x = std::cos(m_euler_rotation.const_y()) * plane_magnitude;
-    plane_magnitude = std::sqrt(x * x + y * y);
-    x = std::cos(m_euler_rotation.const_z()) * plane_magnitude;
-    y = std::sin(m_euler_rotation.const_z()) * plane_magnitude;
+
+    rotate(x, y, z);
 
     return vector3(x, y, z);
 }

@@ -10,6 +10,8 @@ private:
     vector3 m_position;
     vector3 m_euler_rotation;
 
+    void rotate(float &x, float &y, float &z) const;
+
 public:
     transform();
     transform(const vector3 &position, const vector3 &euler_rotation);
