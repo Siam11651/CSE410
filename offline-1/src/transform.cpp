@@ -52,6 +52,11 @@ vector3 transform::get_forward() const
     return vector3(x, y, z);
 }
 
+vector3 transform::get_up() const
+{
+    
+}
+
 vector3 transform::get_right() const
 {
     float x = 1.0f;
