@@ -68,7 +68,7 @@ void special_key_callback(int key, int x, int y)
     }
     else if(key == GLUT_KEY_UP)
     {
-
+        main_camera_transform.position() += main_camera_transform.get_forward();
     }
     else if(key == GLUT_KEY_DOWN)
     {
@@ -80,7 +80,7 @@ void display_callback()  // draw each frame
 {
     frame_begin_time_point = std::chrono::steady_clock::now();
     i += s * delta_time;
-    vector3 main_camera_position = main_camera_transform.get_position();
+    vector3 main_camera_position = main_camera_transform.position();
     vector3 main_camera_forward = main_camera_transform.get_forward();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

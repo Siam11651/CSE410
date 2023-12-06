@@ -13,6 +13,8 @@ public:
     float get_x() const;
     float get_y() const;
     float get_z() const;
+    vector3 operator + (const vector3 &other) const;
+    vector3 &operator += (const vector3 &other);
 };
 
 #endif
