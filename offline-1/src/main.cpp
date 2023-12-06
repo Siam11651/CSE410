@@ -22,7 +22,7 @@ float i = 0.0f;
 float s = 30.0f;
 transform main_camera_transform(
     vector3(0.0f, 0.0f, -2.0f),
-    vector3(0.0f, 180.0f, 0.0f));
+    vector3(0.0f, 0.0f, 0.0f));
 
 void ascii_key_callback(unsigned char key, int x, int y)
 {
@@ -88,9 +88,9 @@ void display_callback()  // draw each frame
     gluPerspective(90.0f, aspect_ratio, 0.01f, 100.0f);
     gluLookAt(
         main_camera_position.get_x(), main_camera_position.get_y(), main_camera_position.get_z(),
-        main_camera_position.get_x() - main_camera_forward.get_x(),
-        main_camera_position.get_y() - main_camera_forward.get_y(),
-        main_camera_position.get_z() - main_camera_forward.get_z(),
+        main_camera_position.get_x() + main_camera_forward.get_x(),
+        main_camera_position.get_y() + main_camera_forward.get_y(),
+        main_camera_position.get_z() + main_camera_forward.get_z(),
         0.0f, 1.0f, 0.0f);
     glPushMatrix();
     glRotatef(i, 0.0f, 1.0f, 0.0f);
