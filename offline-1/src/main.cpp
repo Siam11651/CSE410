@@ -15,7 +15,7 @@
 #define WINDOW_TITLE "offline-1"
 #define FPS 60.0f
 
-std::chrono::system_clock::rep frame_time;
+int64_t frame_time_ns;
 float aspect_ratio;
 std::chrono::steady_clock::time_point frame_begin_time_point;
 std::chrono::steady_clock::time_point frame_end_time_point;
@@ -111,9 +111,9 @@ void display_callback()  // draw each frame
     frame_end_time_point = std::chrono::steady_clock::now();
     std::chrono::nanoseconds nanoseconds = frame_end_time_point - frame_begin_time_point;
 
-    if(nanoseconds.count() < frame_time)
+    if(nanoseconds.count() < frame_time_ns)
     {
-        std::chrono::nanoseconds sleep_time((int64_t)(frame_time - nanoseconds.count()));
+        std::chrono::nanoseconds sleep_time(frame_time_ns - nanoseconds.count());
 
         std::this_thread::sleep_for(sleep_time);
 
@@ -128,7 +128,7 @@ void display_callback()  // draw each frame
 
 int main(int argc, char **argv)
 {
-    frame_time = 1e9 / FPS;
+    frame_time_ns = 1e9 / FPS;
     aspect_ratio = (float)WINDOW_WIDTH / WINDOW_HEIGHT;
 
     glutInit(&argc, argv);

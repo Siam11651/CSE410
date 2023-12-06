@@ -14,6 +14,7 @@ add_library(offline_1_helper
     "src/mesh.cpp"
     "src/transform.cpp"
     "src/vector.cpp"
+    "src/quaternion.cpp"
 )
 
 target_include_directories(offline_1_helper PRIVATE ${OpenGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} "include")
