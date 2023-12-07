@@ -8,6 +8,7 @@
 #include <cmath>
 #include <vector.hpp>
 #include <box_mesh.hpp>
+#include <sphere_mesh.hpp>
 #include <transform.hpp>
 
 #define WINDOW_WIDTH 1366
@@ -21,6 +22,7 @@ std::chrono::steady_clock::time_point frame_begin_time_point;
 std::chrono::steady_clock::time_point frame_end_time_point;
 double delta_time = 0.0;
 box_mesh box_mesh0;
+sphere_mesh sphere_mesh0(1.0f, 100, 100);
 float camera_speed = 1.0f;
 float camera_rotation_speed = 1.0f;
 transform main_camera_transform(
@@ -41,19 +43,23 @@ void ascii_key_callback(unsigned char key, int x, int y)
     }
     else if(key == '3')
     {
-
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_right(),
+            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
     else if(key == '4')
     {
-
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_right(),
+            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
     else if(key == '5')
     {
-
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
+            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
     else if(key == '6')
     {
-
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
+            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
 }
 
@@ -107,7 +113,8 @@ void display_callback()  // draw each frame
         main_camera_position.const_z() + main_camera_forward.const_z(),
         main_camera_up.const_x(), main_camera_up.const_y(), main_camera_up.const_z());
     glPushMatrix();
-    box_mesh0.draw();
+    // box_mesh0.draw();
+    sphere_mesh0.draw();
     glPopMatrix();
     glutSwapBuffers();
 
