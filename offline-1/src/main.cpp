@@ -7,7 +7,6 @@
 #include <thread>
 #include <cmath>
 #include <vector.hpp>
-#include <box_mesh.hpp>
 #include <sphere_mesh.hpp>
 #include <transform.hpp>
 
@@ -21,12 +20,10 @@ float aspect_ratio;
 std::chrono::steady_clock::time_point frame_begin_time_point;
 std::chrono::steady_clock::time_point frame_end_time_point;
 double delta_time = 0.0;
-box_mesh box_mesh0;
-sphere_mesh sphere_mesh0(1.0f, 100, 100);
+sphere_mesh sphere_mesh0(1.0f, 25, 8);
 float camera_speed = 1.0f;
 float camera_rotation_speed = 1.0f;
-transform main_camera_transform(
-    vector3(0.0f, 0.0f, -2.0f),
+transform main_camera_transform(vector3(0.0f, 0.0f, -2.0f),
     vector3(0.0f, 0.0f, 0.0f));
 
 void ascii_key_callback(unsigned char key, int x, int y)
@@ -113,7 +110,6 @@ void display_callback()  // draw each frame
         main_camera_position.const_z() + main_camera_forward.const_z(),
         main_camera_up.const_x(), main_camera_up.const_y(), main_camera_up.const_z());
     glPushMatrix();
-    // box_mesh0.draw();
     sphere_mesh0.draw();
     glPopMatrix();
     glutSwapBuffers();

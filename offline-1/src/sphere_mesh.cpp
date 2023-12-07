@@ -43,7 +43,12 @@ sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count,
             ++color_idx;
         }
 
-        if(segment_count % 2 == 0)
+        if(segment_count % 2 != 0)
+        {
+            ++color_idx;
+        }
+
+        if(i == stack_count / 2)
         {
             ++color_idx;
         }
