@@ -10,6 +10,21 @@ quaternion::quaternion()
     m_z = 0.0f;
 }
 
+quaternion::quaternion(const vector3 &euler_rotation)
+{
+    const float &ex = euler_rotation.const_x();
+    const float &ey = euler_rotation.const_y();
+    const float &ez = euler_rotation.const_z();
+    quaternion qx(std::cos(ex / 2.0f), std::sin(ex / 2.0f), 0.0f, 0.0f);
+    quaternion qy(std::cos(ey / 2.0f), 0.0f, std::sin(ey / 2.0f), 0.0f);
+    quaternion qz(std::cos(ez / 2.0f), 0.0f, 0.0f, std::sin(ez / 2.0f));
+    quaternion new_q = qz * qy * qx;
+    m_w = new_q.m_w;
+    m_x = new_q.m_x;
+    m_y = new_q.m_y;
+    m_z = new_q.m_z;
+}
+
 quaternion::quaternion(const vector3 &axis, const float &angle)
 {
     m_w = std::cos(angle / 2.0f);
@@ -24,6 +39,27 @@ quaternion::quaternion(const float &w, const float &x, const float &y, const flo
     m_x = x;
     m_y = y;
     m_z = z;
+}
+
+vector3 quaternion::get_axis() const
+{
+    const float angle = std::acos(m_w);
+
+    if(angle == 0.0f)
+    {
+        return vector3(0.0f, 0.0f, 0.0f);
+    }
+
+    const float new_x = m_x / std::sin(angle);
+    const float new_y = m_y / std::sin(angle);
+    const float new_z = m_z / std::sin(angle);
+
+    return vector3(new_x, new_y, new_z);
+}
+
+float quaternion::get_angle() const
+{
+    return std::acos(m_w) * 2.0f;
 }
 
 float &quaternion::w()
@@ -66,7 +102,7 @@ const float &quaternion::const_z() const
     return m_z;
 }
 
-vector3 quaternion::rotate(const vector3 &source) const
+vector3 quaternion::get_post_rotation(const vector3 &source) const
 {
     std::array<std::array<float, 3>, 3> matrix
     {

@@ -12,8 +12,10 @@ find_package(OpenGL REQUIRED)
 add_library(offline_1_helper
     "src/box_mesh.cpp"
     "src/mesh.cpp"
+    "src/model.cpp"
     "src/transform.cpp"
     "src/vector.cpp"
+    "src/plane_mesh.cpp"
     "src/quaternion.cpp"
     "src/sphere_mesh.cpp"
 )

@@ -7,8 +7,10 @@
 #include <thread>
 #include <cmath>
 #include <vector.hpp>
-#include <sphere_mesh.hpp>
 #include <transform.hpp>
+#include <sphere_mesh.hpp>
+#include <plane_mesh.hpp>
+#include <model.hpp>
 
 #define WINDOW_WIDTH 1366
 #define WINDOW_HEIGHT 768
@@ -20,11 +22,14 @@ float aspect_ratio;
 std::chrono::steady_clock::time_point frame_begin_time_point;
 std::chrono::steady_clock::time_point frame_end_time_point;
 double delta_time = 0.0;
-sphere_mesh sphere_mesh0(1.0f, 25, 8);
-float camera_speed = 1.0f;
-float camera_rotation_speed = 1.0f;
-transform main_camera_transform(vector3(0.0f, 0.0f, -2.0f),
-    vector3(0.0f, 0.0f, 0.0f));
+float camera_speed = 5.0f;
+float camera_rotation_speed = 3.0f;
+transform main_camera_transform(vector3(0.0f, 0.5f, -2.0f));
+sphere_mesh sphere_mesh0(0.2f, 25, 8);
+transform sphere_transform0(vector3(0.0f, 0.2f, 0.0f));
+model sphere_model0(&sphere_mesh0, sphere_transform0);
+plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
+model plane_model0(&plane_mesh0);
 
 void ascii_key_callback(unsigned char key, int x, int y)
 {
@@ -51,12 +56,12 @@ void ascii_key_callback(unsigned char key, int x, int y)
     else if(key == '5')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
-            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
     else if(key == '6')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
-            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
     }
 }
 
@@ -109,9 +114,16 @@ void display_callback()  // draw each frame
         main_camera_position.const_y() + main_camera_forward.const_y(),
         main_camera_position.const_z() + main_camera_forward.const_z(),
         main_camera_up.const_x(), main_camera_up.const_y(), main_camera_up.const_z());
-    glPushMatrix();
-    sphere_mesh0.draw();
-    glPopMatrix();
+    sphere_model0.draw();
+    plane_model0.draw();
+    // glPushMatrix();
+    // glBegin(GL_TRIANGLES);
+    // glColor3f(1, 1, 1);
+    // glVertex3f(-0.5, 0.0f, 0.5);
+    // glVertex3f(-0.5, 0.0f, -0.5);
+    // glVertex3f(0.5, 0.0f, 0.5);
+    // glEnd();
+    // glPopMatrix();
     glutSwapBuffers();
 
     frame_end_time_point = std::chrono::steady_clock::now();
