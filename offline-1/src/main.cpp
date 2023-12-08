@@ -96,9 +96,9 @@ void display_callback()  // draw each frame
     // }
 
     frame_begin_time_point = std::chrono::steady_clock::now();
-    vector3 main_camera_position = main_camera_transform.position();
-    vector3 main_camera_forward = main_camera_transform.get_forward();
-    vector3 main_camera_up = main_camera_transform.get_up();
+    const vector3 &main_camera_position = main_camera_transform.position();
+    const vector3 &main_camera_forward = main_camera_transform.get_forward();
+    const vector3 &main_camera_up = main_camera_transform.get_up();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
