@@ -2,12 +2,13 @@
 #include <GL/gl.h>
 #include <cmath>
 
-object::object(const mesh *object_mesh)
+object::object(const mesh &object_mesh)
 {
     m_mesh = object_mesh;
+    m_rigidbody = nullptr;
 }
 
-object::object(const mesh *object_mesh, const transform &model_transform)
+object::object(const mesh &object_mesh, const transform &model_transform)
 {
     m_mesh = object_mesh;
     m_transform = model_transform;
@@ -23,7 +24,7 @@ const transform &object::const_object_transform() const
     return m_transform;
 }
 
-const mesh *object::const_model_mesh() const
+const mesh &object::const_object_mesh() const
 {
     return m_mesh;
 }
@@ -41,7 +42,7 @@ void object::draw() const
     glTranslatef(-position.const_x(), position.const_y(), -position.const_z());
     glRotatef(RAD2DEG * angle, axis.const_x(), axis.const_y(), axis.const_z());
     glScalef(scale.const_x(), scale.const_y(), scale.const_z());
-    m_mesh->draw();
+    m_mesh.draw();
     glPopMatrix();
 }
 

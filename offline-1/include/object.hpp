@@ -8,16 +8,16 @@
 class object
 {
 private:
-    const mesh *m_mesh;
+    mesh m_mesh;
     transform m_transform;
     rigidbody *m_rigidbody;
 
 public:
-    object(const mesh *object_mesh);
-    object(const mesh *object_mesh, const transform &model_transform);
+    object(const mesh &object_mesh);
+    object(const mesh &object_mesh, const transform &model_transform);
     transform &object_transform();
     const transform &const_object_transform() const;
-    const mesh *const_model_mesh() const;
+    const mesh &const_object_mesh() const;
     void set_rigidbody(rigidbody *object_rigidbody);
     rigidbody *get_rigidbody() const;
     void draw() const;

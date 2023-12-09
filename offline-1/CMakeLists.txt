@@ -14,11 +14,13 @@ add_library(offline_1_helper
     "src/conc_mesh/plane_mesh.cpp"
     "src/conc_mesh/sphere_mesh.cpp"
     "src/conc_collider/sphere_collider.cpp"
+    "src/conc_scene/rolling_ball_scene.cpp"
     "src/exceptions.cpp"
     "src/mesh.cpp"
     "src/object.cpp"
     "src/physics.cpp"
     "src/scene.cpp"
+    "src/screen.cpp"
     "src/space.cpp"
     "src/time.cpp"
 )
