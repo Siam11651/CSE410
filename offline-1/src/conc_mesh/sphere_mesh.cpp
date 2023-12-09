@@ -1,4 +1,4 @@
-#include <sphere_mesh.hpp>
+#include <conc_mesh/sphere_mesh.hpp>
 #include <cmath>
 
 sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count,

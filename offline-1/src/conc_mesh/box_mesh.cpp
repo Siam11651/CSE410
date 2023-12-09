@@ -1,4 +1,4 @@
-#include <box_mesh.hpp>
+#include <conc_mesh/box_mesh.hpp>
 
 box_mesh::box_mesh(const float &size_x, const float &size_y, const float &size_z)
 {

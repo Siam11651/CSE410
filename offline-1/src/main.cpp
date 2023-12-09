@@ -6,11 +6,10 @@
 #include <functional>
 #include <thread>
 #include <cmath>
-#include <vector.hpp>
-#include <transform.hpp>
-#include <sphere_mesh.hpp>
-#include <plane_mesh.hpp>
-#include <model.hpp>
+#include <conc_mesh/sphere_mesh.hpp>
+#include <conc_mesh/plane_mesh.hpp>
+#include <conc_collider/sphere_collider.hpp>
+#include <scene.hpp>
 
 #define WINDOW_WIDTH 1366
 #define WINDOW_HEIGHT 768
@@ -24,15 +23,13 @@ std::chrono::steady_clock::time_point frame_end_time_point;
 double delta_time = 0.0;
 float camera_speed = 5.0f;
 float camera_rotation_speed = 3.0f;
-transform main_camera_transform(vector3(0.0f, 0.5f, -2.0f));
-sphere_mesh sphere_mesh0(0.2f, 25, 8);
-transform sphere_transform0(vector3(0.0f, 0.2f, 0.0f));
-model sphere_model0(&sphere_mesh0, sphere_transform0);
-plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
-model plane_model0(&plane_mesh0);
+scene current_scene;
 
 void ascii_key_callback(unsigned char key, int x, int y)
 {
+    camera &main_camera = current_scene.main_camera();
+    transform &main_camera_transform = main_camera.cam_transform();
+
     if(key == '1')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_up(),
@@ -67,6 +64,9 @@ void ascii_key_callback(unsigned char key, int x, int y)
 
 void special_key_callback(int key, int x, int y)
 {
+    camera &main_camera = current_scene.main_camera();
+    transform &main_camera_transform = main_camera.cam_transform();
+
     if(key == GLUT_KEY_LEFT)
     {
         main_camera_transform.position() += main_camera_transform.get_right() * camera_speed * delta_time;
@@ -101,7 +101,9 @@ void display_callback()  // draw each frame
     // }
 
     frame_begin_time_point = std::chrono::steady_clock::now();
-    const vector3 &main_camera_position = main_camera_transform.position();
+    const camera &main_camera = current_scene.const_main_camera();
+    const transform &main_camera_transform = main_camera.const_cam_transform();
+    const vector3 &main_camera_position = main_camera_transform.const_position();
     const vector3 &main_camera_forward = main_camera_transform.get_forward();
     const vector3 &main_camera_up = main_camera_transform.get_up();
 
@@ -114,8 +116,7 @@ void display_callback()  // draw each frame
         main_camera_position.const_y() + main_camera_forward.const_y(),
         main_camera_position.const_z() + main_camera_forward.const_z(),
         main_camera_up.const_x(), main_camera_up.const_y(), main_camera_up.const_z());
-    sphere_model0.draw();
-    plane_model0.draw();
+    current_scene.show();
     // glPushMatrix();
     // glBegin(GL_TRIANGLES);
     // glColor3f(1, 1, 1);
@@ -159,6 +160,27 @@ int main(int argc, char **argv)
     glutDisplayFunc(display_callback);
     glutKeyboardFunc(ascii_key_callback);
     glutSpecialFunc(special_key_callback);
+
+    sphere_mesh sphere_mesh0(0.2f, 25, 8);
+    transform sphere_transform0(vector3(0.0f, 0.2f, 0.0f));
+    object sphere_object0(&sphere_mesh0, sphere_transform0);
+    rigidbody *sphere_rigidbody = new rigidbody();
+    sphere_rigidbody->velocity() = vector3(0.0f, 0.0f, 1.0f);
+    sphere_collider *sphere_object_collider = new sphere_collider(2.0f);
+    sphere_object0.set_rigidbody(sphere_rigidbody);
+    sphere_object0.set_collider(sphere_object_collider);
+    plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
+    object plane_object0(&plane_mesh0);
+    camera main_camera(vector3(0.0f, 0.5f, -2.0f));
+    current_scene.main_camera() = main_camera;
+    std::vector<object> &scene_objects = current_scene.objects();
+    
+    scene_objects.insert(scene_objects.end(),
+    {
+        sphere_object0,
+        plane_object0
+    });
+
     glutMainLoop();
 
     return 0;

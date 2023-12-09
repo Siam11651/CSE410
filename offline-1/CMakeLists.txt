@@ -10,14 +10,15 @@ find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_library(offline_1_helper
-    "src/box_mesh.cpp"
+    "src/conc_mesh/box_mesh.cpp"
+    "src/conc_mesh/plane_mesh.cpp"
+    "src/conc_mesh/sphere_mesh.cpp"
+    "src/conc_collider/sphere_collider.cpp"
     "src/mesh.cpp"
-    "src/model.cpp"
-    "src/transform.cpp"
-    "src/vector.cpp"
-    "src/plane_mesh.cpp"
-    "src/quaternion.cpp"
-    "src/sphere_mesh.cpp"
+    "src/object.cpp"
+    "src/physics.cpp"
+    "src/scene.cpp"
+    "src/space.cpp"
 )
 
 target_include_directories(offline_1_helper PRIVATE ${OpenGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} "include")

@@ -1,9 +1,9 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef MESH_H
+#define MESH_H
 
 #include <vector>
 #include <array>
-#include <vector.hpp>
+#include <space.hpp>
 
 class color
 {

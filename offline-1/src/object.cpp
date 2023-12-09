@@ -1,34 +1,39 @@
-#include <model.hpp>
+#include <object.hpp>
 #include <GL/gl.h>
 #include <cmath>
 
-model::model(const mesh *model_mesh)
+object::object(const mesh *object_mesh)
 {
-    m_mesh = model_mesh;
+    m_mesh = object_mesh;
 }
 
-model::model(const mesh *model_mesh, const transform &model_transform)
+object::object(const mesh *object_mesh, const transform &model_transform)
 {
-    m_mesh = model_mesh;
+    m_mesh = object_mesh;
     m_transform = model_transform;
 }
 
-transform &model::model_transform()
+transform &object::object_transform()
 {
     return m_transform;
 }
 
-const mesh *model::const_model_mesh() const
+const transform &object::const_object_transform() const
+{
+    return m_transform;
+}
+
+const mesh *object::const_model_mesh() const
 {
     return m_mesh;
 }
 
-const transform &model::model_transform() const
+const transform &object::const_model_transform() const
 {
     return m_transform;
 }
 
-void model::draw() const
+void object::draw() const
 {
     constexpr float RAD2DEG = 180.0f / (float)M_PI;
     const quaternion &rotation = m_transform.const_rotation();
@@ -43,4 +48,24 @@ void model::draw() const
     glScalef(scale.const_x(), scale.const_y(), scale.const_z());
     m_mesh->draw();
     glPopMatrix();
+}
+
+void object::set_rigidbody(rigidbody *object_rigidbody)
+{
+    m_rigidbody = object_rigidbody;
+}
+
+rigidbody *object::get_rigidbody() const
+{
+    return m_rigidbody;
+}
+
+void object::set_collider(collider *object_collider)
+{
+    m_collider = object_collider;
+}
+
+collider *object::get_collider() const
+{
+    return m_collider;
 }
