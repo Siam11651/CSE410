@@ -6,6 +6,7 @@
 #include <functional>
 #include <thread>
 #include <cmath>
+#include <time.hpp>
 #include <conc_mesh/sphere_mesh.hpp>
 #include <conc_mesh/plane_mesh.hpp>
 #include <conc_collider/sphere_collider.hpp>
@@ -14,13 +15,9 @@
 #define WINDOW_WIDTH 1366
 #define WINDOW_HEIGHT 768
 #define WINDOW_TITLE "offline-1"
-#define FPS 60.0f
 
 int64_t frame_time_ns;
 float aspect_ratio;
-std::chrono::steady_clock::time_point frame_begin_time_point;
-std::chrono::steady_clock::time_point frame_end_time_point;
-double delta_time = 0.0;
 float camera_speed = 5.0f;
 float camera_rotation_speed = 3.0f;
 float ball_speed = 1.0f;
@@ -39,44 +36,44 @@ void ascii_key_callback(unsigned char key, int x, int y)
     if(key == '1')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_up(),
-            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            -camera_rotation_speed * time::delta_time()) * main_camera_transform.rotation();
     }
     else if(key == '2')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_up(),
-            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            camera_rotation_speed * time::delta_time()) * main_camera_transform.rotation();
     }
     else if(key == '3')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_right(),
-            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            -camera_rotation_speed * time::delta_time()) * main_camera_transform.rotation();
     }
     else if(key == '4')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_right(),
-            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            camera_rotation_speed * time::delta_time()) * main_camera_transform.rotation();
     }
     else if(key == '5')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
-            -camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            -camera_rotation_speed * time::delta_time()) * main_camera_transform.rotation();
     }
     else if(key == '6')
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
-            camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+            camera_rotation_speed * time::delta_time()) * main_camera_transform.rotation();
     }
     else if(key == 'j')
     {
-        sphere_rotation = quaternion(sphere_transform.get_up(), ball_rotation_speed * delta_time)
-            * sphere_rotation;
+        sphere_rotation = quaternion(sphere_transform.get_up(),
+            ball_rotation_speed * time::delta_time()) * sphere_rotation;
         sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
             * ball_speed;
     }
     else if(key == 'k')
     {
-        sphere_rotation = quaternion(sphere_transform.get_up(), -ball_rotation_speed * delta_time)
-            * sphere_rotation;
+        sphere_rotation = quaternion(sphere_transform.get_up(),
+            -ball_rotation_speed * time::delta_time()) * sphere_rotation;
         sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
             * ball_speed;
     }
@@ -89,27 +86,33 @@ void special_key_callback(int key, int x, int y)
 
     if(key == GLUT_KEY_LEFT)
     {
-        main_camera_transform.position() += main_camera_transform.get_right() * camera_speed * delta_time;
+        main_camera_transform.position() += main_camera_transform.get_right()
+            * camera_speed * time::delta_time();
     }
     else if(key == GLUT_KEY_RIGHT)
     {
-        main_camera_transform.position() -= main_camera_transform.get_right() * camera_speed * delta_time;
+        main_camera_transform.position() -= main_camera_transform.get_right()
+            * camera_speed * time::delta_time();
     }
     else if(key == GLUT_KEY_UP)
     {
-        main_camera_transform.position() += main_camera_transform.get_forward() * camera_speed * delta_time;
+        main_camera_transform.position() += main_camera_transform.get_forward()
+            * camera_speed * time::delta_time();
     }
     else if(key == GLUT_KEY_DOWN)
     {
-        main_camera_transform.position() -= main_camera_transform.get_forward() * camera_speed * delta_time;
+        main_camera_transform.position() -= main_camera_transform.get_forward()
+            * camera_speed * time::delta_time();
     }
     else if(key == GLUT_KEY_PAGE_UP)
     {
-        main_camera_transform.position() += main_camera_transform.get_up() * camera_speed * delta_time;
+        main_camera_transform.position() += main_camera_transform.get_up()
+            * camera_speed * time::delta_time();
     }
     else if(key == GLUT_KEY_PAGE_DOWN)
     {
-        main_camera_transform.position() -= main_camera_transform.get_up() * camera_speed * delta_time;
+        main_camera_transform.position() -= main_camera_transform.get_up()
+            * camera_speed * time::delta_time();
     }
 }
 
@@ -120,7 +123,8 @@ void display_callback()  // draw each frame
     //     std::cout << 1.0f / delta_time << std::endl;
     // }
 
-    frame_begin_time_point = std::chrono::steady_clock::now();
+    time::start_frame();
+
     const camera &main_camera = current_scene.const_main_camera();
     const transform &main_camera_transform = main_camera.const_cam_transform();
     const vector3 &main_camera_position = main_camera_transform.const_position();
@@ -146,28 +150,12 @@ void display_callback()  // draw each frame
     // glEnd();
     // glPopMatrix();
     glutSwapBuffers();
-
-    frame_end_time_point = std::chrono::steady_clock::now();
-    std::chrono::nanoseconds nanoseconds = frame_end_time_point - frame_begin_time_point;
-
-    if(nanoseconds.count() < frame_time_ns)
-    {
-        std::chrono::nanoseconds sleep_time(frame_time_ns - nanoseconds.count());
-
-        std::this_thread::sleep_for(sleep_time);
-
-        frame_end_time_point = std::chrono::steady_clock::now();
-        nanoseconds = frame_end_time_point - frame_begin_time_point;
-    }
-
-    delta_time = nanoseconds.count() / 1e9f;
-
     glutPostRedisplay();    // draw next frame
+    time::end_frame();
 }
 
 int main(int argc, char **argv)
 {
-    frame_time_ns = 1e9 / FPS;
     aspect_ratio = (float)WINDOW_WIDTH / WINDOW_HEIGHT;
 
     glutInit(&argc, argv);

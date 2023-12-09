@@ -20,6 +20,7 @@ add_library(offline_1_helper
     "src/physics.cpp"
     "src/scene.cpp"
     "src/space.cpp"
+    "src/time.cpp"
 )
 
 target_include_directories(offline_1_helper PRIVATE ${OpenGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} "include")
