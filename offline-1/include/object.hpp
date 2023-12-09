@@ -11,7 +11,6 @@ private:
     const mesh *m_mesh;
     transform m_transform;
     rigidbody *m_rigidbody;
-    collider *m_collider;
 
 public:
     object(const mesh *object_mesh);
@@ -21,9 +20,6 @@ public:
     const mesh *const_model_mesh() const;
     void set_rigidbody(rigidbody *object_rigidbody);
     rigidbody *get_rigidbody() const;
-    void set_collider(collider *object_collider);
-    collider *get_collider() const;
-    const transform &const_model_transform() const;
     void draw() const;
 };
 

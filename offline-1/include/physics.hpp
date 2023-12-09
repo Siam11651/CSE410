@@ -31,13 +31,17 @@ class rigidbody
 {
 private:
     bool m_enabled;
+    bool m_fixed;
     vector3 m_velocity;
+    collider *m_collider;
     std::optional<collission_event> m_opt_collission_event;
 
 public:
-    rigidbody();
+    rigidbody(collider *rb_collider);
     bool &enabled();
     const bool &const_enabled() const;
+    bool &fixed();  // there is a keyword names static T_T
+    const bool &const_fixed() const;
     vector3 &velocity();
     const vector3 &const_velocity() const;
     std::optional<collission_event> &opt_collission_event();

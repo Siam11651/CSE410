@@ -23,12 +23,18 @@ std::chrono::steady_clock::time_point frame_end_time_point;
 double delta_time = 0.0;
 float camera_speed = 5.0f;
 float camera_rotation_speed = 3.0f;
+float ball_speed = 1.0f;
+float ball_rotation_speed = 3.0f;
 scene current_scene;
 
 void ascii_key_callback(unsigned char key, int x, int y)
 {
     camera &main_camera = current_scene.main_camera();
     transform &main_camera_transform = main_camera.cam_transform();
+    object &sphere_object = current_scene.objects().front();
+    transform &sphere_transform = sphere_object.object_transform();
+    quaternion &sphere_rotation = sphere_transform.rotation();
+    rigidbody *sphere_rigidbody = sphere_object.get_rigidbody();
 
     if(key == '1')
     {
@@ -59,6 +65,20 @@ void ascii_key_callback(unsigned char key, int x, int y)
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
             camera_rotation_speed * delta_time) * main_camera_transform.rotation();
+    }
+    else if(key == 'j')
+    {
+        sphere_rotation = quaternion(sphere_transform.get_up(), ball_rotation_speed * delta_time)
+            * sphere_rotation;
+        sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
+            * ball_speed;
+    }
+    else if(key == 'k')
+    {
+        sphere_rotation = quaternion(sphere_transform.get_up(), -ball_rotation_speed * delta_time)
+            * sphere_rotation;
+        sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
+            * ball_speed;
     }
 }
 
@@ -163,22 +183,22 @@ int main(int argc, char **argv)
 
     sphere_mesh sphere_mesh0(0.2f, 25, 8);
     transform sphere_transform0(vector3(0.0f, 0.2f, 0.0f));
-    object sphere_object0(&sphere_mesh0, sphere_transform0);
-    rigidbody *sphere_rigidbody = new rigidbody();
-    sphere_rigidbody->velocity() = vector3(0.0f, 0.0f, 1.0f);
-    sphere_collider *sphere_object_collider = new sphere_collider(2.0f);
-    sphere_object0.set_rigidbody(sphere_rigidbody);
-    sphere_object0.set_collider(sphere_object_collider);
+    object sphere_object(&sphere_mesh0, sphere_transform0);
+    sphere_collider rb_sphere_collider(0.2f);
+    rigidbody *sphere_rigidbody = new rigidbody(&rb_sphere_collider);
+    sphere_object.set_rigidbody(sphere_rigidbody);
+    sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
+        * ball_speed;
     plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
-    object plane_object0(&plane_mesh0);
+    object plane_object(&plane_mesh0);
     camera main_camera(vector3(0.0f, 0.5f, -2.0f));
     current_scene.main_camera() = main_camera;
     std::vector<object> &scene_objects = current_scene.objects();
     
     scene_objects.insert(scene_objects.end(),
     {
-        sphere_object0,
-        plane_object0
+        sphere_object,
+        plane_object
     });
 
     glutMainLoop();

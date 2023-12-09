@@ -1,5 +1,6 @@
 #include <physics.hpp>
 #include <object.hpp>
+#include <exceptions.hpp>
 
 collission_event::collission_event(const int64_t &trigger_time, const vector3 &new_velocity)
 {
@@ -32,9 +33,16 @@ bool collission_event::operator < (const collission_event &other) const
     return m_trigger_time < other.m_trigger_time;
 }
 
-rigidbody::rigidbody()
+rigidbody::rigidbody(collider *rb_collider)
 {
-    
+    if(rb_collider == nullptr)
+    {
+        throw null_collider_exception();
+    }
+
+    m_collider = rb_collider;
+    m_enabled = true;
+    m_fixed = false;
 }
 
 bool &rigidbody::enabled()
@@ -45,6 +53,16 @@ bool &rigidbody::enabled()
 const bool &rigidbody::const_enabled() const
 {
     return m_enabled;
+}
+
+bool &rigidbody::fixed()
+{
+    return m_fixed;
+}
+
+const bool &rigidbody::const_fixed() const
+{
+    return m_fixed;
 }
 
 vector3 &rigidbody::velocity()

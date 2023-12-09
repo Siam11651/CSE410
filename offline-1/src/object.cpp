@@ -28,11 +28,6 @@ const mesh *object::const_model_mesh() const
     return m_mesh;
 }
 
-const transform &object::const_model_transform() const
-{
-    return m_transform;
-}
-
 void object::draw() const
 {
     constexpr float RAD2DEG = 180.0f / (float)M_PI;
@@ -58,14 +53,4 @@ void object::set_rigidbody(rigidbody *object_rigidbody)
 rigidbody *object::get_rigidbody() const
 {
     return m_rigidbody;
-}
-
-void object::set_collider(collider *object_collider)
-{
-    m_collider = object_collider;
-}
-
-collider *object::get_collider() const
-{
-    return m_collider;
 }
