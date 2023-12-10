@@ -57,8 +57,10 @@ void display_callback()  // draw each frame
 
 int main(int argc, char **argv)
 {
-    screen::window_width() = 1366;
-    screen::window_height() = 768;
+    time::initialise();
+
+    screen::window_width() = 1366ull;
+    screen::window_height() = 768ull;
 
     glutInit(&argc, argv);
     glutInitWindowSize(screen::window_width(), screen::window_height());
@@ -74,6 +76,8 @@ int main(int argc, char **argv)
     current_scene = new rolling_ball_scene();
 
     glutMainLoop();
+
+    delete current_scene;
 
     return 0;
 }

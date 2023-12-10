@@ -29,6 +29,36 @@ const mesh &object::const_object_mesh() const
     return m_mesh;
 }
 
+void object::set_rigidbody(rigidbody *object_rigidbody)
+{
+    m_rigidbody = object_rigidbody;
+
+    if(m_rigidbody != nullptr)
+    {
+        m_rigidbody->set_parent_object(this);
+    }
+}
+
+rigidbody *object::get_rigidbody() const
+{
+    return m_rigidbody;
+}
+
+void object::set_collider(collider *object_collider)
+{
+    m_collider = object_collider;
+
+    if(m_collider != nullptr)
+    {
+        m_collider->set_parent_object(this);
+    }
+}
+
+collider *object::get_collider() const
+{
+    return m_collider;
+}
+
 void object::draw() const
 {
     constexpr float RAD2DEG = 180.0f / (float)M_PI;
@@ -44,14 +74,4 @@ void object::draw() const
     glScalef(scale.const_x(), scale.const_y(), scale.const_z());
     m_mesh.draw();
     glPopMatrix();
-}
-
-void object::set_rigidbody(rigidbody *object_rigidbody)
-{
-    m_rigidbody = object_rigidbody;
-}
-
-rigidbody *object::get_rigidbody() const
-{
-    return m_rigidbody;
 }

@@ -14,3 +14,8 @@ const float &sphere_collider::const_radius() const
 {
     return m_radius;
 }
+
+collission_event *sphere_collider::create_collission_event(collider *other_collider)
+{
+    
+}

@@ -12,6 +12,7 @@ public:
     sphere_collider(const float &radius = 1.0f);
     float &radius();
     const float &const_radius() const;
+    collission_event *create_collission_event(collider *other_collider);
 };
 
 #endif
