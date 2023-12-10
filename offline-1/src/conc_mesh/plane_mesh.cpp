@@ -12,8 +12,8 @@ plane_mesh::plane_mesh(const float &size_x, const float &size_z,
 
     for(size_t i = 0; i < count_x; ++i)
     {
-        const float left = og_x + i * check_size_x;
-        const float right = og_x + (i + 1) * check_size_x;
+        const float left = og_x + (i + 1) * check_size_x;
+        const float right = og_x + i * check_size_x;
 
         for(size_t j = 0; j < count_z; ++j)
         {

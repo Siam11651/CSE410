@@ -82,12 +82,12 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     }
     else if(key == '3')
     {
-        main_camera_transform.rotation() = quaternion(main_camera_transform.get_right(),
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_left(),
             -m_camera_rotation_speed * time::delta_time_s()) * main_camera_transform.rotation();
     }
     else if(key == '4')
     {
-        main_camera_transform.rotation() = quaternion(main_camera_transform.get_right(),
+        main_camera_transform.rotation() = quaternion(main_camera_transform.get_left(),
             m_camera_rotation_speed * time::delta_time_s()) * main_camera_transform.rotation();
     }
     else if(key == '5')
@@ -144,12 +144,12 @@ void rolling_ball_scene::on_special_key(int32_t key, int32_t x, int32_t y)
 
     if(key == GLUT_KEY_LEFT)
     {
-        main_camera_transform.position() += main_camera_transform.get_right()
+        main_camera_transform.position() += main_camera_transform.get_left()
             * m_camera_speed * time::delta_time_s();
     }
     else if(key == GLUT_KEY_RIGHT)
     {
-        main_camera_transform.position() -= main_camera_transform.get_right()
+        main_camera_transform.position() -= main_camera_transform.get_left()
             * m_camera_speed * time::delta_time_s();
     }
     else if(key == GLUT_KEY_UP)

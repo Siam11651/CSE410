@@ -22,14 +22,14 @@ sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count,
         {
             float segment_start_angle = j * segment_gap;
             float segment_end_angle = (j + 1) * segment_gap;
-            float x_top_left = std::cos(segment_start_angle) * stack_start_radius;
-            float z_top_left = -std::sin(segment_start_angle) * stack_start_radius;
-            float x_top_right = std::cos(segment_end_angle) * stack_start_radius;
-            float z_top_right = -std::sin(segment_end_angle) * stack_start_radius;
-            float x_bot_left = std::cos(segment_start_angle) * stack_end_radius;
-            float z_bot_left = -std::sin(segment_start_angle) * stack_end_radius;
-            float x_bot_right = std::cos(segment_end_angle) * stack_end_radius;
-            float z_bot_right = -std::sin(segment_end_angle) * stack_end_radius;
+            float x_top_left = -std::cos(segment_start_angle) * stack_start_radius;
+            float z_top_left = std::sin(segment_start_angle) * stack_start_radius;
+            float x_top_right = -std::cos(segment_end_angle) * stack_start_radius;
+            float z_top_right = std::sin(segment_end_angle) * stack_start_radius;
+            float x_bot_left = -std::cos(segment_start_angle) * stack_end_radius;
+            float z_bot_left = std::sin(segment_start_angle) * stack_end_radius;
+            float x_bot_right = -std::cos(segment_end_angle) * stack_end_radius;
+            float z_bot_right = std::sin(segment_end_angle) * stack_end_radius;
             vector3 top_left(x_top_left, y_top, z_top_left);
             vector3 bot_left(x_bot_left, y_bot, z_bot_left);
             vector3 top_right(x_top_right, y_top, z_top_right);

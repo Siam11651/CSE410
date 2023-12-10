@@ -71,7 +71,7 @@ public:
     const vector3 &const_scale() const;
     vector3 get_forward() const;
     vector3 get_up() const;
-    vector3 get_right() const;
+    vector3 get_left() const;
 };
 
 #endif

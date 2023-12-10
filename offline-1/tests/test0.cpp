@@ -24,7 +24,7 @@ int main()
                     return -1;
                 }
 
-                direction = instance.get_right();
+                direction = instance.get_left();
                 magnitude = direction.get_magnitude();
 
                 if(std::abs(magnitude - 1.0f) > 1e-6)

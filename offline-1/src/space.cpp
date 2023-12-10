@@ -293,7 +293,7 @@ vector3 transform::get_up() const
     return m_rotation.get_post_rotation(vector3(0.0f, 1.0f, 0.0f));
 }
 
-vector3 transform::get_right() const
+vector3 transform::get_left() const
 {
     return m_rotation.get_post_rotation(vector3(1.0f, 0.0f, 0.0f));
 }
