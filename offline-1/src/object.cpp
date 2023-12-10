@@ -6,6 +6,7 @@ object::object(const mesh &object_mesh)
 {
     m_mesh = object_mesh;
     m_rigidbody = nullptr;
+    m_collider = nullptr;
 }
 
 object::object(const mesh &object_mesh, const transform &model_transform)
@@ -13,6 +14,7 @@ object::object(const mesh &object_mesh, const transform &model_transform)
     m_mesh = object_mesh;
     m_transform = model_transform;
     m_rigidbody = nullptr;
+    m_collider = nullptr;
 }
 
 transform &object::object_transform()
@@ -70,7 +72,7 @@ void object::draw() const
     const vector3 &scale = m_transform.const_scale();
 
     glPushMatrix();
-    glTranslatef(-position.const_x(), position.const_y(), -position.const_z());
+    glTranslatef(position.const_x(), position.const_y(), position.const_z());
     glRotatef(RAD2DEG * angle, axis.const_x(), axis.const_y(), axis.const_z());
     glScalef(scale.const_x(), scale.const_y(), scale.const_z());
     m_mesh.draw();

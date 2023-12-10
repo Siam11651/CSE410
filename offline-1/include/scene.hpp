@@ -31,6 +31,7 @@ public:
     const std::vector<object> &const_objects() const;
     void setup_frame();
     void simulate_physics();
+    void update_collissions();
     void show();
     virtual void on_new_frame() = 0;
     virtual void on_ascii_key(uint8_t key, int32_t x, int32_t y) = 0;

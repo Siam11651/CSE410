@@ -17,10 +17,11 @@ rolling_ball_scene::rolling_ball_scene()
     sphere_mesh sphere_mesh0(0.2f, 25, 8);
     transform sphere_transform0(vector3(0.0f, 0.2f, 0.0f));
     object sphere_object(sphere_mesh0, sphere_transform0);
-    sphere_collider rb_sphere_collider(0.2f);
-    rigidbody *sphere_rigidbody = new rigidbody();
-    sphere_object.set_rigidbody(sphere_rigidbody);
-    sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
+    rigidbody *sphere_object_rigidbody = new rigidbody();
+    sphere_collider *sphere_object_collider = new sphere_collider(0.2f);
+    sphere_object.set_rigidbody(sphere_object_rigidbody);
+    sphere_object.set_collider(sphere_object_collider);
+    sphere_object_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
         * m_effective_ball_speed;
     // ground
     plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
@@ -104,6 +105,11 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
         m_effective_ball_speed = std::abs(m_effective_ball_speed - m_ball_speed);
         sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
             * m_effective_ball_speed;
+
+        if(m_effective_ball_speed > 0.0f)
+        {
+            update_collissions();
+        }
     }
     else if(key == 'i')
     {

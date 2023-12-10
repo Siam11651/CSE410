@@ -71,6 +71,8 @@ void scene::setup_frame()
 
 void scene::simulate_physics()
 {
+    bool collided = false;
+
     for(size_t i = 0; i < m_objects.size(); ++i)
     {
         rigidbody *object_rigidbody = m_objects[i].get_rigidbody();
@@ -96,8 +98,6 @@ void scene::simulate_physics()
             object_position += object_velocity * delta_time;
         });
 
-        bool collided = false;
-
         if(next_collission_event == nullptr)
         {
             translation_simulation(time::delta_time_s());
@@ -121,8 +121,21 @@ void scene::simulate_physics()
                 translation_simulation(time::delta_time_s());
             }
         }
+    }
 
-        if(collided == false)
+    if(collided)
+    {
+        update_collissions();
+    }
+}
+
+void scene::update_collissions()
+{
+    for(size_t i = 0; i < m_objects.size(); ++i)
+    {
+        rigidbody *this_rigidbody = m_objects[i].get_rigidbody();
+
+        if(this_rigidbody == nullptr)
         {
             continue;
         }
