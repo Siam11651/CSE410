@@ -21,7 +21,8 @@ rolling_ball_scene::rolling_ball_scene()
         * m_ball_speed;
     plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
     object plane_object(plane_mesh0);
-    camera main_camera(vector3(0.0f, 0.5f, -2.0f));
+    transform main_camera_transform(vector3(0.0f, 3.0f, -3.0f), vector3(45.0f, 0.0f, 0.0f));
+    camera main_camera(main_camera_transform);
     this->main_camera() = main_camera;
     std::vector<object> &scene_objects = this->objects();
     
