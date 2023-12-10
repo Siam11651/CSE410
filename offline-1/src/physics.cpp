@@ -100,14 +100,19 @@ object *rigidbody::get_parent_object() const
     return m_parent_object;
 }
 
-void rigidbody::reset_collission_event()
+void rigidbody::register_collission_event(collission_event *new_event)
 {
-    delete m_collission_event;
-
-    m_collission_event = nullptr;
+    m_collission_event = new_event;
 }
 
 collission_event *rigidbody::get_collission_event() const
 {
     return m_collission_event;
+}
+
+void rigidbody::reset_collission_event()
+{
+    delete m_collission_event;
+
+    m_collission_event = nullptr;
 }

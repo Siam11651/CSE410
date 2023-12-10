@@ -21,14 +21,14 @@ class scene
 {
 private:
     camera m_main_camera;
-    std::vector<object> m_objects;
+    std::vector<object *> m_objects;
 
 public:
     scene();
     camera &main_camera();
-    std::vector<object> &objects();
     const camera &const_main_camera() const;
-    const std::vector<object> &const_objects() const;
+    std::vector<object *> &object_ptrs();
+    const std::vector<object *> &const_object_ptrs() const;
     void setup_frame();
     void simulate_physics();
     void update_collissions();

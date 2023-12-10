@@ -2,6 +2,7 @@
 
 void box_mesh::initialise_mesh(const vector3 &dimensions, const color &mesh_color)
 {
+    m_dimensions = dimensions;
     const float &size_x = dimensions.const_x();
     const float &size_y = dimensions.const_y();
     const float &size_z = dimensions.const_z();
@@ -43,4 +44,9 @@ box_mesh::box_mesh(const vector3 &dimensions)
 box_mesh::box_mesh(const vector3 &dimensions, const color &mesh_color)
 {
     initialise_mesh(dimensions, mesh_color);
+}
+
+const vector3 &box_mesh::const_dimensions() const
+{
+    return m_dimensions;
 }

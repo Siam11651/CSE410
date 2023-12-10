@@ -54,6 +54,7 @@ public:
     const vector3 &const_velocity() const;
     void set_parent_object(object *parent_object);
     object *get_parent_object() const;
+    void register_collission_event(collission_event *new_event);
     collission_event *get_collission_event() const;
     void reset_collission_event();
     void predict_collission();

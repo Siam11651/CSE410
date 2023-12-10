@@ -35,17 +35,17 @@ camera &scene::main_camera()
     return m_main_camera;
 }
 
-std::vector<object> &scene::objects()
-{
-    return m_objects;
-}
-
 const camera &scene::const_main_camera() const
 {
     return m_main_camera;
 }
 
-const std::vector<object> &scene::const_objects() const
+std::vector<object *> &scene::object_ptrs()
+{
+    return m_objects;
+}
+
+const std::vector<object *> &scene::const_object_ptrs() const
 {
     return m_objects;
 }
@@ -75,7 +75,7 @@ void scene::simulate_physics()
 
     for(size_t i = 0; i < m_objects.size(); ++i)
     {
-        rigidbody *object_rigidbody = m_objects[i].get_rigidbody();
+        rigidbody *object_rigidbody = m_objects[i]->get_rigidbody();
 
         if(object_rigidbody == nullptr)
         {
@@ -88,7 +88,7 @@ void scene::simulate_physics()
         }
 
         collission_event *next_collission_event = object_rigidbody->get_collission_event();
-        object &this_object = m_objects[i];
+        object &this_object = *m_objects[i];
 
         std::function<void(const float &)> translation_simulation(
         [&this_object, &object_rigidbody](const float &delta_time)
@@ -133,21 +133,21 @@ void scene::update_collissions()
 {
     for(size_t i = 0; i < m_objects.size(); ++i)
     {
-        rigidbody *this_rigidbody = m_objects[i].get_rigidbody();
+        rigidbody *this_rigidbody = m_objects[i]->get_rigidbody();
 
         if(this_rigidbody == nullptr)
         {
             continue;
         }
 
-        collider *this_collider = m_objects[i].get_collider();
+        collider *this_collider = m_objects[i]->get_collider();
 
         if(this_collider == nullptr)
         {
             throw null_collider_exception();
         }
 
-        collission_event *nearest_collission_event = nullptr;
+        collission_event *nearest_collission_event = new collission_event();
 
         for(size_t j = 0; j < m_objects.size(); ++j)
         {
@@ -156,7 +156,7 @@ void scene::update_collissions()
                 continue;
             }
 
-            collider *other_collider = m_objects[j].get_collider();
+            collider *other_collider = m_objects[j]->get_collider();
 
             if(other_collider == nullptr)
             {
@@ -171,7 +171,7 @@ void scene::update_collissions()
                 continue;
             }
 
-            if(*new_collission_event < *new_collission_event)
+            if(*new_collission_event < *nearest_collission_event)
             {
                 delete nearest_collission_event;
 
@@ -181,14 +181,19 @@ void scene::update_collissions()
             {
                 delete new_collission_event;
             }
+
+            if(new_collission_event)
+            {
+                this_rigidbody->register_collission_event(new_collission_event);
+            }
         }
     }
 }
 
 void scene::show()
 {
-    for(object &object_item : m_objects)
+    for(const object *object_item : m_objects)
     {
-        object_item.draw();
+        object_item->draw();
     }
 }

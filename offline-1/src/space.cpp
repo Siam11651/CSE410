@@ -9,6 +9,21 @@ vector3::vector3(const float &x, const float &y, const float &z)
     m_z = z;
 }
 
+float &vector3::x()
+{
+    return m_x;
+}
+
+float &vector3::y()
+{
+    return m_y;
+}
+
+float &vector3::z()
+{
+    return m_z;
+}
+
 const float &vector3::const_x() const
 {
     return m_x;

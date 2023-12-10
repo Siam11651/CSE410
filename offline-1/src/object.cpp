@@ -17,6 +17,16 @@ object::object(const mesh &object_mesh, const transform &model_transform)
     m_collider = nullptr;
 }
 
+std::string &object::name()
+{
+    return m_name;
+}
+
+const std::string &object::const_name() const
+{
+    return m_name;
+}
+
 transform &object::object_transform()
 {
     return m_transform;
