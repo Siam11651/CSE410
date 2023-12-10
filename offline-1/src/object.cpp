@@ -12,6 +12,7 @@ object::object(const mesh &object_mesh, const transform &model_transform)
 {
     m_mesh = object_mesh;
     m_transform = model_transform;
+    m_rigidbody = nullptr;
 }
 
 transform &object::object_transform()

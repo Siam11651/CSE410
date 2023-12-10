@@ -9,6 +9,7 @@ private:
     float m_camera_speed;
     float m_camera_rotation_speed;
     float m_ball_speed;
+    float m_effective_ball_speed;
     float m_ball_rotation_speed;
 
 public:

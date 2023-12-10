@@ -5,8 +5,13 @@
 
 class box_mesh : public mesh
 {
+private:
+    void initialise_mesh(const vector3 &dimensions, const color &mesh_color);
+
 public:
-    box_mesh(const float &size_x = 1.0f, const float &size_y = 1.0f, const float &size_z = 1.0f);
+    box_mesh();
+    box_mesh(const vector3 &dimensions);
+    box_mesh(const vector3 &dimensions, const color &mesh_color);
 };
 
 #endif
