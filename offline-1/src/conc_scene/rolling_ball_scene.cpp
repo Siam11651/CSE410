@@ -133,6 +133,11 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     {
         sphere_transform.position() -= sphere_transform.get_forward()
             * m_ball_speed * time::delta_time_s();
+
+        if(m_effective_ball_speed > 0.0f)
+        {
+            update_collissions();
+        }
     }
     else if(key == 'j')
     {
@@ -140,6 +145,11 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
             m_ball_rotation_speed * time::delta_time_s()) * sphere_rotation;
         sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
             * m_effective_ball_speed;
+
+        if(m_effective_ball_speed > 0.0f)
+        {
+            update_collissions();
+        }
     }
     else if(key == 'l')
     {
