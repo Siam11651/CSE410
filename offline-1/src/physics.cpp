@@ -112,6 +112,11 @@ collission_event *rigidbody::get_collission_event() const
 
 void rigidbody::reset_collission_event()
 {
+    if(!m_collission_event)
+    {
+        return;
+    }
+
     delete m_collission_event;
 
     m_collission_event = nullptr;

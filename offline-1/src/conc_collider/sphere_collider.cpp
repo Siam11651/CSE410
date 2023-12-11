@@ -43,7 +43,14 @@ collission_event *sphere_collider::create_collission_event(collider *other_colli
                 return nullptr;
             }
 
-            return nullptr;
+            float distance_x = other_position.const_x() - this_position.const_x()
+                - radius() - wall_gap;
+
+            vector3 new_velocity = this_velocity;
+            new_velocity.x() = -this_velocity.const_x();
+            int64_t time = (int64_t)((distance_x * 1e9f) / this_velocity.const_x()) + time::now_ns();
+
+            return new collission_event(time, new_velocity);
         }
         else if(other_object->const_name() == "right_wall")
         {
@@ -52,7 +59,14 @@ collission_event *sphere_collider::create_collission_event(collider *other_colli
                 return nullptr;
             }
 
-            return nullptr;
+            float distance_x = this_position.const_x() - other_position.const_x()
+                - radius() - wall_gap;
+
+            vector3 new_velocity = this_velocity;
+            new_velocity.x() = -this_velocity.const_x();
+            int64_t time = (int64_t)((distance_x * 1e9f) / -this_velocity.const_x()) + time::now_ns();
+
+            return new collission_event(time, new_velocity);
         }
         else if(other_object->const_name() == "top_wall")
         {
@@ -77,7 +91,14 @@ collission_event *sphere_collider::create_collission_event(collider *other_colli
                 return nullptr;
             }
 
-            return nullptr;
+            float distance_z = this_position.const_z() - other_position.const_z()
+                - radius() - wall_gap;
+
+            vector3 new_velocity = this_velocity;
+            new_velocity.z() = -this_velocity.const_z();
+            int64_t time = (int64_t)((distance_z * 1e9f) / -this_velocity.const_z()) + time::now_ns();
+
+            return new collission_event(time, new_velocity);
         }
 
         // else is not going to happen

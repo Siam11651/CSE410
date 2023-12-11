@@ -31,8 +31,8 @@ rolling_ball_scene::rolling_ball_scene()
         color(1.0f, 0.0f, 0.0f, 1.0f));
     box_mesh horizontal_wall_mesh(vector3(0.2f, 0.5f, 9.8f),
         color(1.0f, 0.0f, 0.0f, 1.0f));
-    transform left_wall_transform(vector3(-5.0f, 0.25f, 0.0f));
-    transform right_wall_transform(vector3(5.0f, 0.25f, 0.0f));
+    transform left_wall_transform(vector3(5.0f, 0.25f, 0.0f));
+    transform right_wall_transform(vector3(-5.0f, 0.25f, 0.0f));
     transform top_wall_transform(vector3(0.0f, 0.25f, 4.9f), vector3(0.0f, M_PI / 2.0f, 0.0f));
     transform bot_wall_transform(vector3(0.0f, 0.25f, -4.9f), vector3(0.0f, M_PI / 2.0f, 0.0f));
     m_left_wall_collider = new box_collider(vector3(0.2f, 0.5f, 10.0f));

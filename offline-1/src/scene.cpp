@@ -147,7 +147,9 @@ void scene::update_collissions()
             throw null_collider_exception();
         }
 
-        collission_event *nearest_collission_event = new collission_event();
+        this_rigidbody->reset_collission_event();
+
+        collission_event *nearest_collission_event = nullptr;
 
         for(size_t j = 0; j < m_objects.size(); ++j)
         {
@@ -171,21 +173,28 @@ void scene::update_collissions()
                 continue;
             }
 
-            if(*new_collission_event < *nearest_collission_event)
+            if(nearest_collission_event)
             {
-                delete nearest_collission_event;
+                if(*new_collission_event < *nearest_collission_event)
+                {
+                    delete nearest_collission_event;
 
-                nearest_collission_event = new_collission_event;
+                    nearest_collission_event = new_collission_event;
+                }
+                else
+                {
+                    delete new_collission_event;
+                }
             }
             else
             {
-                delete new_collission_event;
+                nearest_collission_event = new_collission_event;
             }
+        }
 
-            if(new_collission_event)
-            {
-                this_rigidbody->register_collission_event(new_collission_event);
-            }
+        if(nearest_collission_event)
+        {
+            this_rigidbody->register_collission_event(nearest_collission_event);
         }
     }
 }
