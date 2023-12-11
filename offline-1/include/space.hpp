@@ -25,6 +25,8 @@ public:
     vector3 operator - (const vector3 &other) const;
     vector3 &operator -= (const vector3 &other);
     vector3 operator * (const float &other) const;
+    static vector3 cross(const vector3 &vector_a, const vector3 &vector_b);
+    static float dot(const vector3 &vector_a, const vector3 &vector_b);
 };
 
 class quaternion
@@ -39,6 +41,8 @@ public:
     quaternion(const float &w, const float &x, const float &y, const float &z);
     vector3 get_axis() const;
     float get_angle() const;
+    float get_magnitude() const;
+    quaternion get_normalized() const;
     float &w();
     float &x();
     float &y();
@@ -47,8 +51,9 @@ public:
     const float &const_x() const;
     const float &const_y() const;
     const float &const_z() const;
-    vector3 get_post_rotation(const vector3 &source) const;
+    vector3 get_rotated_vector(const vector3 &source) const;
     quaternion operator * (const quaternion &other) const;
+    static quaternion get_rotation(const vector3 &from, const vector3 &to);
 };
 
 class transform

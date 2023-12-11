@@ -37,19 +37,11 @@ void display_callback()  // draw each frame
     if(current_scene != nullptr)
     {
         current_scene->simulate_physics();
-        current_scene->on_new_frame();
         current_scene->setup_frame();
+        current_scene->on_new_frame();
         current_scene->show();
     }
 
-    // glPushMatrix();
-    // glBegin(GL_TRIANGLES);
-    // glColor3f(1, 1, 1);
-    // glVertex3f(-0.5, 0.0f, 0.5);
-    // glVertex3f(-0.5, 0.0f, -0.5);
-    // glVertex3f(0.5, 0.0f, 0.5);
-    // glEnd();
-    // glPopMatrix();
     glutSwapBuffers();
     glutPostRedisplay();    // draw next frame
     time::end_frame();

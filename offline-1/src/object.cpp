@@ -4,6 +4,7 @@
 
 object::object(const mesh &object_mesh)
 {
+    m_active = true;
     m_mesh = object_mesh;
     m_rigidbody = nullptr;
     m_collider = nullptr;
@@ -11,6 +12,7 @@ object::object(const mesh &object_mesh)
 
 object::object(const mesh &object_mesh, const transform &model_transform)
 {
+    m_active = true;
     m_mesh = object_mesh;
     m_transform = model_transform;
     m_rigidbody = nullptr;
@@ -25,6 +27,16 @@ std::string &object::name()
 const std::string &object::const_name() const
 {
     return m_name;
+}
+
+bool &object::active()
+{
+    return m_active;
+}
+
+const bool &object::const_active() const
+{
+    return m_active;
 }
 
 transform &object::object_transform()
@@ -74,6 +86,11 @@ collider *object::get_collider() const
 
 void object::draw() const
 {
+    if(!m_active)
+    {
+        return;
+    }
+
     constexpr float RAD2DEG = 180.0f / (float)M_PI;
     const quaternion &rotation = m_transform.const_rotation();
     const float angle = rotation.get_angle();

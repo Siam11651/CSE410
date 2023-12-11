@@ -25,6 +25,7 @@ private:
     object *m_right_wall_object;
     object *m_top_wall_object;
     object *m_bot_wall_object;
+    object *m_direction_box;
 
 public:
     rolling_ball_scene();
