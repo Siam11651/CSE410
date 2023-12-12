@@ -1,6 +1,7 @@
 #include <conc_scene/magic_cube_scene.hpp>
 #include <conc_mesh/base_triangle_mesh.hpp>
 #include <conc_mesh/sphere_surface_mesh.hpp>
+#include <conc_mesh/sphere_mesh.hpp>
 #include <time.hpp>
 #include <GL/freeglut.h>
 #include <cmath>
@@ -118,6 +119,9 @@ magic_cube_scene::magic_cube_scene()
     surface_transform.rotation() = quaternion(vector3(1.0f, 0.0f, 0.0f), -(float)M_PI / 2.0f)
         * quaternion(vector3(0.0f, 1.0f, 0.0f), 0.0f * (float)M_PI / 4.0f);
     m_sphere_surface_front = new object(z_sphere_surface_mesh, surface_transform);
+    // sphere
+    sphere_mesh sm(1.0f / std::sqrt(3.0f), 20, 20);
+    m_sphere_object = new object(sm);
     // camera
     transform main_camera_transform(vector3(0.0f, 0.0f, -1.5f),
         vector3(0.0f, 0.0f, 0.0f));
@@ -140,7 +144,8 @@ magic_cube_scene::magic_cube_scene()
         m_sphere_surface_left,
         m_sphere_surface_right,
         m_sphere_surface_rear,
-        m_sphere_surface_front
+        m_sphere_surface_front,
+        m_sphere_object
     });
 }
 

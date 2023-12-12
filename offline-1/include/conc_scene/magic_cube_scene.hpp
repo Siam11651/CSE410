@@ -28,6 +28,7 @@ private:
     object *m_sphere_surface_right;
     object *m_sphere_surface_rear;
     object *m_sphere_surface_front;
+    object *m_sphere_object;
 
     void rescale();
 
