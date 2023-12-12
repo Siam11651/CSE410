@@ -111,6 +111,9 @@ void scene::simulate_physics()
             {
                 collided = true;
                 object_rigidbody->velocity() = next_collission_event->const_new_velocity();
+                quaternion new_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+                    object_rigidbody->const_velocity().get_normalized());
+                this_object.object_transform().rotation() = new_rotation;
                 int64_t ahead_ns = now_ns - collide_time_ns;
                 
                 translation_simulation(ahead_ns / 1e9f);

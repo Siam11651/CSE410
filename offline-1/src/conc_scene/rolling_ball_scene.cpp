@@ -21,8 +21,9 @@ rolling_ball_scene::rolling_ball_scene()
     m_sphere_collider = new sphere_collider(0.2f);
     m_sphere_object->set_rigidbody(m_sphere_rigidbody);
     m_sphere_object->set_collider(m_sphere_collider);
+    m_sphere_rigidbody->enabled() = false;
     m_sphere_rigidbody->velocity() = m_sphere_object->const_object_transform().get_forward()
-        * m_effective_ball_speed;
+        * m_ball_speed;
     // ground
     plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
     m_plane_object = new object(plane_mesh0);
@@ -78,25 +79,18 @@ rolling_ball_scene::rolling_ball_scene()
 void rolling_ball_scene::on_new_frame()
 {
     const vector3 &sphere_velocity = m_sphere_rigidbody->const_velocity();
-    vector3 forward;
-
-    if(sphere_velocity.get_magnitude() == 0.0f)
-    {
-        forward = m_sphere_object->const_object_transform().get_forward();
-    }
-    else
-    {
-        forward = sphere_velocity.get_normalized();
-    }
-
+    const vector3 forward = sphere_velocity.get_normalized();
     const vector3 &position = m_sphere_object->const_object_transform().const_position();
-    const quaternion &rotation = m_sphere_object->const_object_transform().const_rotation();
+    quaternion &rotation = m_sphere_object->object_transform().rotation();
     vector3 &new_position = m_direction_box->object_transform().position();
     new_position.x() = position.const_x() + forward.const_x() * 0.5f;
     new_position.y() = position.const_y() + forward.const_y() * 0.5f;
     new_position.z() = position.const_z() + forward.const_z() * 0.5f;
     quaternion &new_rotation = m_direction_box->object_transform().rotation();
     new_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f), forward);
+    const vector3 left = new_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
+    const float angle = m_effective_ball_speed * time::delta_time_s() / 0.2f;
+    rotation = quaternion(left, angle) * rotation;
 }
 
 void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
@@ -141,8 +135,9 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     else if(key == ' ')
     {
         m_effective_ball_speed = std::abs(m_effective_ball_speed - m_ball_speed);
-        sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
-            * m_effective_ball_speed;
+        // sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
+        //     * m_effective_ball_speed;
+        sphere_rigidbody->enabled() = !sphere_rigidbody->enabled();
 
         update_collissions();
     }
@@ -163,7 +158,7 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
         sphere_rotation = quaternion(sphere_transform.get_up(),
             m_ball_rotation_speed * time::delta_time_s()) * sphere_rotation;
         sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
-            * m_effective_ball_speed;
+            * m_ball_speed;
 
         update_collissions();
     }
@@ -172,7 +167,7 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
         sphere_rotation = quaternion(sphere_transform.get_up(),
             -m_ball_rotation_speed * time::delta_time_s()) * sphere_rotation;
         sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
-            * m_effective_ball_speed;
+            * m_ball_speed;
     }
 }
 
