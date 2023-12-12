@@ -27,6 +27,7 @@ public:
     vector3 operator - (const vector3 &other) const;
     vector3 &operator -= (const vector3 &other);
     vector3 operator * (const float &other) const;
+    vector3 operator / (const float &other) const;
     static vector3 cross(const vector3 &vector_a, const vector3 &vector_b);
     static float dot(const vector3 &vector_a, const vector3 &vector_b);
 };

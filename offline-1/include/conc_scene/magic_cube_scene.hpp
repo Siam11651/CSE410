@@ -3,7 +3,6 @@
 
 #include <scene.hpp>
 #include <object.hpp>
-#include <conc_mesh/base_triangle_mesh.hpp>
 
 class magic_cube_scene : public scene
 {
@@ -23,6 +22,12 @@ private:
     object *m_right_rear_bot_object;
     object *m_left_front_bot_object;
     object *m_right_front_bot_object;
+    object *m_sphere_surface_top;
+    object *m_sphere_surface_bot;
+    object *m_sphere_surface_left;
+    object *m_sphere_surface_right;
+    object *m_sphere_surface_rear;
+    object *m_sphere_surface_front;
 
     void rescale();
 

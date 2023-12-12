@@ -13,6 +13,7 @@ add_library(offline_1_helper
     "src/conc_mesh/base_triangle_mesh.cpp"
     "src/conc_mesh/box_mesh.cpp"
     "src/conc_mesh/plane_mesh.cpp"
+    "src/conc_mesh/sphere_surface_mesh.cpp"
     "src/conc_mesh/sphere_mesh.cpp"
     "src/conc_mesh/stl_mesh.cpp"
     "src/conc_collider/box_collider.cpp"

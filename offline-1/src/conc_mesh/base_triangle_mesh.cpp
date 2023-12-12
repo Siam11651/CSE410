@@ -1,6 +1,6 @@
 #include <conc_mesh/base_triangle_mesh.hpp>
 
-void base_triangle_mesh::constructor_util(const color &triangle_color)
+void base_triangle_mesh::constructor_helper(const color &triangle_color)
 {
     const std::array<vector3, 3> face
     {
@@ -14,10 +14,10 @@ void base_triangle_mesh::constructor_util(const color &triangle_color)
 
 base_triangle_mesh::base_triangle_mesh()
 {
-    constructor_util(color(1.0f, 1.0f, 1.0f, 1.0f));
+    constructor_helper(color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 base_triangle_mesh::base_triangle_mesh(const color &triangle_color)
 {
-    constructor_util(triangle_color);
+    constructor_helper(triangle_color);
 }

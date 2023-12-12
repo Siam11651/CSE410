@@ -96,6 +96,11 @@ vector3 vector3::operator * (const float &value) const
     return vector3(m_x * value, m_y * value, m_z * value);
 }
 
+vector3 vector3::operator / (const float &value) const
+{
+    return vector3(m_x / value, m_y / value, m_z / value);
+}
+
 vector3 vector3::cross(const vector3 &vector_a, const vector3 &vector_b)
 {
     return vector3(vector_a.const_y() * vector_b.const_z() - vector_a.const_z() * vector_b.const_y(),

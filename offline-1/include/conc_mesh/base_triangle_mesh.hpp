@@ -6,7 +6,7 @@
 class base_triangle_mesh : public mesh
 {
 private:
-    void constructor_util(const color &triangle_color);
+    void constructor_helper(const color &triangle_color);
 
 public:
     base_triangle_mesh();

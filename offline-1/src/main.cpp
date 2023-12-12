@@ -52,8 +52,8 @@ int main(int argc, char **argv)
 {
     time::initialise();
 
-    screen::window_width() = 1366ull;
-    screen::window_height() = 768ull;
+    screen::window_width() = 1366;
+    screen::window_height() = 768;
 
     glutInit(&argc, argv);
     glutInitWindowSize(screen::window_width(), screen::window_height());
