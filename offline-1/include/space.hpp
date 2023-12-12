@@ -9,6 +9,8 @@ private:
     float m_z;
 
 public:
+    static vector3 one;
+
     vector3(const float &x = 0, const float &y = 0, const float &z = 0);
     float &x();
     float &y();

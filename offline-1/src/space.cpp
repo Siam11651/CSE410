@@ -2,6 +2,8 @@
 #include <cmath>
 #include <array>
 
+vector3 vector3::one(1.0f, 1.0f, 1.0f);
+
 vector3::vector3(const float &x, const float &y, const float &z)
 {
     m_x = x;

@@ -10,12 +10,14 @@ find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_library(offline_1_helper
+    "src/conc_mesh/base_triangle_mesh.cpp"
     "src/conc_mesh/box_mesh.cpp"
     "src/conc_mesh/plane_mesh.cpp"
     "src/conc_mesh/sphere_mesh.cpp"
     "src/conc_mesh/stl_mesh.cpp"
     "src/conc_collider/box_collider.cpp"
     "src/conc_collider/sphere_collider.cpp"
+    "src/conc_scene/magic_cube_scene.cpp"
     "src/conc_scene/rolling_ball_scene.cpp"
     "src/exceptions.cpp"
     "src/mesh.cpp"

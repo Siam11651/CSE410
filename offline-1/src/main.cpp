@@ -8,6 +8,7 @@
 #include <cmath>
 #include <time.hpp>
 #include <screen.hpp>
+#include <conc_scene/magic_cube_scene.hpp>
 #include <conc_scene/rolling_ball_scene.hpp>
 
 #define WINDOW_TITLE "offline-1"
@@ -65,7 +66,8 @@ int main(int argc, char **argv)
     glutKeyboardFunc(ascii_key_callback);
     glutSpecialFunc(special_key_callback);
 
-    current_scene = new rolling_ball_scene();
+    // current_scene = new rolling_ball_scene();
+    current_scene = new magic_cube_scene();
 
     glutMainLoop();
 
