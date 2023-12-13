@@ -89,7 +89,13 @@ void rolling_ball_scene::on_new_frame()
     quaternion &new_rotation = m_direction_box->object_transform().rotation();
     new_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f), forward);
     const vector3 left = new_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
-    const float angle = m_effective_ball_speed * time::delta_time_s() / 0.2f;
+    float angle = 0.0f;
+
+    if(m_sphere_rigidbody->const_enabled())
+    {
+        angle = m_ball_speed * time::delta_time_s() / 0.2f;
+    }
+
     rotation = quaternion(left, angle) * rotation;
 }
 
@@ -135,29 +141,41 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     else if(key == ' ')
     {
         m_effective_ball_speed = std::abs(m_effective_ball_speed - m_ball_speed);
-        // sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
-        //     * m_effective_ball_speed;
         sphere_rigidbody->enabled() = !sphere_rigidbody->enabled();
 
         update_collissions();
     }
     else if(key == 'i')
     {
-        sphere_transform.position() += sphere_transform.get_forward()
-            * m_ball_speed * time::delta_time_s();
+        if(!sphere_rigidbody->const_enabled())
+        {
+            const quaternion velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+                sphere_rigidbody->velocity().get_normalized());
+            const vector3 forward = velocity_rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
+            const vector3 left = velocity_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
+            const float angle = m_ball_speed * time::delta_time_s() / 0.2f;
+            sphere_transform.position() += forward * m_ball_speed * time::delta_time_s();
+            sphere_rotation = quaternion(left, angle) * sphere_rotation;   
+        }
     }
     else if(key == 'k')
     {
-        sphere_transform.position() -= sphere_transform.get_forward()
-            * m_ball_speed * time::delta_time_s();
-
-        update_collissions();
+        if(!sphere_rigidbody->const_enabled())
+        {
+            const quaternion velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+                sphere_rigidbody->velocity().get_normalized());
+            const vector3 forward = velocity_rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
+            const vector3 left = velocity_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
+            const float angle = m_ball_speed * time::delta_time_s() / 0.2f;
+            sphere_transform.position() -= forward * m_ball_speed * time::delta_time_s();
+            sphere_rotation = quaternion(left, -angle) * sphere_rotation;
+        }
     }
     else if(key == 'j')
     {
-        quaternion old_velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+        const quaternion old_velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
             sphere_rigidbody->velocity().get_normalized());
-        quaternion new_velocity_rotation = quaternion(vector3(0.0f, 1.0f, 0.0f),
+        const quaternion new_velocity_rotation = quaternion(vector3(0.0f, 1.0f, 0.0f),
             m_ball_rotation_speed * time::delta_time_s()) * old_velocity_rotation;
         sphere_rigidbody->velocity() = new_velocity_rotation.get_rotated_vector(
             vector3(0.0f, 0.0f, 1.0f)) * m_ball_speed;
@@ -166,9 +184,9 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     }
     else if(key == 'l')
     {
-        quaternion old_velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+        const quaternion old_velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
             sphere_rigidbody->velocity().get_normalized());
-        quaternion new_velocity_rotation = quaternion(vector3(0.0f, 1.0f, 0.0f),
+        const quaternion new_velocity_rotation = quaternion(vector3(0.0f, 1.0f, 0.0f),
             -m_ball_rotation_speed * time::delta_time_s()) * old_velocity_rotation;
         sphere_rigidbody->velocity() = new_velocity_rotation.get_rotated_vector(
             vector3(0.0f, 0.0f, 1.0f)) * m_ball_speed;
