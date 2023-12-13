@@ -59,7 +59,7 @@ rolling_ball_scene::rolling_ball_scene()
     box_mesh direction_mesh(vector3(0.05f, 0.05f, 0.5f), color(0.0f, 1.0f, 1.0f, 1.0f));
     m_direction_box = new object(direction_mesh);
     // camera
-    transform main_camera_transform(vector3(0.0f, 3.0f, -3.0f), vector3(M_PI / 4.0f, 0.0f, 0.0f));
+    transform main_camera_transform(vector3(0.0f, 7.0f, -7.0f), vector3(M_PI / 4.0f, 0.0f, 0.0f));
     camera main_camera(main_camera_transform);
     this->main_camera() = main_camera;
     std::vector<object *> &scene_objects = this->object_ptrs();
@@ -155,19 +155,25 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     }
     else if(key == 'j')
     {
-        sphere_rotation = quaternion(sphere_transform.get_up(),
-            m_ball_rotation_speed * time::delta_time_s()) * sphere_rotation;
-        sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
-            * m_ball_speed;
+        quaternion old_velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+            sphere_rigidbody->velocity().get_normalized());
+        quaternion new_velocity_rotation = quaternion(vector3(0.0f, 1.0f, 0.0f),
+            m_ball_rotation_speed * time::delta_time_s()) * old_velocity_rotation;
+        sphere_rigidbody->velocity() = new_velocity_rotation.get_rotated_vector(
+            vector3(0.0f, 0.0f, 1.0f)) * m_ball_speed;
 
         update_collissions();
     }
     else if(key == 'l')
     {
-        sphere_rotation = quaternion(sphere_transform.get_up(),
-            -m_ball_rotation_speed * time::delta_time_s()) * sphere_rotation;
-        sphere_rigidbody->velocity() = sphere_object.const_object_transform().get_forward()
-            * m_ball_speed;
+        quaternion old_velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+            sphere_rigidbody->velocity().get_normalized());
+        quaternion new_velocity_rotation = quaternion(vector3(0.0f, 1.0f, 0.0f),
+            -m_ball_rotation_speed * time::delta_time_s()) * old_velocity_rotation;
+        sphere_rigidbody->velocity() = new_velocity_rotation.get_rotated_vector(
+            vector3(0.0f, 0.0f, 1.0f)) * m_ball_speed;
+
+        update_collissions();
     }
 }
 
