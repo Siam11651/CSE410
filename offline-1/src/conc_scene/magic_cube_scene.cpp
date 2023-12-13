@@ -28,28 +28,28 @@ void magic_cube_scene::rescale()
         * m_scale_multiple;
     // triangle translate
     m_left_rear_top_object->object_transform().position() = vector3(1.0f, 1.0f, 1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     m_right_rear_top_object->object_transform().position() = vector3(-1.0f, 1.0f, 1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     m_left_front_top_object->object_transform().position() = vector3(1.0f, 1.0f, -1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     m_right_front_top_object->object_transform().position() = vector3(-1.0f, 1.0f, -1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     m_left_rear_bot_object->object_transform().position() = vector3(1.0f, -1.0f, 1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     m_right_rear_bot_object->object_transform().position() = vector3(-1.0f, -1.0f, 1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     m_left_front_bot_object->object_transform().position() = vector3(1.0f, -1.0f, -1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     m_right_front_bot_object->object_transform().position() = vector3(-1.0f, -1.0f, -1.0f)
-        * (1.0f - m_scale_multiple) * 0.5f;
+        * (1.0f - m_scale_multiple) / 3.0f;
     // sphere scale
-    m_sphere_surface_top->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple);
-    m_sphere_surface_bot->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple);
-    m_sphere_surface_left->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple);
-    m_sphere_surface_right->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple);
-    m_sphere_surface_rear->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple);
-    m_sphere_surface_front->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple);
+    m_sphere_surface_top->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple) / 1.5f;
+    m_sphere_surface_bot->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple) / 1.5f;
+    m_sphere_surface_left->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple) / 1.5f;
+    m_sphere_surface_right->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple) / 1.5f;
+    m_sphere_surface_rear->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple) / 1.5f;
+    m_sphere_surface_front->object_transform().scale() = vector3::one * (1.0f - m_scale_multiple) / 1.5f;
     // sphere translate
     m_sphere_surface_top->object_transform().position().y() = m_scale_multiple;
     m_sphere_surface_bot->object_transform().position().y() = -m_scale_multiple;
@@ -90,9 +90,9 @@ magic_cube_scene::magic_cube_scene()
         * object_transform.rotation();
     m_right_front_bot_object = new object(horizontal_mesh, object_transform);
     // sphere surfaces
-    sphere_surface_mesh y_sphere_surface_mesh(1.0f, 10, color(1.0f, 0.0f, 0.0f, 1.0f));
-    sphere_surface_mesh x_sphere_surface_mesh(1.0f, 10, color(0.0f, 0.0f, 1.0f, 1.0f));
-    sphere_surface_mesh z_sphere_surface_mesh(1.0f, 10, color(0.0f, 1.0f, 0.0f, 1.0f));
+    sphere_surface_mesh y_sphere_surface_mesh(1.0f, 5, color(1.0f, 0.0f, 0.0f, 1.0f));
+    sphere_surface_mesh x_sphere_surface_mesh(1.0f, 5, color(0.0f, 0.0f, 1.0f, 1.0f));
+    sphere_surface_mesh z_sphere_surface_mesh(1.0f, 5, color(0.0f, 1.0f, 0.0f, 1.0f));
     transform surface_transform;
     surface_transform.scale() = vector3();
     surface_transform.rotation() = quaternion(vector3(0.0f, 1.0f, 0.0f),
@@ -145,7 +145,7 @@ magic_cube_scene::magic_cube_scene()
         m_sphere_surface_right,
         m_sphere_surface_rear,
         m_sphere_surface_front,
-        m_sphere_object
+        // m_sphere_object
     });
 }
 
