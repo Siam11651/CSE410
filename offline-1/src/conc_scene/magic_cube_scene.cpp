@@ -90,9 +90,9 @@ magic_cube_scene::magic_cube_scene()
         * object_transform.rotation();
     m_right_front_bot_object = new object(horizontal_mesh, object_transform);
     // sphere surfaces
-    sphere_surface_mesh y_sphere_surface_mesh(1.0f, 5, color(1.0f, 0.0f, 0.0f, 1.0f));
-    sphere_surface_mesh x_sphere_surface_mesh(1.0f, 5, color(0.0f, 0.0f, 1.0f, 1.0f));
-    sphere_surface_mesh z_sphere_surface_mesh(1.0f, 5, color(0.0f, 1.0f, 0.0f, 1.0f));
+    sphere_surface_mesh y_sphere_surface_mesh(1.0f, 25, color(1.0f, 0.0f, 0.0f, 1.0f));
+    sphere_surface_mesh x_sphere_surface_mesh(1.0f, 25, color(0.0f, 0.0f, 1.0f, 1.0f));
+    sphere_surface_mesh z_sphere_surface_mesh(1.0f, 25, color(0.0f, 1.0f, 0.0f, 1.0f));
     transform surface_transform;
     surface_transform.scale() = vector3();
     surface_transform.rotation() = quaternion(vector3(0.0f, 1.0f, 0.0f),
@@ -123,7 +123,7 @@ magic_cube_scene::magic_cube_scene()
     sphere_mesh sm(1.0f / std::sqrt(3.0f), 20, 20);
     m_sphere_object = new object(sm);
     // camera
-    transform main_camera_transform(vector3(0.0f, 0.0f, -1.5f),
+    transform main_camera_transform(vector3(0.0f, 0.0f, -3.0f),
         vector3(0.0f, 0.0f, 0.0f));
     camera main_camera(main_camera_transform);
     this->main_camera() = main_camera;

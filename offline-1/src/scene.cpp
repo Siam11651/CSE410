@@ -60,7 +60,7 @@ void scene::setup_frame()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    gluPerspective(90.0f, screen::aspect_ratio(), 0.01f, 100.0f);
+    gluPerspective(45.0f, screen::aspect_ratio(), 0.01f, 100.0f);
     gluLookAt(
         main_camera_position.const_x(), main_camera_position.const_y(), main_camera_position.const_z(),
         main_camera_position.const_x() + main_camera_forward.const_x(),
