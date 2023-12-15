@@ -268,6 +268,11 @@ void magic_cube_scene::on_new_frame()
 
 }
 
+void magic_cube_scene::on_new_frame_late()
+{
+    
+}
+
 void magic_cube_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
 {
     camera &main_camera = this->main_camera();

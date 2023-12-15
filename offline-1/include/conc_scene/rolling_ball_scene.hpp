@@ -30,6 +30,7 @@ private:
 public:
     rolling_ball_scene();
     void on_new_frame();
+    void on_new_frame_late();
     void on_ascii_key(uint8_t key, int32_t x, int32_t y);
     void on_special_key(int32_t key, int32_t x, int32_t y);
 };

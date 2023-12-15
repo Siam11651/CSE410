@@ -78,6 +78,11 @@ rolling_ball_scene::rolling_ball_scene()
 
 void rolling_ball_scene::on_new_frame()
 {
+    
+}
+
+void rolling_ball_scene::on_new_frame_late()
+{
     const vector3 &sphere_velocity = m_sphere_rigidbody->const_velocity();
     const vector3 forward = sphere_velocity.get_normalized();
     const vector3 &position = m_sphere_object->const_object_transform().const_position();
