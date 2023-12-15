@@ -11,6 +11,7 @@ private:
     float m_camera_rotation_speed;
     float m_scale_multiple;
     float m_rescale_speed;
+    float m_ohsp_rotation_speed;
     vector3 m_initial_top_scale;
     vector3 m_initial_bot_scale;
 
@@ -40,8 +41,7 @@ private:
     object *m_clndr_right_rear;
     object *m_clndr_left_front;
     object *m_clndr_right_front;
-    object *m_test_sphere;
-    object *m_test_sphere_surface;
+    object *m_octahedrosphere;
 
     void rescale();
 

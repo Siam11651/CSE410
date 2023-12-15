@@ -45,7 +45,8 @@ protected:
     std::vector<face> m_faces;
 
 public:
-    mesh(const std::vector<face> faces = std::vector<face>());
+    mesh();
+    mesh(const std::vector<face> faces);
     const std::vector<face> *get_faces_ptr() const;
     void draw() const;
 };

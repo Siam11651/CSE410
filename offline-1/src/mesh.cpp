@@ -57,6 +57,11 @@ const float &color::const_a() const
     return m_a;
 }
 
+mesh::mesh()
+{
+
+}
+
 face::face(const std::array<vector3, 3> &vertices, const color &face_color)
 {
     m_vertices = vertices;

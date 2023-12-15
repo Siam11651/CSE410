@@ -122,6 +122,7 @@ magic_cube_scene::magic_cube_scene()
     m_camera_rotation_speed = 3.0f;
     m_scale_multiple = 1.0f;
     m_rescale_speed = 1.0f;
+    m_ohsp_rotation_speed = 3.0f;
     base_triangle_mesh vertical_mesh(color(1.0f, 0.0f, 1.0f, 1.0f));
     base_triangle_mesh horizontal_mesh(color(color(0.0f, 1.0f, 1.0f, 1.0f)));
     transform object_transform;
@@ -219,18 +220,10 @@ magic_cube_scene::magic_cube_scene()
         * quaternion(vector3(0.0f, 0.0f, 1.0f), M_PI / 2.0f);
     clndr_transform.position() = vector3(-0.5f, 0.0f, -0.5f);
     m_clndr_right_front = new object(clndr_mesh, clndr_transform);
-    // test
-    transform test_sphere_surface_transform(vector3(0.0f, 0.0f, 0.0f));
-    m_test_sphere = new object(sphere_mesh(1.0f, 20, 20));
-    m_test_sphere_surface = new object(sphere_surface_mesh(1.0f, 10), test_sphere_surface_transform);
-    // camera
-    transform main_camera_transform(vector3(0.0f, 0.0f, -3.0f),
-        vector3(0.0f, 0.0f, 0.0f));
-    camera main_camera(main_camera_transform);
-    this->main_camera() = main_camera;
-    std::vector<object *> &scene_objects = this->object_ptrs();
-    
-    scene_objects.insert(scene_objects.end(),
+    // parent
+    m_octahedrosphere = new object();
+
+    m_octahedrosphere->child_ptrs().insert(m_octahedrosphere->child_ptrs().end(),
     {
         m_left_rear_top_object,
         m_right_rear_top_object,
@@ -258,8 +251,17 @@ magic_cube_scene::magic_cube_scene()
         m_clndr_right_rear,
         m_clndr_left_front,
         m_clndr_right_front
-        // m_test_sphere,
-        // m_test_sphere_surface
+    });
+    // camera
+    transform main_camera_transform(vector3(0.0f, 0.0f, -3.0f),
+        vector3(0.0f, 0.0f, 0.0f));
+    camera main_camera(main_camera_transform);
+    this->main_camera() = main_camera;
+    std::vector<object *> &scene_objects = this->object_ptrs();
+    
+    scene_objects.insert(scene_objects.end(),
+    {
+        m_octahedrosphere
     });
 }
 
@@ -321,6 +323,20 @@ void magic_cube_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
         m_scale_multiple = std::clamp(m_scale_multiple, 0.0f, 1.0f);
 
         rescale();
+    }
+    else if(key == 'a')
+    {
+        transform &ohsp_transform = m_octahedrosphere->object_transform();
+        quaternion &ohsp_rotation = ohsp_transform.rotation();
+        ohsp_rotation = quaternion(ohsp_transform.get_up(), m_ohsp_rotation_speed
+            * time::delta_time_s()) * ohsp_rotation;
+    }
+    else if(key == 'd')
+    {
+        transform &ohsp_transform = m_octahedrosphere->object_transform();
+        quaternion &ohsp_rotation = ohsp_transform.rotation();
+        ohsp_rotation = quaternion(ohsp_transform.get_up(), -m_ohsp_rotation_speed
+            * time::delta_time_s()) * ohsp_rotation;
     }
 }
 

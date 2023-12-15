@@ -2,6 +2,13 @@
 #include <GL/gl.h>
 #include <cmath>
 
+object::object()
+{
+    m_active = true;
+    m_rigidbody = nullptr;
+    m_collider = nullptr;
+}
+
 object::object(const mesh &object_mesh)
 {
     m_active = true;
@@ -84,6 +91,16 @@ collider *object::get_collider() const
     return m_collider;
 }
 
+std::vector<object *> &object::child_ptrs()
+{
+    return m_child_ptrs;
+}
+
+const std::vector<object *> &object::const_child_ptrs() const
+{
+    return m_child_ptrs;
+}
+
 void object::draw() const
 {
     if(!m_active)
@@ -103,5 +120,14 @@ void object::draw() const
     glRotatef(RAD2DEG * angle, axis.const_x(), axis.const_y(), axis.const_z());
     glScalef(scale.const_x(), scale.const_y(), scale.const_z());
     m_mesh.draw();
+
+    for(object *child : m_child_ptrs)
+    {
+        if(child)
+        {
+            child->draw();
+        }
+    }
+
     glPopMatrix();
 }
