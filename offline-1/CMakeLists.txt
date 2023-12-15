@@ -19,8 +19,6 @@ add_library(offline_1_helper
     "src/conc_mesh/stl_mesh.cpp"
     "src/conc_collider/box_collider.cpp"
     "src/conc_collider/sphere_collider.cpp"
-    "src/conc_scene/magic_cube_scene.cpp"
-    "src/conc_scene/rolling_ball_scene.cpp"
     "src/exceptions.cpp"
     "src/mesh.cpp"
     "src/object.cpp"
@@ -35,11 +33,16 @@ target_include_directories(offline_1_helper PRIVATE ${OpenGL_INCLUDE_DIRS} ${GLU
 target_link_libraries(offline_1_helper ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
 
 add_executable(offline_1
+    "src/conc_scene/magic_cube_scene.cpp"
+    "src/conc_scene/rolling_ball_scene.cpp"
     "src/main.cpp"
 )
 
 target_include_directories(offline_1 PRIVATE ${OpenGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} "include")
 target_link_libraries(offline_1 ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} offline_1_helper)
+
+add_custom_command(TARGET offline_1 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/assets" "${CMAKE_BINARY_DIR}/assets")
 
 # tests
 set(tests "test0")

@@ -14,7 +14,6 @@ private:
     float m_ohsp_rotation_speed;
     vector3 m_initial_top_scale;
     vector3 m_initial_bot_scale;
-
     object *m_left_rear_top_object;
     object *m_right_rear_top_object;
     object *m_left_front_top_object;

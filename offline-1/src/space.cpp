@@ -96,6 +96,15 @@ vector3 vector3::operator * (const float &value) const
     return vector3(m_x * value, m_y * value, m_z * value);
 }
 
+vector3 &vector3::operator *= (const float &value)
+{
+    m_x *= value;
+    m_y *= value;
+    m_z *= value;
+
+    return *this;
+}
+
 vector3 vector3::operator / (const float &value) const
 {
     return vector3(m_x / value, m_y / value, m_z / value);

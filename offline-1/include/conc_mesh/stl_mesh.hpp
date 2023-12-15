@@ -6,7 +6,10 @@
 
 class stl_mesh : public mesh
 {
+    void constructor_helper(const std::string &file_path, const color &mesh_color);
+
 public:
+    stl_mesh(const std::string &file_path);
     stl_mesh(const std::string &file_path, const color &mesh_color);
 };
 
