@@ -11,8 +11,10 @@ rolling_ball_scene::rolling_ball_scene()
     m_camera_speed = 5.0f;
     m_camera_rotation_speed = 3.0f;
     m_ball_speed = 3.0f;
-    m_effective_ball_speed = 0.0f;
     m_ball_rotation_speed = 3.0f;
+    m_forward_direction = 1.0f;
+    m_forward_keypressed = false;
+    m_simulate = false;
     // sphere
     sphere_mesh sphere_mesh0(0.2f, 25, 8);
     transform sphere_transform0(vector3(0.0f, 0.2f, 0.0f));
@@ -78,13 +80,19 @@ rolling_ball_scene::rolling_ball_scene()
 
 void rolling_ball_scene::on_new_frame()
 {
-    
+    m_sphere_rigidbody->enabled() = m_forward_keypressed || m_simulate;
+    m_sphere_rigidbody->velocity() = m_sphere_rigidbody->velocity()* m_forward_direction;
+
+    if(m_forward_keypressed)
+    {
+        update_collissions();
+    }
 }
 
 void rolling_ball_scene::on_new_frame_late()
 {
-    const vector3 &sphere_velocity = m_sphere_rigidbody->const_velocity();
-    const vector3 forward = sphere_velocity.get_normalized();
+    vector3 &sphere_velocity = m_sphere_rigidbody->velocity();
+    const vector3 forward = sphere_velocity.get_normalized() * m_forward_direction;
     const vector3 &position = m_sphere_object->const_object_transform().const_position();
     quaternion &rotation = m_sphere_object->object_transform().rotation();
     vector3 &new_position = m_direction_box->object_transform().position();
@@ -98,10 +106,13 @@ void rolling_ball_scene::on_new_frame_late()
 
     if(m_sphere_rigidbody->const_enabled())
     {
-        angle = m_ball_speed * time::delta_time_s() / 0.2f;
+        angle = m_ball_speed * time::delta_time_s() * m_forward_direction / 0.2f;
     }
 
     rotation = quaternion(left, angle) * rotation;
+    sphere_velocity = sphere_velocity * m_forward_direction;
+    m_forward_keypressed = false;
+    m_forward_direction = 1.0f;
 }
 
 void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
@@ -145,36 +156,42 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     }
     else if(key == ' ')
     {
-        m_effective_ball_speed = std::abs(m_effective_ball_speed - m_ball_speed);
-        sphere_rigidbody->enabled() = !sphere_rigidbody->enabled();
+        // sphere_rigidbody->enabled() = !sphere_rigidbody->enabled();
+        m_simulate = !m_simulate;
 
         update_collissions();
     }
     else if(key == 'i')
     {
-        if(!sphere_rigidbody->const_enabled())
-        {
-            const quaternion velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
-                sphere_rigidbody->velocity().get_normalized());
-            const vector3 forward = velocity_rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
-            const vector3 left = velocity_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
-            const float angle = m_ball_speed * time::delta_time_s() / 0.2f;
-            sphere_transform.position() += forward * m_ball_speed * time::delta_time_s();
-            sphere_rotation = quaternion(left, angle) * sphere_rotation;   
-        }
+        // if(!sphere_rigidbody->const_enabled())
+        // {
+        //     const quaternion velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+        //         sphere_rigidbody->velocity().get_normalized());
+        //     const vector3 forward = velocity_rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
+        //     const vector3 left = velocity_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
+        //     const float angle = m_ball_speed * time::delta_time_s() / 0.2f;
+        //     sphere_transform.position() += forward * m_ball_speed * time::delta_time_s();
+        //     sphere_rotation = quaternion(left, angle) * sphere_rotation;   
+        // }
+
+        m_forward_keypressed = true;
+        m_forward_direction = 1.0f;
     }
     else if(key == 'k')
     {
-        if(!sphere_rigidbody->const_enabled())
-        {
-            const quaternion velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
-                sphere_rigidbody->velocity().get_normalized());
-            const vector3 forward = velocity_rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
-            const vector3 left = velocity_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
-            const float angle = m_ball_speed * time::delta_time_s() / 0.2f;
-            sphere_transform.position() -= forward * m_ball_speed * time::delta_time_s();
-            sphere_rotation = quaternion(left, -angle) * sphere_rotation;
-        }
+        // if(!sphere_rigidbody->const_enabled())
+        // {
+        //     const quaternion velocity_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f),
+        //         sphere_rigidbody->velocity().get_normalized());
+        //     const vector3 forward = velocity_rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
+        //     const vector3 left = velocity_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
+        //     const float angle = m_ball_speed * time::delta_time_s() / 0.2f;
+        //     sphere_transform.position() -= forward * m_ball_speed * time::delta_time_s();
+        //     sphere_rotation = quaternion(left, -angle) * sphere_rotation;
+        // }
+
+        m_forward_keypressed = true;
+        m_forward_direction = -1.0f;
     }
     else if(key == 'j')
     {

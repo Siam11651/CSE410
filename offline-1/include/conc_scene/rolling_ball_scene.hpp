@@ -11,8 +11,10 @@ private:
     float m_camera_speed;
     float m_camera_rotation_speed;
     float m_ball_speed;
-    float m_effective_ball_speed;
     float m_ball_rotation_speed;
+    float m_forward_direction;
+    bool m_forward_keypressed;
+    bool m_simulate;
     rigidbody *m_sphere_rigidbody;
     collider *m_sphere_collider;
     box_collider *m_left_wall_collider;
