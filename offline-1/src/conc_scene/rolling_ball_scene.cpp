@@ -6,6 +6,7 @@
 #include <conc_mesh/stl_mesh.hpp>
 #include <GL/freeglut.h>
 #include <cmath>
+#include <iostream>
 
 rolling_ball_scene::rolling_ball_scene()
 {
@@ -58,12 +59,16 @@ rolling_ball_scene::rolling_ball_scene()
     m_right_wall_object->set_collider(m_right_wall_collider);
     m_top_wall_object->set_collider(m_top_wall_collider);
     m_bot_wall_object->set_collider(m_bot_wall_collider);
-    // direction box
-    stl_mesh direction_mesh("assets/arrow.stl", color(0.0f, 0.0f, 1.0f, 1.0f));
+    // direction arrow
+    stl_mesh forward_mesh("assets/arrow.stl", color(0.0f, 0.0f, 1.0f, 1.0f));
+    stl_mesh up_mesh("assets/arrow.stl", color(0.0f, 1.0f, 1.0f, 1.0f));
+
     transform arrow_transform;
-    arrow_transform.scale() *= 0.1f;
-    m_direction_arrow = new object(direction_mesh, arrow_transform);
-    // test arrow
+    arrow_transform.scale() *= 0.05f;
+    m_forward_arrow = new object(forward_mesh, arrow_transform);
+    arrow_transform.scale() = vector3(0.025f, 0.025f, 0.05f);
+    arrow_transform.rotation() = quaternion(vector3(1.0f, 0.0f, 0.0f), -M_PI / 2.0f);
+    m_up_arrow = new object(up_mesh, arrow_transform);
     // camera
     transform main_camera_transform(vector3(0.0f, 7.0f, -7.0f), vector3(M_PI / 4.0f, 0.0f, 0.0f));
     camera main_camera(main_camera_transform);
@@ -78,7 +83,8 @@ rolling_ball_scene::rolling_ball_scene()
         m_right_wall_object,
         m_top_wall_object,
         m_bot_wall_object,
-        m_direction_arrow
+        m_forward_arrow, 
+        m_up_arrow
     });
 }
 
@@ -99,13 +105,15 @@ void rolling_ball_scene::on_new_frame_late()
     const vector3 forward = sphere_velocity.get_normalized() * m_forward_direction;
     const vector3 &position = m_sphere_object->const_object_transform().const_position();
     quaternion &rotation = m_sphere_object->object_transform().rotation();
-    vector3 &new_position = m_direction_arrow->object_transform().position();
-    new_position.x() = position.const_x() + forward.const_x() * 0.5f;
-    new_position.y() = position.const_y() + forward.const_y() * 0.5f;
-    new_position.z() = position.const_z() + forward.const_z() * 0.5f;
-    quaternion &new_rotation = m_direction_arrow->object_transform().rotation();
-    new_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f), forward);
-    const vector3 left = new_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
+    vector3 &new_forward_position = m_forward_arrow->object_transform().position();
+    vector3 &new_up_position = m_up_arrow->object_transform().position();
+    new_forward_position.x() = position.const_x() + forward.const_x() * 0.5f;
+    new_forward_position.y() = position.const_y() + forward.const_y() * 0.5f;
+    new_forward_position.z() = position.const_z() + forward.const_z() * 0.5f;
+    new_up_position = position + vector3(0.0f, 0.6f, 0.0f);
+    quaternion &new_forward_rotation = m_forward_arrow->object_transform().rotation();
+    new_forward_rotation = quaternion::get_rotation(vector3(0.0f, 0.0f, 1.0f), forward);
+    const vector3 left = new_forward_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
     float angle = 0.0f;
 
     if(m_sphere_rigidbody->const_enabled())

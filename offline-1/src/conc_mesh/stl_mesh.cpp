@@ -1,11 +1,12 @@
 #include <conc_mesh/stl_mesh.hpp>
 #include <fstream>
+#include <cstdint>
 
 void stl_mesh::constructor_helper(const std::string &file_path, const color &mesh_color)
 {
     std::ifstream stl_ifstream(file_path);
     char stl_header[80];
-    size_t face_count;
+    uint32_t face_count;
 
     stl_ifstream.read(stl_header, 80);
     stl_ifstream.read((char *)&face_count, 4);
