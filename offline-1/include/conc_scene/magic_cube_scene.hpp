@@ -36,6 +36,10 @@ private:
     object *m_clndr_bot_front;
     object *m_clndr_bot_left;
     object *m_clndr_bot_right;
+    object *m_clndr_left_rear;
+    object *m_clndr_right_rear;
+    object *m_clndr_left_front;
+    object *m_clndr_right_front;
     object *m_test_sphere;
     object *m_test_sphere_surface;
 
