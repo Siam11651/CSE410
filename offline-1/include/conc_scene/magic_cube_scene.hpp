@@ -28,7 +28,16 @@ private:
     object *m_sphere_surface_right;
     object *m_sphere_surface_rear;
     object *m_sphere_surface_front;
-    object *m_sphere_object;
+    object *m_clndr_top_rear;
+    object *m_clndr_top_front;
+    object *m_clndr_top_left;
+    object *m_clndr_top_right;
+    object *m_clndr_bot_rear;
+    object *m_clndr_bot_front;
+    object *m_clndr_bot_left;
+    object *m_clndr_bot_right;
+    object *m_test_sphere;
+    object *m_test_sphere_surface;
 
     void rescale();
 

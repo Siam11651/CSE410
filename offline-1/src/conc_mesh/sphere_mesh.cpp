@@ -6,8 +6,8 @@ sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count,
 {
     std::array<color, 2> colors{color(1.0f, 0.0f, 0.0f, 1.0f), color(0.0f, 1.0f, 0.0f, 1.0f)};
     size_t color_idx = 0;
-    float stack_gap = (float)M_PI / stack_count;
-    float segment_gap = (float)(2.0f * M_PI) / segment_count;
+    float stack_gap = M_PI / stack_count;
+    float segment_gap = (2.0f * M_PI) / segment_count;
 
     for(size_t i = 0; i < stack_count; ++i)
     {

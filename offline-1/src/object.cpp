@@ -91,7 +91,7 @@ void object::draw() const
         return;
     }
 
-    constexpr float RAD2DEG = 180.0f / (float)M_PI;
+    constexpr float RAD2DEG = 180.0f / M_PI;
     const quaternion &rotation = m_transform.const_rotation();
     const float angle = rotation.get_angle();
     const vector3 axis = rotation.get_axis();
