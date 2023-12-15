@@ -73,6 +73,14 @@ void magic_cube_scene::rescale()
         (1.0f - m_scale_multiple) / std::sqrt(3.0f), m_scale_multiple * std::sqrt(2.0f));
     m_clndr_bot_rear->object_transform().scale() = vector3((1.0f - m_scale_multiple) / std::sqrt(3.0f),
         (1.0f - m_scale_multiple) / std::sqrt(3.0f), m_scale_multiple * std::sqrt(2.0f));
+    m_clndr_top_left->object_transform().scale() = vector3((1.0f - m_scale_multiple) / std::sqrt(3.0f),
+        (1.0f - m_scale_multiple) / std::sqrt(3.0f), m_scale_multiple * std::sqrt(2.0f));
+    m_clndr_top_right->object_transform().scale() = vector3((1.0f - m_scale_multiple) / std::sqrt(3.0f),
+        (1.0f - m_scale_multiple) / std::sqrt(3.0f), m_scale_multiple * std::sqrt(2.0f));
+    m_clndr_bot_left->object_transform().scale() = vector3((1.0f - m_scale_multiple) / std::sqrt(3.0f),
+        (1.0f - m_scale_multiple) / std::sqrt(3.0f), m_scale_multiple * std::sqrt(2.0f));
+    m_clndr_bot_right->object_transform().scale() = vector3((1.0f - m_scale_multiple) / std::sqrt(3.0f),
+        (1.0f - m_scale_multiple) / std::sqrt(3.0f), m_scale_multiple * std::sqrt(2.0f));
     // cylinder translate
     m_clndr_top_front->object_transform().position() = vector3(0.0f, m_scale_multiple / 2.0f,
         -m_scale_multiple / 2.0f);
@@ -82,6 +90,14 @@ void magic_cube_scene::rescale()
         -m_scale_multiple / 2.0f);
     m_clndr_bot_rear->object_transform().position() = vector3(0.0f, -m_scale_multiple / 2.0f,
         m_scale_multiple / 2.0f);
+    m_clndr_top_left->object_transform().position() = vector3(m_scale_multiple / 2.0f,
+        m_scale_multiple / 2.0f, 0.0f);
+    m_clndr_top_right->object_transform().position() = vector3(-m_scale_multiple / 2.0f,
+        m_scale_multiple / 2.0f, 0.0f);
+    m_clndr_bot_left->object_transform().position() = vector3(m_scale_multiple / 2.0f,
+        -m_scale_multiple / 2.0f, 0.0f);
+    m_clndr_bot_right->object_transform().position() = vector3(-m_scale_multiple / 2.0f,
+        -m_scale_multiple / 2.0f, 0.0f);
 }
 
 magic_cube_scene::magic_cube_scene()
@@ -153,8 +169,24 @@ magic_cube_scene::magic_cube_scene()
     clndr_transform.position() = vector3(0.0f, -0.5f, -0.5f);
     m_clndr_bot_front = new object(clndr_mesh, clndr_transform);
     clndr_transform.rotation() = quaternion(vector3(1.0f, 0.0f, 0.0f), 3.0f * M_PI / 4.0f);
-    clndr_transform.position() = vector3(0.0f, -0.5f, 0.5f);
+    clndr_transform.position() = vector3(0.5f, 0.5f, 0.0f);
     m_clndr_bot_rear = new object(clndr_mesh, clndr_transform);
+    clndr_transform.rotation() = quaternion(vector3(0.0f, 0.0f, 1.0f), -M_PI / 4.0f)
+        * quaternion(vector3(0.0f, 1.0f, 0.0f), M_PI / 2.0f);
+    clndr_transform.position() = vector3(-0.5f, 0.5f, 0.0f);
+    m_clndr_top_left = new object(clndr_mesh, clndr_transform);
+    clndr_transform.rotation() = quaternion(vector3(0.0f, 0.0f, 1.0f), M_PI / 4.0f)
+        * quaternion(vector3(0.0f, 1.0f, 0.0f), M_PI / 2.0f);
+    clndr_transform.position() = vector3(-0.5f, 0.5f, 0.0f);
+    m_clndr_top_right = new object(clndr_mesh, clndr_transform);
+    clndr_transform.rotation() = quaternion(vector3(0.0f, 0.0f, 1.0f), -3.0f * M_PI / 4.0f)
+        * quaternion(vector3(0.0f, 1.0f, 0.0f), M_PI / 2.0f);
+    clndr_transform.position() = vector3(-0.5f, -0.5f, 0.0f);
+    m_clndr_bot_left = new object(clndr_mesh, clndr_transform);
+    clndr_transform.rotation() = quaternion(vector3(0.0f, 0.0f, 1.0f), 3.0f * M_PI / 4.0f)
+        * quaternion(vector3(0.0f, 1.0f, 0.0f), M_PI / 2.0f);
+    clndr_transform.position() = vector3(-0.5f, -0.5f, 0.0f);
+    m_clndr_bot_right = new object(clndr_mesh, clndr_transform);
     // test
     transform test_sphere_surface_transform(vector3(0.0f, 0.0f, 0.0f));
     m_test_sphere = new object(sphere_mesh(1.0f, 20, 20));
@@ -186,6 +218,10 @@ magic_cube_scene::magic_cube_scene()
         m_clndr_top_rear,
         m_clndr_bot_front,
         m_clndr_bot_rear,
+        m_clndr_top_left,
+        m_clndr_top_right,
+        m_clndr_bot_left,
+        m_clndr_bot_right,
         // m_test_sphere,
         // m_test_sphere_surface
     });
