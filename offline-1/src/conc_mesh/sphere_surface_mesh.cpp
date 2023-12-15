@@ -23,13 +23,13 @@ void sphere_surface_mesh::constructor_helper(const float &radius, const size_t &
             const float rear_y = std::sin(-half_total_angle + angle_gap * j);
             const float front_y = std::sin(-half_total_angle + angle_gap * (j + 1));
             const vector3 left_rear = vector3::cross(vector3(0.0f, rear_y, rear_z),
-                vector3(left_x, left_y, 0.0f));
+                vector3(left_x, left_y, 0.0f)).get_normalized() * radius;
             const vector3 right_rear = vector3::cross(vector3(0.0f, rear_y, rear_z),
-                vector3(right_x, right_y, 0.0f));
+                vector3(right_x, right_y, 0.0f)).get_normalized() * radius;
             const vector3 left_front = vector3::cross(vector3(0.0f, front_y, front_z),
-                vector3(left_x, left_y, 0.0f));
+                vector3(left_x, left_y, 0.0f)).get_normalized() * radius;
             const vector3 right_front = vector3::cross(vector3(0.0f, front_y, front_z),
-                vector3(right_x, right_y, 0.0f));
+                vector3(right_x, right_y, 0.0f)).get_normalized() * radius;
 
             m_faces.emplace_back(std::array<vector3, 3>{left_rear, left_front, right_rear},
                 surface_color);

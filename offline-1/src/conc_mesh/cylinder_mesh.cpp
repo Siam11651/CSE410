@@ -10,12 +10,12 @@ void cylinder_mesh::constructor_helper(const float &radius, const float &height,
 
     for(size_t i = 0; i < segments; ++i)
     {
-        const float left_angle = half_angle + segment_angle * i;
-        const float right_angle = half_angle + segment_angle * (i + 1);
-        const float left_x = std::cos(left_angle) * radius;
-        const float left_y = std::sin(left_angle) * radius;
-        const float right_x = std::cos(right_angle) * radius;
-        const float right_y = std::sin(right_angle) * radius;
+        const float left_angle = -half_angle + segment_angle * i;
+        const float right_angle = -half_angle + segment_angle * (i + 1);
+        const float left_x = std::sin(left_angle) * radius;
+        const float left_y = std::cos(left_angle) * radius;
+        const float right_x = std::sin(right_angle) * radius;
+        const float right_y = std::cos(right_angle) * radius;
         const vector3 top_left(left_x, left_y, half_height);
         const vector3 top_right(right_x, right_y, half_height);
         const vector3 bot_left(left_x, left_y, -half_height);
