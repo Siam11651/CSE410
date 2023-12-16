@@ -17,5 +17,5 @@ const vector3 &box_collider::const_dimensions() const
 
 collission_event *box_collider::create_collission_event(collider *other_collider)
 {
-
+    return nullptr;
 }
