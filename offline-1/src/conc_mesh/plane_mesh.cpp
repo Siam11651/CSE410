@@ -17,8 +17,8 @@ plane_mesh::plane_mesh(const float &size_x, const float &size_z,
 
         for(size_t j = 0; j < count_z; ++j)
         {
-            const float top = og_z + j * check_size_z;
-            const float bot = og_z + (j + 1) * check_size_z;
+            const float top = og_z + (j + 1) * check_size_z;
+            const float bot = og_z + j * check_size_z;
             const vector3 top_left(left, 0.0f, top);
             const vector3 top_right(right, 0.0f, top);
             const vector3 bot_left(left, 0.0f, bot);
@@ -30,7 +30,7 @@ plane_mesh::plane_mesh(const float &size_x, const float &size_z,
             }, colors[color_idx % 2]);
             m_faces.emplace_back(std::array<vector3, 3>
             {
-                top_right, bot_right, bot_left
+                top_right, bot_left, bot_right
             }, colors[color_idx % 2]);
 
             ++color_idx;

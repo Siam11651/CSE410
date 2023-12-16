@@ -36,7 +36,7 @@ rolling_ball_scene::rolling_ball_scene()
         * m_ball_speed;
     // ground
     plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
-    // plane_mesh0.shade() = true;
+    plane_mesh0.shade() = true;
     m_plane_object = new object(plane_mesh0);
     // walls
     box_mesh vertical_wall_mesh(vector3(0.2f, 0.5f, 10.0f),
