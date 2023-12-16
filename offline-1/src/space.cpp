@@ -291,9 +291,16 @@ quaternion quaternion::get_rotation(const vector3 &from, const vector3 &to)
     const float from_magn_2 = std::pow(from.get_magnitude(), 2.0f);
     const float to_magn_2 = std::pow(to.get_magnitude(), 2.0f);;
     const float qw = std::sqrt(from_magn_2 * to_magn_2) + vector3::dot(from, to);
-    const float qx = cross_product.const_x();
-    const float qy = cross_product.const_y();
-    const float qz = cross_product.const_z();
+    float qx = cross_product.const_x();
+    float qy = cross_product.const_y();
+    float qz = cross_product.const_z();
+
+    if(qw == 0.0f)
+    {
+        qx = 0.0f;
+        qy = 1.0f;
+        qz = 0.0f;
+    }
 
     return quaternion(qw, qx, qy, qz).get_normalized();
 }

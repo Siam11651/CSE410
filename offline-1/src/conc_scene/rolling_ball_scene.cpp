@@ -36,6 +36,7 @@ rolling_ball_scene::rolling_ball_scene()
         * m_ball_speed;
     // ground
     plane_mesh plane_mesh0(100.0f, 100.0f, 100, 100);
+    // plane_mesh0.shade() = true;
     m_plane_object = new object(plane_mesh0);
     // walls
     box_mesh vertical_wall_mesh(vector3(0.2f, 0.5f, 10.0f),
@@ -99,7 +100,7 @@ rolling_ball_scene::rolling_ball_scene()
 void rolling_ball_scene::on_new_frame()
 {
     m_sphere_rigidbody->enabled() = m_forward_keypressed || m_simulate;
-    m_sphere_rigidbody->velocity() = m_sphere_rigidbody->velocity()* m_forward_direction;
+    m_sphere_rigidbody->velocity() = m_sphere_rigidbody->velocity() * m_forward_direction;
 
     if(m_forward_keypressed)
     {
