@@ -33,6 +33,7 @@ target_include_directories(offline_1_helper PRIVATE ${OpenGL_INCLUDE_DIRS} ${GLU
 target_link_libraries(offline_1_helper ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
 
 add_executable(offline_1
+    "src/arg_parser.cpp"
     "src/conc_scene/magic_cube_scene.cpp"
     "src/conc_scene/rolling_ball_scene.cpp"
     "src/main.cpp"

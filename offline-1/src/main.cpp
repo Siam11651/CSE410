@@ -6,6 +6,7 @@
 #include <functional>
 #include <thread>
 #include <cmath>
+#include <arg_parser.hpp>
 #include <time.hpp>
 #include <screen.hpp>
 #include <conc_scene/magic_cube_scene.hpp>
@@ -51,6 +52,10 @@ void display_callback()  // draw each frame
 
 int main(int argc, char **argv)
 {
+    arg_parser parser(argv[0]);
+
+    parser.add_value("scene", "roll");
+    parser.parse(argc, argv);
     time::initialise();
 
     screen::window_width() = 1366;
@@ -67,8 +72,20 @@ int main(int argc, char **argv)
     glutKeyboardFunc(ascii_key_callback);
     glutSpecialFunc(special_key_callback);
 
-    current_scene = new rolling_ball_scene();
-    // current_scene = new magic_cube_scene();
+    if(parser.get_value("scene") == "roll")
+    {
+        current_scene = new rolling_ball_scene();
+    }
+    else if(parser.get_value("scene") == "magic")
+    {
+        current_scene = new magic_cube_scene();
+    }
+    else
+    {
+        std::cerr << "Invalid scene selected" << std::endl;
+
+        return -1;
+    }
 
     glutMainLoop();
 
