@@ -10,6 +10,7 @@
 
 rolling_ball_scene::rolling_ball_scene()
 {
+    m_light_rotation_speed = 3.0f;
     m_camera_speed = 5.0f;
     m_camera_rotation_speed = 3.0f;
     m_ball_speed = 3.0f;
@@ -17,8 +18,13 @@ rolling_ball_scene::rolling_ball_scene()
     m_forward_direction = 1.0f;
     m_forward_keypressed = false;
     m_simulate = false;
+    // light
+    directional_light().light_transform().rotation() = 
+        quaternion(vector3(0.0f, 1.0f, 0.0f), -M_PI / 4.0f)
+        * quaternion(vector3(1.0f, 0.0f, 0.0f), M_PI / 4.0f);
     // sphere
     sphere_mesh sphere_mesh0(0.2f, 25, 8);
+    sphere_mesh0.shade() = true;
     transform sphere_transform0(vector3(0.0f, 0.2f, 0.0f));
     m_sphere_object = new object(sphere_mesh0, sphere_transform0);
     m_sphere_rigidbody = new rigidbody();
@@ -36,6 +42,8 @@ rolling_ball_scene::rolling_ball_scene()
         color(1.0f, 0.0f, 0.0f, 1.0f));
     box_mesh horizontal_wall_mesh(vector3(0.2f, 0.5f, 9.8f),
         color(1.0f, 0.0f, 0.0f, 1.0f));
+    horizontal_wall_mesh.shade() =  true;
+    vertical_wall_mesh.shade() = true;
     transform left_wall_transform(vector3(5.0f, 0.25f, 0.0f));
     transform right_wall_transform(vector3(-5.0f, 0.25f, 0.0f));
     transform top_wall_transform(vector3(0.0f, 0.25f, 4.9f),
@@ -160,6 +168,18 @@ void rolling_ball_scene::on_ascii_key(uint8_t key, int32_t x, int32_t y)
     {
         main_camera_transform.rotation() = quaternion(main_camera_transform.get_forward(),
             -m_camera_rotation_speed * time::delta_time_s()) * main_camera_transform.rotation();
+    }
+    else if(key == '7')
+    {
+        m_directional_light.light_transform().rotation() = 
+            quaternion(vector3(0.0f, 1.0f, 0.0f), m_light_rotation_speed * time::delta_time_s())
+            * m_directional_light.light_transform().rotation();
+    }
+    else if(key == '8')
+    {
+        m_directional_light.light_transform().rotation() = 
+            quaternion(vector3(0.0f, 1.0f, 0.0f), -m_light_rotation_speed * time::delta_time_s())
+            * m_directional_light.light_transform().rotation();
     }
     else if(key == '6')
     {

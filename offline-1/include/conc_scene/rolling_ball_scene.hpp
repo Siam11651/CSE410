@@ -8,6 +8,7 @@
 class rolling_ball_scene : public scene
 {
 private:
+    float m_light_rotation_speed;
     float m_camera_speed;
     float m_camera_rotation_speed;
     float m_ball_speed;

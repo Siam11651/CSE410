@@ -39,6 +39,10 @@ sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count,
                 colors[color_idx % 2]);
             m_faces.emplace_back(std::array<vector3, 3>{top_right, bot_left, bot_right},
                 colors[color_idx % 2]);
+            // m_faces.emplace_back(std::array<vector3, 3>{top_right, bot_left, top_left},
+            //     colors[color_idx % 2]);
+            // m_faces.emplace_back(std::array<vector3, 3>{bot_right, bot_left, top_right},
+            //     colors[color_idx % 2]);
 
             ++color_idx;
         }

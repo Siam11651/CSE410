@@ -19,14 +19,17 @@ public:
 
 class scene
 {
-private:
+protected:
     camera m_main_camera;
+    light m_directional_light;
     std::vector<object *> m_objects;
 
 public:
     scene();
     camera &main_camera();
     const camera &const_main_camera() const;
+    light &directional_light();
+    const light &const_directional_light() const;
     std::vector<object *> &object_ptrs();
     const std::vector<object *> &const_object_ptrs() const;
     void setup_frame();

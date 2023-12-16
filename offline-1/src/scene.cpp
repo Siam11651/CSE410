@@ -39,6 +39,16 @@ const camera &scene::const_main_camera() const
     return m_main_camera;
 }
 
+light &scene::directional_light()
+{
+    return m_directional_light;
+}
+
+const light &scene::const_directional_light() const
+{
+    return m_directional_light;
+}
+
 std::vector<object *> &scene::object_ptrs()
 {
     return m_objects;
@@ -205,6 +215,6 @@ void scene::show()
 {
     for(const object *object_item : m_objects)
     {
-        object_item->draw();
+        object_item->draw(m_directional_light);
     }
 }

@@ -24,6 +24,7 @@ public:
     const float &const_g() const;
     const float &const_b() const;
     const float &const_a() const;
+    color operator * (const float &value) const;
 };
 
 class face
@@ -36,19 +37,43 @@ public:
     face(const std::array<vector3, 3> &vertices, const color &face_color);
     color &face_color();
     const color &const_face_color() const;
-    const std::array<vector3, 3> *get_vertices_ptr() const;
+    vector3 get_normal() const;
+    vector3 get_center() const;
+    std::array<vector3, 3> &vertices();
+    const std::array<vector3, 3> &const_vertices() const;
+};
+
+class light
+{
+private:
+    transform m_transform;
+    color m_color;
+
+public:
+    light();
+    light(const transform &light_transform, const color &light_color);
+    transform &light_transform();
+    const transform &const_light_transform() const;
+    color &light_color();
+    const color &const_light_color() const;
 };
 
 class mesh
 {
 protected:
     std::vector<face> m_faces;
+    float m_ambiance_intensity;
+    bool m_shade;
 
 public:
     mesh();
     mesh(const std::vector<face> faces);
     const std::vector<face> *get_faces_ptr() const;
-    void draw() const;
+    float &ambience_intensity();
+    const float &const_ambience_intensity() const;
+    bool &shade();
+    const bool &shade() const;
+    void draw(const light &scene_light, const transform &object_transform) const;
 };
 
 #endif

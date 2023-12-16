@@ -101,7 +101,7 @@ const std::vector<object *> &object::const_child_ptrs() const
     return m_child_ptrs;
 }
 
-void object::draw() const
+void object::draw(const light &scene_light) const
 {
     if(!m_active)
     {
@@ -119,13 +119,13 @@ void object::draw() const
     glTranslatef(position.const_x(), position.const_y(), position.const_z());
     glRotatef(RAD2DEG * angle, axis.const_x(), axis.const_y(), axis.const_z());
     glScalef(scale.const_x(), scale.const_y(), scale.const_z());
-    m_mesh.draw();
+    m_mesh.draw(scene_light, m_transform);
 
     for(object *child : m_child_ptrs)
     {
         if(child)
         {
-            child->draw();
+            child->draw(scene_light);
         }
     }
 

@@ -33,7 +33,7 @@ public:
     collider *get_collider() const;
     std::vector<object *> &child_ptrs();
     const std::vector<object *> &const_child_ptrs() const;
-    void draw() const;
+    void draw(const light &scene_light) const;
 };
 
 #endif

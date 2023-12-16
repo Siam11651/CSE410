@@ -24,10 +24,10 @@ void box_mesh::initialise_mesh(const vector3 &dimensions, const color &mesh_colo
         face({top_left_front, bot_left_back, bot_left_front}, mesh_color),      // left face
         face({top_right_back, bot_right_back, bot_left_back}, mesh_color),      // rear face
         face({top_right_back, bot_left_back, top_left_back}, mesh_color),       // rear face
-        face({top_left_back, top_right_back, top_left_front}, mesh_color),      // top face
-        face({top_right_back, top_right_front, top_left_front}, mesh_color),    // top face
-        face({bot_left_front, bot_right_front, bot_left_back}, mesh_color),     // bot face
-        face({bot_right_front, bot_right_back, bot_left_back}, mesh_color)      // bot face
+        face({top_left_back, top_left_front, top_right_back}, mesh_color),      // top face
+        face({top_right_back, top_left_front, top_right_front}, mesh_color),    // top face
+        face({bot_left_front, bot_left_back, bot_right_front}, mesh_color),     // bot face
+        face({bot_right_front, bot_left_back, bot_right_back}, mesh_color)      // bot face
     };
 }
 
