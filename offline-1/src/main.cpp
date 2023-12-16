@@ -63,8 +63,9 @@ int main(int argc, char **argv)
     glutInit(&argc, argv);
     glutInitWindowSize(screen::window_width(), screen::window_height());
     glutCreateWindow(screen::window_title().c_str());
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW_MATRIX);
     glutDisplayFunc(display_callback);
