@@ -1,7 +1,6 @@
 #include <scene.hpp>
 #include <time.hpp>
 #include <screen.hpp>
-#include <exceptions.hpp>
 #include <GL/freeglut.h>
 #include <functional>
 

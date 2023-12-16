@@ -1,6 +1,11 @@
 #include <physics.hpp>
 #include <object.hpp>
 
+const char *null_collider_exception::what() const noexcept
+{
+    return "Rigidbody must have a valid collider";
+}
+
 collission_event::collission_event()
 {
     m_trigger_time = INT64_MAX;

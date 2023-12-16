@@ -3,15 +3,25 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <stdexcept>
+#include <sstream>
 #include <arg_parser.hpp>
+
+arg_exception::arg_exception(const std::string &message)
+{
+    m_message = message;
+}
+
+const char *arg_exception::what() const noexcept
+{
+    return m_message.c_str();
+}
 
 arg_parser::arg_parser(const std::string &program_name)
 {
     m_program_name = program_name;
 }
 
-bool arg_parser::parse(const size_t &arg_count, char **arg_values)
+void arg_parser::parse(const size_t &arg_count, char **arg_values)
 {
     bool help_found = false;
 
@@ -21,10 +31,11 @@ bool arg_parser::parse(const size_t &arg_count, char **arg_values)
 
         if(arg_str.substr(0, 2) != "--")
         {
-            std::cerr << "Error: Invalid argument \"" << arg_str << "\"" << std::endl;
-            std::cout << help_str() << std::endl;
+            std::stringstream ss;
 
-            return false;
+            ss << "Error: Invalid argument \"" << arg_str << "\"";
+
+            throw arg_exception(ss.str());
         }
 
         size_t split_position = arg_str.find_first_of('=');
@@ -44,10 +55,11 @@ bool arg_parser::parse(const size_t &arg_count, char **arg_values)
 
             if(flag_it == m_flags.end())
             {
-                std::cerr << "Error: Invalid flag \"" << arg_name << "\"" << std::endl;
-                std::cout << help_str() << std::endl;
+                std::stringstream ss;
 
-                return false;
+                ss << "Error: Invalid flag \"" << arg_name << "\"";
+
+                throw arg_exception(ss.str());
             }
             else
             {
@@ -62,10 +74,11 @@ bool arg_parser::parse(const size_t &arg_count, char **arg_values)
 
             if(value_it == m_values.end())
             {
-                std::cerr << "Error: Invalid value \"" << arg_name << "\"" << std::endl;
-                std::cout << help_str() << std::endl;
+                std::stringstream ss;
 
-                return false;
+                ss << "Error: Invalid value \"" << arg_name << "\"";
+
+                throw arg_exception(ss.str());
             }
             else
             {
@@ -73,20 +86,6 @@ bool arg_parser::parse(const size_t &arg_count, char **arg_values)
             }
         }
     }
-
-    if(help_found)
-    {
-        std::cout << help_str() << std::endl;
-    }
-
-    return true;
-}
-
-const std::string &arg_parser::help_str() const
-{
-    std::cout << "Usage: " << m_program_name << " [options]" << std::endl;
-    std::cout << "Options:" << std::endl;
-    std::cout << "--help\t\t\tShow this message" << std::endl;
 }
 
 void arg_parser::add_value(const std::string &name, const std::string &value)

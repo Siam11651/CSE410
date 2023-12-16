@@ -19,7 +19,6 @@ add_library(offline_1_helper
     "src/conc_mesh/stl_mesh.cpp"
     "src/conc_collider/box_collider.cpp"
     "src/conc_collider/sphere_collider.cpp"
-    "src/exceptions.cpp"
     "src/mesh.cpp"
     "src/object.cpp"
     "src/physics.cpp"

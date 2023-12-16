@@ -7,6 +7,12 @@
 
 class object;
 
+class null_collider_exception : public std::exception
+{
+public:
+    const char *what() const noexcept;
+};
+
 class collission_event
 {
 private:
