@@ -12,8 +12,6 @@
 #include <conc_scene/magic_cube_scene.hpp>
 #include <conc_scene/rolling_ball_scene.hpp>
 
-#define WINDOW_TITLE "offline-1"
-
 scene *current_scene = nullptr;
 
 void ascii_key_callback(unsigned char key, int x, int y)
@@ -58,12 +56,13 @@ int main(int argc, char **argv)
     parser.parse(argc, argv);
     time::initialise();
 
+    screen::window_title() = "offline-1";
     screen::window_width() = 1366;
     screen::window_height() = 768;
 
     glutInit(&argc, argv);
     glutInitWindowSize(screen::window_width(), screen::window_height());
-    glutCreateWindow(WINDOW_TITLE);
+    glutCreateWindow(screen::window_title().c_str());
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
