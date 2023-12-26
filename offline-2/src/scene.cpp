@@ -1,75 +1,84 @@
 #include <scene.hpp>
 
-view::view() {}
+view::view() :
+    m_updated(false) {}
 
-vector4 &view::eye()
+void view::set_eye(const vector4 &_eye)
+{
+    m_eye = _eye;
+    m_updated = true;
+}
+
+const vector4 &view::get_eye() const
 {
     return m_eye;
 }
 
-const vector4 &view::ceye() const
+void view::set_look(const vector4 &_look)
 {
-    return m_eye;
+    m_look = _look;
+    m_updated = true;
 }
 
-vector4 &view::look()
+const vector4 &view::get_look() const
 {
     return m_look;
 }
 
-const vector4 &view::clook() const
+void view::set_up(const vector4 &_up)
 {
-    return m_look;
+    m_up = _up;
+    m_updated = true;
 }
 
-vector4 &view::up()
+const vector4 &view::get_up() const
 {
     return m_up;
 }
 
-const vector4 &view::cup() const
+perspective::perspective() :
+    m_updated(false) {}
+
+void perspective::set_fov(const double &_fov)
 {
-    return m_up;
+    m_fov = _fov;
+    m_updated = true;
 }
 
-perspective::perspective() {}
-
-double &perspective::fov()
+const double &perspective::get_fov() const
 {
     return m_fov;
 }
 
-const double &perspective::cfov() const
+void perspective::set_aspect_ratio(const double &_aspect_ratio)
 {
-    return m_fov;
+    m_aspect_ratio = _aspect_ratio;
+    m_updated = true;
 }
 
-double &perspective::aspect_ratio()
+const double &perspective::get_aspect_ratio() const
 {
     return m_aspect_ratio;
 }
 
-const double &perspective::caspect_ratio() const
+void perspective::set_far(const double &_far)
 {
-    return m_aspect_ratio;
+    m_far = _far;
+    m_updated = true;
 }
 
-double &perspective::far()
+const double &perspective::get_far() const
 {
     return m_far;
 }
 
-const double &perspective::cfar() const
+void perspective::set_near(const double &_near)
 {
-    return m_far;
+    m_near = _near;
+    m_updated = true;
 }
 
-double &perspective::near()
+const double &perspective::get_near() const
 {
-    return m_far;
-}
-
-const double &perspective::cnear() const
-{
-    return m_far;
+    return m_near;
 }

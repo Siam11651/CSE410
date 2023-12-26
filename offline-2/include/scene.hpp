@@ -6,23 +6,25 @@
 class view
 {
 private:
+    bool m_updated;
     vector4 m_eye;
     vector4 m_look;
     vector4 m_up;
 
 public:
     view();
-    vector4 &eye();
-    const vector4 &ceye() const;
-    vector4 &look();
-    const vector4 &clook() const;
-    vector4 &up();
-    const vector4 &cup() const;
+    void set_eye(const vector4 &_eye);
+    const vector4 &get_eye() const;
+    void set_look(const vector4 &_look);
+    const vector4 &get_look() const;
+    void set_up(const vector4 &_up);
+    const vector4 &get_up() const;
 };
 
 class perspective
 {
 private:
+    bool m_updated;
     double m_fov;
     double m_aspect_ratio;
     double m_far;
@@ -30,14 +32,14 @@ private:
 
 public:
     perspective();
-    double &fov();
-    const double &cfov() const;
-    double &aspect_ratio();
-    const double &caspect_ratio() const;
-    double &far();
-    const double &cfar() const;
-    double &near();
-    const double &cnear() const;
+    void set_fov(const double &_fov);
+    const double &get_fov() const;
+    void set_aspect_ratio(const double &_aspect_ratio);
+    const double &get_aspect_ratio() const;
+    void set_far(const double &_far);
+    const double &get_far() const;
+    void set_near(const double &_near);
+    const double &get_near() const;
 };
 
 #endif

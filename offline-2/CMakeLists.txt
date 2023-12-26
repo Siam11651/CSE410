@@ -12,6 +12,9 @@ add_executable(offline-2
 
 target_include_directories(offline-2 PRIVATE "include")
 
+add_custom_command(TARGET offline-2 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/inputs" "${CMAKE_BINARY_DIR}/inputs")
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
