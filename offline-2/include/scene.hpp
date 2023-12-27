@@ -11,7 +11,7 @@ public:
     vector<3> up;
 
     view();
-    const matrix4x4 &get_matrix() const;
+    matrix4x4 get_matrix() const;
 };
 
 class perspective

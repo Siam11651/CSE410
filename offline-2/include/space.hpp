@@ -23,13 +23,17 @@ public:
     vector<N> &operator = (const vector<N> &_other);
     vector<N> operator + (const vector<N> &_other) const;
     vector<N> operator - (const vector<N> &_other) const;
+    double operator * (const vector<N> &_other) const;
     vector<N> operator * (const double &_scalar) const;
     vector<N> operator / (const double &_scalar) const;
     vector<N> &operator += (const vector<N> &_other);
     vector<N> &operator -= (const vector<N> &_other);
     vector<N> &operator *= (const double &_scalar);
     vector<N> &operator /= (const double &_scalar);
-    friend vector<N> operator * (const double &_scalar, const vector<N> &_other);
+    vector<N> operator - () const;
+    template <size_t S>
+    friend vector<S> operator * (const double &_scalar, const vector<S> &_other);
+    friend vector<3> cross_product(const vector<3> &_a, const vector<3> &_b);
 };
 
 template class vector<2>;
@@ -48,6 +52,24 @@ public:
     matrix4x4 operator * (const matrix4x4 &_other) const;
     vector<4> operator * (const vector<4> &_other) const;
     matrix4x4 &operator *= (const matrix4x4 &_other);
+    static matrix4x4 get_translation(const vector<3> &_source);
+};
+
+class quaternion
+{
+public:
+    double w;
+    double x;
+    double y;
+    double z;
+
+    quaternion(const double &_w = 1.0, const double &_x = 0.0,
+        const double &_y = 0.0, const double &_z = 0.0);
+    quaternion(const vector<3> &_source, const vector<3> &_sink);
+    double get_magnitude() const;
+    quaternion get_normalized() const;
+    matrix4x4 get_matrix() const;
+    quaternion operator - () const;
 };
 
 #endif

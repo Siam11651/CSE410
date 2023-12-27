@@ -9,19 +9,19 @@
 
 int main()
 {
-    std::ifstream scene_stream("inputs/1/scene.txt");
     view scene_view;
     perspective scene_perspective;
-
-    scene_stream >> scene_view.eye.x >> scene_view.eye.y >> scene_view.eye.z;
-    scene_stream >> scene_view.look.x >> scene_view.look.y >> scene_view.look.z;
-    scene_stream >> scene_view.up.x >> scene_view.up.y >> scene_view.up.z;
-    scene_stream >> scene_perspective.fov >> scene_perspective.aspect_ratio
-            >> scene_perspective.far >> scene_perspective.near;
-
     std::vector<std::array<vector<4>, 3>> models;
 
     {
+        std::ifstream scene_stream("inputs/1/scene.txt");
+
+        scene_stream >> scene_view.eye.x >> scene_view.eye.y >> scene_view.eye.z;
+        scene_stream >> scene_view.look.x >> scene_view.look.y >> scene_view.look.z;
+        scene_stream >> scene_view.up.x >> scene_view.up.y >> scene_view.up.z;
+        scene_stream >> scene_perspective.fov >> scene_perspective.aspect_ratio
+                >> scene_perspective.far >> scene_perspective.near;
+
         matrix4x4 identity;
         identity[0].x = 1.0;
         identity[1].y = 1.0;
@@ -85,18 +85,7 @@ int main()
                 const double qx = axis_x * std::sin(angle / 2.0);
                 const double qy = axis_y * std::sin(angle / 2.0);
                 const double qz = axis_z * std::sin(angle / 2.0);
-                matrix4x4 rotation;
-                rotation[0].x = 1.0 - 2.0 * (qy * qy + qz * qz);
-                rotation[1].x = 2.0 * (qx * qy - qz * qw);
-                rotation[2].x = 2.0 * (qx * qz + qy * qw);
-                rotation[0].y = 2.0 * (qx * qy + qz * qw);
-                rotation[1].y = 1.0 - 2.0 * (qx * qx + qz * qz);
-                rotation[2].y = 2.0 * (qy * qz - qx * qw);
-                rotation[0].z = 2.0 * (qx * qz - qy * qw);
-                rotation[1].z = 2.0 * (qy * qz + qx * qw);
-                rotation[2].z = 1.0 - 2.0 * (qx * qx + qy * qy);
-                rotation[3].w = 1.0;
-                matrix_stack.top() *= rotation;
+                matrix_stack.top() *= quaternion(qw, qx, qy, qz).get_matrix();
             }
             else if(command == "push")
             {
@@ -126,9 +115,45 @@ int main()
                 std::cerr << "Invalid scene command, try again" << std::endl;
             }
         }
+
+        scene_stream.close();
     }
 
-    scene_stream.close();
+    const matrix4x4 view_matrix = scene_view.get_matrix();
+
+    {
+        std::cout << "stage 2" << std::endl;
+
+        std::ifstream stage1_stream("inputs/1/stage1.txt");
+        bool file_end = false;
+
+        while(!file_end)
+        {
+            for(size_t i = 0; i < 3; ++i)
+            {
+                vector<4> vertex;
+                vertex.w = 1.0;
+
+                stage1_stream >> vertex.x >> vertex.y >> vertex.z;
+
+                if(stage1_stream.eof())
+                {
+                    file_end = true;
+
+                    break;
+                }
+
+                vector<4> viewed_vertex = view_matrix * vertex;
+
+                std::cout << viewed_vertex.x << ' ' << viewed_vertex.y << ' '
+                    << viewed_vertex.z << std::endl;
+            }
+
+            std::cout << std::endl;
+        }
+
+        stage1_stream.close();
+    }
 
     return 0;
 }
