@@ -15,3 +15,19 @@ matrix4x4 view::get_matrix() const
 }
 
 perspective::perspective() {}
+
+matrix4x4 perspective::get_matrix() const
+{
+    constexpr double DEG2RAD = M_PI / 180.0;
+    const double fovX = fovY * aspect_ratio;
+    const double t = near * std::tan((fovY / 2.0) * DEG2RAD);
+    const double r = near * std::tan((fovX / 2.0) * DEG2RAD);
+    matrix4x4 projection;
+    projection[0].x = near / r;
+    projection[1].y = near / t;
+    projection[2].z = -(far + near) / (far - near);
+    projection[2].w = -1.0;
+    projection[3].z = -(2.0 * far * near) / (far - near);
+
+    return projection;
+}

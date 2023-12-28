@@ -17,12 +17,13 @@ public:
 class perspective
 {
 public:
-    double fov;
+    double fovY;
     double aspect_ratio;
     double far;
     double near;
 
     perspective();
+    matrix4x4 get_matrix() const;
 };
 
 #endif

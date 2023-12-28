@@ -19,8 +19,8 @@ int main()
         scene_stream >> scene_view.eye.x >> scene_view.eye.y >> scene_view.eye.z;
         scene_stream >> scene_view.look.x >> scene_view.look.y >> scene_view.look.z;
         scene_stream >> scene_view.up.x >> scene_view.up.y >> scene_view.up.z;
-        scene_stream >> scene_perspective.fov >> scene_perspective.aspect_ratio
-                >> scene_perspective.far >> scene_perspective.near;
+        scene_stream >> scene_perspective.fovY >> scene_perspective.aspect_ratio
+                >> scene_perspective.near >> scene_perspective.far;
 
         matrix4x4 identity;
         identity[0].x = 1.0;
@@ -120,10 +120,9 @@ int main()
     }
 
     const matrix4x4 view_matrix = scene_view.get_matrix();
+    const matrix4x4 projection_matrix = scene_perspective.get_matrix();
 
     {
-        std::cout << "stage 2" << std::endl;
-
         std::ifstream stage1_stream("inputs/1/stage1.txt");
         bool file_end = false;
 
@@ -145,8 +144,13 @@ int main()
 
                 vector<4> viewed_vertex = view_matrix * vertex;
 
-                std::cout << viewed_vertex.x << ' ' << viewed_vertex.y << ' '
+                std::cout << "stage 2: " << viewed_vertex.x << ' ' << viewed_vertex.y << ' '
                     << viewed_vertex.z << std::endl;
+
+                vector<4> projected_vertex = projection_matrix * viewed_vertex;
+
+                std::cout << "stage 3: " << projected_vertex.x << ' '
+                    << projected_vertex.y << ' ' << projected_vertex.z << std::endl;
             }
 
             std::cout << std::endl;
