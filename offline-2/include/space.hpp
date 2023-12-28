@@ -72,4 +72,18 @@ public:
     quaternion operator - () const;
 };
 
+class color
+{
+public:
+    double r;
+    double g;
+    double b;
+    double a;
+
+    color();
+    color(const double &_r, const double &_g, const double &_b);
+    color(const double &_r, const double &_g, const double &_b, const double &_a);
+    static color get_random_color();
+};
+
 #endif

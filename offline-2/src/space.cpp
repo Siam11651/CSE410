@@ -1,5 +1,6 @@
 #include <space.hpp>
 #include <cmath>
+#include <random>
 
 template <size_t N>
 vector<N>::vector(const double &_x, const double &_y, const double &_z, const double &_w) :
@@ -298,4 +299,29 @@ matrix4x4 quaternion::get_matrix() const
 quaternion quaternion::operator - () const
 {
     return quaternion(w, -x, -y, -z);
+}
+
+color::color() :
+    r(0.0),
+    g(0.0),
+    b(0.0),
+    a(1.0) {}
+
+color::color(const double &_r, const double &_g, const double &_b) :
+    r(_r),
+    g(_g),
+    b(_b),
+    a(1.0) {}
+
+color::color(const double &_r, const double &_g, const double &_b, const double &_a) :
+    r(_r),
+    g(_g),
+    b(_b),
+    a(_a) {}
+
+color color::get_random_color()
+{
+    return color((double)std::random_device()() / std::random_device::max(),
+        (double)std::random_device()() / std::random_device::max(),
+        (double)std::random_device()() / std::random_device::max());
 }

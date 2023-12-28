@@ -11,7 +11,7 @@ int main()
 {
     view scene_view;
     perspective scene_perspective;
-    std::vector<std::array<vector<4>, 3>> models;
+    std::vector<std::array<vector<4>, 3> *> faces;
 
     {
         std::ifstream scene_stream("inputs/1/scene.txt");
@@ -39,7 +39,7 @@ int main()
 
             if(command == "triangle")
             {
-                std::array<vector<4>, 3> vertices;
+                std::array<vector<4>, 3> &vertices = *new std::array<vector<4>, 3>();
 
                 for(size_t i = 0; i < 3; ++i)
                 {
@@ -49,7 +49,7 @@ int main()
                     vertices[i] = matrix_stack.top() * vertices[i];
                 }
 
-                models.push_back(vertices);
+                faces.push_back(&vertices);
             }
             else if(command == "translate")
             {
@@ -74,6 +74,7 @@ int main()
             }
             else if(command == "rotate")
             {
+                constexpr double DEG2RAD = M_PI / 180.0;
                 double angle;
                 double axis_x;
                 double axis_y;
@@ -81,10 +82,10 @@ int main()
 
                 scene_stream >> angle >> axis_x >> axis_y >> axis_z;
 
-                const double qw = std::cos(angle / 2.0);
-                const double qx = axis_x * std::sin(angle / 2.0);
-                const double qy = axis_y * std::sin(angle / 2.0);
-                const double qz = axis_z * std::sin(angle / 2.0);
+                const double qw = std::cos(angle * DEG2RAD / 2.0);
+                const double qx = axis_x * std::sin(angle * DEG2RAD / 2.0);
+                const double qy = axis_y * std::sin(angle * DEG2RAD / 2.0);
+                const double qz = axis_z * std::sin(angle * DEG2RAD / 2.0);
                 matrix_stack.top() *= quaternion(qw, qx, qy, qz).get_matrix();
             }
             else if(command == "push")
@@ -93,7 +94,7 @@ int main()
             }
             else if(command == "pop")
             {
-                if(!matrix_stack.empty())
+                if(matrix_stack.size() > 1)
                 {
                     matrix_stack.pop();
                 }
@@ -123,41 +124,91 @@ int main()
     const matrix4x4 projection_matrix = scene_perspective.get_matrix();
 
     {
-        std::ifstream stage1_stream("inputs/1/stage1.txt");
-        bool file_end = false;
+        std::ofstream stage1_stream("output/stage1.txt");
+        std::ofstream stage2_stream("output/stage2.txt");
+        std::ofstream stage3_stream("output/stage3.txt");
 
-        while(!file_end)
+        for(size_t i = 0; i < faces.size(); ++i)
         {
-            for(size_t i = 0; i < 3; ++i)
+            for(size_t j = 0; j < 3; ++j)
             {
-                vector<4> vertex;
-                vertex.w = 1.0;
+                stage1_stream << (*faces[i])[j].x << ' ' << (*faces[i])[j].y << ' '
+                    << (*faces[i])[j].z << std::endl;
 
-                stage1_stream >> vertex.x >> vertex.y >> vertex.z;
+                (*faces[i])[j] = view_matrix * (*faces[i])[j];
 
-                if(stage1_stream.eof())
-                {
-                    file_end = true;
+                stage2_stream << (*faces[i])[j].x << ' ' << (*faces[i])[j].y << ' '
+                    << (*faces[i])[j].z << std::endl;
 
-                    break;
-                }
+                (*faces[i])[j] = projection_matrix * (*faces[i])[j];
+                (*faces[i])[j] /= (*faces[i])[j].w;
 
-                vector<4> viewed_vertex = view_matrix * vertex;
-
-                std::cout << "stage 2: " << viewed_vertex.x << ' ' << viewed_vertex.y << ' '
-                    << viewed_vertex.z << std::endl;
-
-                vector<4> projected_vertex = projection_matrix * viewed_vertex;
-
-                std::cout << "stage 3: " << projected_vertex.x << ' '
-                    << projected_vertex.y << ' ' << projected_vertex.z << std::endl;
+                stage3_stream << (*faces[i])[j].x << ' ' << (*faces[i])[j].y << ' '
+                    << (*faces[i])[j].z << std::endl;
             }
 
-            std::cout << std::endl;
+            stage1_stream << std::endl;
+            stage2_stream << std::endl;
+            stage3_stream << std::endl;
         }
 
         stage1_stream.close();
+        stage2_stream.close();
+        stage2_stream.close();
     }
+
+    std::vector<color> face_colors;
+
+    {
+        std::vector<std::array<vector<4>, 3> *> temp_faces;
+
+        for(size_t i = 0; i < faces.size(); ++i)
+        {
+            bool inside = false;
+
+            for(size_t j = 0; j < 3; ++j)
+            {
+                (*faces[i])[j] = projection_matrix * view_matrix * (*faces[i])[j];
+                (*faces[i])[j] /= (*faces[i])[j].w;
+
+                if(-1.0 <= (*faces[i])[j].x && (*faces[i])[j].x <= 1.0
+                    || -1.0 <= (*faces[i])[j].y && (*faces[i])[j].y <= 1.0
+                    || -1.0 <= (*faces[i])[j].z && (*faces[i])[j].z <= 1.0)
+                {
+                    inside |= true;
+                }
+            }
+
+            if(inside)
+            {
+                temp_faces.push_back(faces[i]);
+                face_colors.push_back(color::get_random_color());
+            }
+            else
+            {
+                delete &faces[i];
+            }
+        }
+
+        faces = temp_faces;
+    }
+
+    size_t screen_width;
+    size_t screen_height;
+
+    {
+        std::ifstream config_stream("inputs/1/config.txt");
+
+        config_stream >> screen_width >> screen_height;
+
+        config_stream.close();
+    }
+
+    double dx = 2.0 / screen_width;
+    double dy = 2.0 / screen_height;
+    constexpr double Z_MAX = 2.0;
+    std::vector<std::vector<double>> z_buffer(screen_height,
+        std::vector<double>(screen_width, Z_MAX));
 
     return 0;
 }
