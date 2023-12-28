@@ -11,7 +11,7 @@ int main()
 {
     view scene_view;
     perspective scene_perspective;
-    std::vector<std::array<vector<4>, 3> *> faces;
+    std::vector<std::array<vector<4>, 3>> faces;
 
     {
         std::ifstream scene_stream("inputs/1/scene.txt");
@@ -39,7 +39,7 @@ int main()
 
             if(command == "triangle")
             {
-                std::array<vector<4>, 3> &vertices = *new std::array<vector<4>, 3>();
+                std::array<vector<4>, 3> vertices;
 
                 for(size_t i = 0; i < 3; ++i)
                 {
@@ -49,7 +49,7 @@ int main()
                     vertices[i] = matrix_stack.top() * vertices[i];
                 }
 
-                faces.push_back(&vertices);
+                faces.push_back(vertices);
             }
             else if(command == "translate")
             {
@@ -132,19 +132,19 @@ int main()
         {
             for(size_t j = 0; j < 3; ++j)
             {
-                stage1_stream << (*faces[i])[j].x << ' ' << (*faces[i])[j].y << ' '
-                    << (*faces[i])[j].z << std::endl;
+                stage1_stream << faces[i][j].x << ' ' << faces[i][j].y << ' ' << faces[i][j].z
+                    << std::endl;
 
-                (*faces[i])[j] = view_matrix * (*faces[i])[j];
+                faces[i][j] = view_matrix * faces[i][j];
 
-                stage2_stream << (*faces[i])[j].x << ' ' << (*faces[i])[j].y << ' '
-                    << (*faces[i])[j].z << std::endl;
+                stage2_stream << faces[i][j].x << ' ' << faces[i][j].y << ' '
+                    << faces[i][j].z << std::endl;
 
-                (*faces[i])[j] = projection_matrix * (*faces[i])[j];
-                (*faces[i])[j] /= (*faces[i])[j].w;
+                faces[i][j] = projection_matrix * faces[i][j];
+                faces[i][j] /= faces[i][j].w;
 
-                stage3_stream << (*faces[i])[j].x << ' ' << (*faces[i])[j].y << ' '
-                    << (*faces[i])[j].z << std::endl;
+                stage3_stream << faces[i][j].x << ' ' << faces[i][j].y << ' '
+                    << faces[i][j].z << std::endl;
             }
 
             stage1_stream << std::endl;
@@ -160,7 +160,7 @@ int main()
     std::vector<color> face_colors;
 
     {
-        std::vector<std::array<vector<4>, 3> *> temp_faces;
+        std::vector<std::array<vector<4>, 3>> temp_faces;
 
         for(size_t i = 0; i < faces.size(); ++i)
         {
@@ -168,12 +168,12 @@ int main()
 
             for(size_t j = 0; j < 3; ++j)
             {
-                (*faces[i])[j] = projection_matrix * view_matrix * (*faces[i])[j];
-                (*faces[i])[j] /= (*faces[i])[j].w;
+                faces[i][j] = projection_matrix * view_matrix * faces[i][j];
+                faces[i][j] /= faces[i][j].w;
 
-                if(-1.0 <= (*faces[i])[j].x && (*faces[i])[j].x <= 1.0
-                    || -1.0 <= (*faces[i])[j].y && (*faces[i])[j].y <= 1.0
-                    || -1.0 <= (*faces[i])[j].z && (*faces[i])[j].z <= 1.0)
+                if(-1.0 <= faces[i][j].x && faces[i][j].x <= 1.0
+                    || -1.0 <= faces[i][j].y && faces[i][j].y <= 1.0
+                    || -1.0 <= faces[i][j].z && faces[i][j].z <= 1.0)
                 {
                     inside |= true;
                 }
@@ -183,10 +183,6 @@ int main()
             {
                 temp_faces.push_back(faces[i]);
                 face_colors.push_back(color::get_random_color());
-            }
-            else
-            {
-                delete &faces[i];
             }
         }
 

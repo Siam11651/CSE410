@@ -1,6 +1,7 @@
 #include <space.hpp>
 #include <cmath>
 #include <random>
+#include <iostream>
 
 template <size_t N>
 vector<N>::vector(const double &_x, const double &_y, const double &_z, const double &_w) :
@@ -13,6 +14,19 @@ vector<N>::vector(const double &_x, const double &_y, const double &_z, const do
     y = _y;
     z = _z;
     w = _w;
+}
+
+template <size_t N>
+vector<N>::vector(const vector<N> &_other) :
+    x(m_components[0]),
+    y(m_components[1]),
+    z(m_components[2]),
+    w(m_components[3])
+{
+    x = _other.x;
+    y = _other.y;
+    z = _other.z;
+    w = _other.w;
 }
 
 template <size_t N>

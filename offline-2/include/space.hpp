@@ -18,6 +18,7 @@ public:
 
     vector<N>(const double &_x = 0.0, const double &_y = 0.0,
         const double &_z = 0.0, const double &_w = 0.0);
+    vector<N>(const vector<N> &_other);
     double get_magnitude() const;
     vector<N> get_normalized() const;
     vector<N> &operator = (const vector<N> &_other);
