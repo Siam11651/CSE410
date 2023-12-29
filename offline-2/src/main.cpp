@@ -4,8 +4,22 @@
 #include <array>
 #include <stack>
 #include <string>
+#include <algorithm>
+#include <filesystem>
 #include <cmath>
+#include <iomanip>
 #include <scene.hpp>
+#include <bitmap_image.hpp>
+
+size_t get_index(const double &_position, const size_t &_dimension)
+{
+    return (size_t)std::round(((_position + 1.0) / 2.0) * (_dimension - 1));
+}
+
+double get_position(const size_t &_idx, const size_t &_dimension)
+{
+    return ((double)_idx / (_dimension - 1)) * 2.0 - 1.0;
+}
 
 int main()
 {
@@ -107,8 +121,6 @@ int main()
             }
             else if(command == "end")
             {
-                std::clog << "Finished reading scene" << std::endl;
-
                 break;
             }
             else
@@ -123,6 +135,8 @@ int main()
     const matrix4x4 view_matrix = scene_view.get_matrix();
     const matrix4x4 projection_matrix = scene_perspective.get_matrix();
 
+    std::filesystem::create_directories("output");
+
     {
         std::ofstream stage1_stream("output/stage1.txt");
         std::ofstream stage2_stream("output/stage2.txt");
@@ -132,19 +146,19 @@ int main()
         {
             for(size_t j = 0; j < 3; ++j)
             {
-                stage1_stream << faces[i][j].x << ' ' << faces[i][j].y << ' ' << faces[i][j].z
-                    << std::endl;
+                stage1_stream << std::fixed << std::setprecision(7) << faces[i][j].x << '\t'
+                    << faces[i][j].y << '\t' << faces[i][j].z << std::endl;
 
                 faces[i][j] = view_matrix * faces[i][j];
 
-                stage2_stream << faces[i][j].x << ' ' << faces[i][j].y << ' '
-                    << faces[i][j].z << std::endl;
+                stage2_stream << std::fixed << std::setprecision(7) << faces[i][j].x << '\t'
+                    << faces[i][j].y << '\t' << faces[i][j].z << std::endl;
 
                 faces[i][j] = projection_matrix * faces[i][j];
                 faces[i][j] /= faces[i][j].w;
 
-                stage3_stream << faces[i][j].x << ' ' << faces[i][j].y << ' '
-                    << faces[i][j].z << std::endl;
+                stage3_stream << std::fixed << std::setprecision(7) << faces[i][j].x << '\t'
+                    << faces[i][j].y << '\t' << faces[i][j].z << std::endl;
             }
 
             stage1_stream << std::endl;
@@ -168,12 +182,9 @@ int main()
 
             for(size_t j = 0; j < 3; ++j)
             {
-                faces[i][j] = projection_matrix * view_matrix * faces[i][j];
-                faces[i][j] /= faces[i][j].w;
-
                 if(-1.0 <= faces[i][j].x && faces[i][j].x <= 1.0
-                    || -1.0 <= faces[i][j].y && faces[i][j].y <= 1.0
-                    || -1.0 <= faces[i][j].z && faces[i][j].z <= 1.0)
+                    && -1.0 <= faces[i][j].y && faces[i][j].y <= 1.0
+                    && -1.0 <= faces[i][j].z && faces[i][j].z <= 1.0)
                 {
                     inside |= true;
                 }
@@ -205,6 +216,126 @@ int main()
     constexpr double Z_MAX = 2.0;
     std::vector<std::vector<double>> z_buffer(screen_height,
         std::vector<double>(screen_width, Z_MAX));
+    std::vector<std::vector<color>> color_buffer(screen_height,
+        std::vector<color>(screen_width));
+
+    for(size_t i = 0; i < faces.size(); ++i)
+    {
+        double top = -1.0;
+        double bot = 1.0;
+
+        for(size_t j = 0; j < 3; ++j)
+        {
+            top = std::max(top, faces[i][j].y);
+            bot = std::min(bot, faces[i][j].y);
+        }
+
+        if(top < bot)
+        {
+            continue;;
+        }
+
+        const size_t top_idx = get_index(top, screen_height);
+        const size_t bot_idx = get_index(bot, screen_height);
+
+        for(size_t j = bot_idx; j <= top_idx; ++j)
+        {
+            const double ordinate = get_position(j, screen_width);
+            double left = 1.0;
+            double right = -1.0;
+
+            for(size_t k = 0; k < 3; ++k)
+            {
+                const size_t start_idx = k;
+                const size_t end_idx = (k + 1) % 3;
+                const double &x0 = faces[i][start_idx].x;
+                const double &x1 = faces[i][end_idx].x;
+                const double &y0 = faces[i][start_idx].y;
+                const double &y1 = faces[i][end_idx].y;
+
+                if(y0 == y1)
+                {
+                    if(ordinate == y0)
+                    {
+                        left = std::min(left, std::min(x0, x1));
+                        right = std::max(left, std::max(x0, x1));
+                    }
+                }
+                else
+                {
+                    const double m = (x0 - x1) / (y0 - y1);
+                    const double abscissa = m * (ordinate - y0) + x0;
+
+                    if(std::abs(abscissa) <= 1.0)
+                    {
+                        left = std::min(left, abscissa);
+                        right = std::max(right, abscissa);
+                    }
+                }
+            }
+
+            if(left > right)
+            {
+                continue;
+            }
+
+            const size_t left_idx = get_index(left, screen_width);
+            const size_t right_idx = get_index(right, screen_width);
+            const vector<4> &s = faces[i][0];
+            const vector<4> p0(faces[i][1] - faces[i][0]);
+            const vector<4> p1(faces[i][2] - faces[i][1]);
+
+            for(size_t l = left_idx; l <= right_idx; ++l)
+            {
+                const double abscissa = get_position(l, screen_width);
+                const double k0 = (p1.y * (abscissa - s.x) - p1.x * (ordinate - s.y))
+                    / (p0.x * p1.y - p0.y * p1.x);
+                const double k1 = (p0.y * (abscissa - s.x) - p0.x * (ordinate - s.y))
+                    / (p0.y * p1.x - p0.x * p1.y);
+                const double depth = s.z + k0 * p0.z + k1 * p1.z;
+
+                if(z_buffer[j][l] >= depth)
+                {
+                    z_buffer[j][l] = depth;
+                    color_buffer[j][l] = face_colors[i];
+                }
+            }
+        }
+    }
+
+    {
+        std::ofstream z_stream("output/z_buffer.txt");
+        bitmap_image image(screen_width, screen_height);
+
+        image.set_all_channels(0, 0, 0);
+
+        for(size_t i = screen_height - 1; i != SIZE_MAX; --i)
+        {
+            for(size_t j = 0; j < screen_width; ++j)
+            {
+                if(z_buffer[i][j] < Z_MAX)
+                {
+                    z_stream << std::fixed << std::setprecision(6) << z_buffer[i][j] << ' ';
+                }
+                else
+                {
+                    z_stream << std::string(8, ' ') << ' ';
+                }
+
+                const uint8_t r = color_buffer[i][j].r * 255.0;
+                const uint8_t g = color_buffer[i][j].g * 255.0;
+                const uint8_t b = color_buffer[i][j].b * 255.0;
+
+                image.set_pixel(j, screen_height - 1 - i, r, g, b);
+            }
+
+            z_stream << std::endl;
+        }
+
+        z_stream.close();
+        image.save_image("output/out.bpm");
+        
+    }
 
     return 0;
 }

@@ -1,7 +1,6 @@
 #include <space.hpp>
 #include <cmath>
 #include <random>
-#include <iostream>
 
 template <size_t N>
 vector<N>::vector(const double &_x, const double &_y, const double &_z, const double &_w) :
