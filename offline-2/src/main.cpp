@@ -10,7 +10,8 @@
 #include <iomanip>
 #include <scene.hpp>
 
-const std::string input_dir("inputs/0/");
+const std::string input_dir("inputs/1/");
+const size_t ssaa = 8;
 
 size_t get_index(const double &_position, const size_t &_dimension)
 {
@@ -212,96 +213,130 @@ int main()
         config_stream.close();
     }
 
-    double dx = 2.0 / screen_width;
-    double dy = 2.0 / screen_height;
     constexpr double Z_MAX = 1.0;
     std::vector<std::vector<double>> z_buffer(screen_height,
         std::vector<double>(screen_width, Z_MAX));
     std::vector<std::vector<color>> color_buffer(screen_height,
         std::vector<color>(screen_width));
 
-    for(size_t i = 0; i < faces.size(); ++i)
     {
-        double top = -1.0;
-        double bot = 1.0;
+        const double ssaa_width = screen_width * ssaa;
+        const double ssaa_height = screen_width * ssaa;
+        std::vector<std::vector<double>> sz_buffer(ssaa_height,
+            std::vector<double>(ssaa_width, Z_MAX));
+        std::vector<std::vector<color>> scolor_buffer(ssaa_height,
+            std::vector<color>(ssaa_width));
 
-        for(size_t j = 0; j < 3; ++j)
+        for(size_t i = 0; i < faces.size(); ++i)
         {
-            top = std::max(top, faces[i][j].y);
-            bot = std::min(bot, faces[i][j].y);
-        }
+            double top = -1.0;
+            double bot = 1.0;
 
-        top = std::min(top, 1.0);
-        bot = std::max(bot, -1.0);
-
-        if(top < bot)
-        {
-            continue;;
-        }
-
-        const size_t top_idx = get_index(top, screen_height);
-        const size_t bot_idx = get_index(bot, screen_height);
-
-        for(size_t j = bot_idx; j <= top_idx; ++j)
-        {
-            const double ordinate = get_position(j, screen_width);
-            double left = 1.0;
-            double right = -1.0;
-
-            for(size_t k = 0; k < 3; ++k)
+            for(size_t j = 0; j < 3; ++j)
             {
-                const size_t start_idx = k;
-                const size_t end_idx = (k + 1) % 3;
-                const double &x0 = faces[i][start_idx].x;
-                const double &x1 = faces[i][end_idx].x;
-                const double &y0 = faces[i][start_idx].y;
-                const double &y1 = faces[i][end_idx].y;
+                top = std::max(top, faces[i][j].y);
+                bot = std::min(bot, faces[i][j].y);
+            }
 
-                if(std::abs(y0 - y1) <= 0.000001)
+            top = std::min(top, 1.0);
+            bot = std::max(bot, -1.0);
+
+            if(top < bot)
+            {
+                continue;;
+            }
+
+            const size_t top_idx = get_index(top, ssaa_height);
+            const size_t bot_idx = get_index(bot, ssaa_height);
+
+            for(size_t j = bot_idx; j <= top_idx; ++j)
+            {
+                const double ordinate = get_position(j, ssaa_width);
+                double left = 1.0;
+                double right = -1.0;
+
+                for(size_t k = 0; k < 3; ++k)
                 {
-                    if(std::abs(ordinate - y0) <= 0.000001)
+                    const size_t start_idx = k;
+                    const size_t end_idx = (k + 1) % 3;
+                    const double &x0 = faces[i][start_idx].x;
+                    const double &x1 = faces[i][end_idx].x;
+                    const double &y0 = faces[i][start_idx].y;
+                    const double &y1 = faces[i][end_idx].y;
+
+                    if(std::abs(y0 - y1) <= 0.000001)
                     {
-                        left = std::min(left, std::min(x0, x1));
-                        right = std::max(left, std::max(x0, x1));
+                        if(std::abs(ordinate - y0) <= 0.000001)
+                        {
+                            left = std::min(left, std::min(x0, x1));
+                            right = std::max(left, std::max(x0, x1));
+                        }
+                    }
+                    else
+                    {
+                        const double m = (x0 - x1) / (y0 - y1);
+                        const double abscissa = m * (ordinate - y0) + x0;
+                        left = std::min(left, abscissa);
+                        right = std::max(right, abscissa);
                     }
                 }
-                else
+
+                left = std::clamp(left, -1.0, 1.0);
+                right = std::clamp(right, -1.0, 1.0);
+
+                if(left > right)
                 {
-                    const double m = (x0 - x1) / (y0 - y1);
-                    const double abscissa = m * (ordinate - y0) + x0;
-                    left = std::min(left, abscissa);
-                    right = std::max(right, abscissa);
+                    continue;
+                }
+
+                const size_t left_idx = get_index(left, ssaa_width);
+                const size_t right_idx = get_index(right, ssaa_width);
+                const vector<4> &s = faces[i][0];
+                const vector<4> p0(faces[i][1] - faces[i][0]);
+                const vector<4> p1(faces[i][2] - faces[i][1]);
+
+                for(size_t l = left_idx; l <= right_idx; ++l)
+                {
+                    const double abscissa = get_position(l, ssaa_width);
+                    const double k0 = (p1.y * (abscissa - s.x) - p1.x * (ordinate - s.y))
+                        / (p0.x * p1.y - p0.y * p1.x);
+                    const double k1 = (p0.y * (abscissa - s.x) - p0.x * (ordinate - s.y))
+                        / (p0.y * p1.x - p0.x * p1.y);
+                    const double depth = s.z + k0 * p0.z + k1 * p1.z;
+
+                    if(-Z_MAX < depth && depth < Z_MAX && sz_buffer[j][l] >= depth)
+                    {
+                        sz_buffer[j][l] = depth;
+                        scolor_buffer[j][l] = face_colors[i];
+                    }
                 }
             }
+        }
 
-            left = std::clamp(left, -1.0, 1.0);
-            right = std::clamp(right, -1.0, 1.0);
-
-            if(left > right)
+        for(size_t i = 0; i < screen_height; ++i)
+        {
+            for(size_t j = 0; j < screen_width; ++j)
             {
-                continue;
-            }
+                double r_sum = 0.0;
+                double g_sum = 0.0;
+                double b_sum = 0.0;
+                double depth_sum = 0.0;
 
-            const size_t left_idx = get_index(left, screen_width);
-            const size_t right_idx = get_index(right, screen_width);
-            const vector<4> &s = faces[i][0];
-            const vector<4> p0(faces[i][1] - faces[i][0]);
-            const vector<4> p1(faces[i][2] - faces[i][1]);
-
-            for(size_t l = left_idx; l <= right_idx; ++l)
-            {
-                const double abscissa = get_position(l, screen_width);
-                const double k0 = (p1.y * (abscissa - s.x) - p1.x * (ordinate - s.y))
-                    / (p0.x * p1.y - p0.y * p1.x);
-                const double k1 = (p0.y * (abscissa - s.x) - p0.x * (ordinate - s.y))
-                    / (p0.y * p1.x - p0.x * p1.y);
-                const double depth = s.z + k0 * p0.z + k1 * p1.z;
-
-                if(-Z_MAX < depth && depth < Z_MAX && z_buffer[j][l] >= depth)
+                for(size_t k = 0; k < ssaa; ++k)
                 {
-                    z_buffer[j][l] = depth;
-                    color_buffer[j][l] = face_colors[i];
+                    for(size_t l = 0; l < ssaa; ++l)
+                    {
+                        r_sum += scolor_buffer[ssaa * i + k][ssaa * j + l].r;
+                        g_sum += scolor_buffer[ssaa * i + k][ssaa * j + l].g;
+                        b_sum += scolor_buffer[ssaa * i + k][ssaa * j + l].b;
+                        depth_sum += sz_buffer[ssaa * i + k][ssaa * j + l];
+                    }
                 }
+
+                color_buffer[i][j].r = r_sum / (ssaa * ssaa);
+                color_buffer[i][j].g = g_sum / (ssaa * ssaa);
+                color_buffer[i][j].b = b_sum / (ssaa * ssaa);
+                z_buffer[i][j] = depth_sum / (ssaa * ssaa);
             }
         }
     }
