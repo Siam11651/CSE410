@@ -9,7 +9,6 @@
 #include <cmath>
 #include <iomanip>
 #include <scene.hpp>
-#include <bitmap_image.hpp>
 
 size_t get_index(const double &_position, const size_t &_dimension)
 {
@@ -305,9 +304,6 @@ int main()
 
     {
         std::ofstream z_stream("output/z_buffer.txt");
-        bitmap_image image(screen_width, screen_height);
-
-        image.set_all_channels(0, 0, 0);
 
         for(size_t i = screen_height - 1; i != SIZE_MAX; --i)
         {
@@ -321,21 +317,92 @@ int main()
                 {
                     z_stream << std::string(8, ' ') << ' ';
                 }
-
-                const uint8_t r = color_buffer[i][j].r * 255.0;
-                const uint8_t g = color_buffer[i][j].g * 255.0;
-                const uint8_t b = color_buffer[i][j].b * 255.0;
-
-                image.set_pixel(j, screen_height - 1 - i, r, g, b);
             }
 
             z_stream << std::endl;
         }
 
-        z_stream.close();
-        image.save_image("output/out.bpm");
-        
+        z_stream.close();        
     }
+
+    std::ofstream bmp_stream("output/out.bmp");
+    const uint8_t zero8 = 0;
+    const uint16_t zero16 = 0;
+    const uint32_t zero32 = 0;
+
+    bmp_stream << "BM";
+
+    const uint32_t bmp_size = 54 + screen_width * screen_height * 4;
+
+    bmp_stream.write((const char *)&bmp_size, sizeof(uint32_t));
+
+    for(size_t i = 0; i < 2; ++i)
+    {
+        bmp_stream.write((const char *)&zero16, sizeof(uint16_t));
+    }
+
+    const uint32_t array_offset = 54;
+
+    bmp_stream.write((const char *)&array_offset, sizeof(uint32_t));
+
+    const uint32_t dib_size = 40;
+
+    bmp_stream.write((const char *)&dib_size, sizeof(uint32_t));
+
+    const uint32_t bitmap_width = screen_width;
+    const uint32_t bitmap_height = screen_height;
+
+    bmp_stream.write((const char *)&bitmap_width, sizeof(uint32_t));
+    bmp_stream.write((const char *)&bitmap_height, sizeof(uint32_t));
+
+    const uint16_t color_pane_count = 1;
+
+    bmp_stream.write((const char *)&color_pane_count, sizeof(uint16_t));
+
+    const uint16_t bit_per_pixel = 24;
+
+    bmp_stream.write((const char *)&bit_per_pixel, sizeof(uint16_t));
+
+    const uint32_t compression_method = 0;
+
+    bmp_stream.write((const char *)&compression_method, sizeof(uint32_t));
+
+    const uint32_t raw_size = screen_width * screen_height * 4;
+
+    bmp_stream.write((const char *)&raw_size, sizeof(uint32_t));
+
+    const uint32_t resolution = 2835;
+
+    bmp_stream.write((const char *)&resolution, sizeof(uint32_t));
+    bmp_stream.write((const char *)&resolution, sizeof(uint32_t));
+
+    for(size_t i = 0; i < 2; ++i)
+    {
+        bmp_stream.write((const char *)&zero32, sizeof(uint32_t));
+    }
+
+    size_t pad_size = (3 * screen_width) % 4;
+
+    for(size_t i = 0; i < screen_height; ++i)
+    {
+        for(size_t j = 0; j < screen_width; ++j)
+        {
+            const uint8_t r = (uint8_t)(color_buffer[i][j].r * 255.0);
+            const uint8_t g = (uint8_t)(color_buffer[i][j].g * 255.0);
+            const uint8_t b = (uint8_t)(color_buffer[i][j].b * 255.0);
+
+            bmp_stream.write((const char *)&b, sizeof(uint8_t));
+            bmp_stream.write((const char *)&g, sizeof(uint8_t));
+            bmp_stream.write((const char *)&r, sizeof(uint8_t));
+        }
+
+        for(size_t i = 0; i < pad_size; ++i)
+        {
+            bmp_stream.write((const char *)&zero8, sizeof(uint8_t));
+        }
+    }
+
+    bmp_stream.close();
 
     return 0;
 }
