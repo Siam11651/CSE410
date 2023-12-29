@@ -10,6 +10,8 @@
 #include <iomanip>
 #include <scene.hpp>
 
+const std::string input_dir("inputs/0/");
+
 size_t get_index(const double &_position, const size_t &_dimension)
 {
     return (size_t)std::round(((_position + 1.0) / 2.0) * (_dimension - 1));
@@ -27,7 +29,7 @@ int main()
     std::vector<std::array<vector<4>, 3>> faces;
 
     {
-        std::ifstream scene_stream("inputs/1/scene.txt");
+        std::ifstream scene_stream(input_dir + "scene.txt");
 
         scene_stream >> scene_view.eye.x >> scene_view.eye.y >> scene_view.eye.z;
         scene_stream >> scene_view.look.x >> scene_view.look.y >> scene_view.look.z;
@@ -203,7 +205,7 @@ int main()
     size_t screen_height;
 
     {
-        std::ifstream config_stream("inputs/1/config.txt");
+        std::ifstream config_stream(input_dir + "config.txt");
 
         config_stream >> screen_width >> screen_height;
 
@@ -212,7 +214,7 @@ int main()
 
     double dx = 2.0 / screen_width;
     double dy = 2.0 / screen_height;
-    constexpr double Z_MAX = 2.0;
+    constexpr double Z_MAX = 1.0;
     std::vector<std::vector<double>> z_buffer(screen_height,
         std::vector<double>(screen_width, Z_MAX));
     std::vector<std::vector<color>> color_buffer(screen_height,
@@ -228,6 +230,9 @@ int main()
             top = std::max(top, faces[i][j].y);
             bot = std::min(bot, faces[i][j].y);
         }
+
+        top = std::min(top, 1.0);
+        bot = std::max(bot, -1.0);
 
         if(top < bot)
         {
@@ -252,9 +257,9 @@ int main()
                 const double &y0 = faces[i][start_idx].y;
                 const double &y1 = faces[i][end_idx].y;
 
-                if(y0 == y1)
+                if(std::abs(y0 - y1) <= 0.000001)
                 {
-                    if(ordinate == y0)
+                    if(std::abs(ordinate - y0) <= 0.000001)
                     {
                         left = std::min(left, std::min(x0, x1));
                         right = std::max(left, std::max(x0, x1));
@@ -264,14 +269,13 @@ int main()
                 {
                     const double m = (x0 - x1) / (y0 - y1);
                     const double abscissa = m * (ordinate - y0) + x0;
-
-                    if(std::abs(abscissa) <= 1.0)
-                    {
-                        left = std::min(left, abscissa);
-                        right = std::max(right, abscissa);
-                    }
+                    left = std::min(left, abscissa);
+                    right = std::max(right, abscissa);
                 }
             }
+
+            left = std::clamp(left, -1.0, 1.0);
+            right = std::clamp(right, -1.0, 1.0);
 
             if(left > right)
             {
@@ -293,7 +297,7 @@ int main()
                     / (p0.y * p1.x - p0.x * p1.y);
                 const double depth = s.z + k0 * p0.z + k1 * p1.z;
 
-                if(z_buffer[j][l] >= depth)
+                if(-Z_MAX < depth && depth < Z_MAX && z_buffer[j][l] >= depth)
                 {
                     z_buffer[j][l] = depth;
                     color_buffer[j][l] = face_colors[i];
