@@ -4,6 +4,8 @@
 #include <object.hpp>
 #include <time.hpp>
 #include <functional>
+#include <cmath>
+#include <iostream>
 
 sphere_collider::sphere_collider(const float &radius)
 {
@@ -25,83 +27,58 @@ collission_event *sphere_collider::create_collission_event(collider *other_colli
     const object *this_object = get_parent_object();
     rigidbody *this_rigidbody = this_object->get_rigidbody();
     vector3 &this_velocity = this_rigidbody->velocity();
-    const vector3 &this_position = this_object->const_object_transform().
+    const vector3 &center = this_object->const_object_transform().
         const_position();
 
     if(dynamic_cast<box_collider *>(other_collider))
     {
-        box_collider *conc_collider = (box_collider *)(other_collider);
-        const float wall_gap = conc_collider->const_dimensions().const_x() / 2.0f;
-        const object *other_object = other_collider->get_parent_object();
-        const vector3 &other_position = other_object->const_object_transform().
-            const_position();
+        box_collider *other_box_collider = (box_collider *)other_collider;
+        object* box_object = other_box_collider->get_parent_object();
+        transform box_transform = box_object->const_object_transform();
+        vector3 closest_position = center;
+        closest_position.x() -= box_transform.const_position().const_x();
+        closest_position.y() -= box_transform.const_position().const_y();
+        closest_position.z() -= box_transform.const_position().const_z();
+        closest_position = (-box_transform.const_rotation()).get_rotated_vector(closest_position);
+        closest_position.x() /= box_transform.const_scale().const_x();
+        closest_position.y() /= box_transform.const_scale().const_y();
+        closest_position.z() /= box_transform.const_scale().const_z();
+        const float x_bound = other_box_collider->dimensions().const_x() / 2.0f;
+        const float y_bound = other_box_collider->dimensions().const_y() / 2.0f;
+        const float z_bound = other_box_collider->dimensions().const_z() / 2.0f;
+        closest_position.x() = std::clamp(closest_position.x(), -x_bound, x_bound);
+        closest_position.y() = std::clamp(closest_position.y(), -y_bound, y_bound);
+        closest_position.z() = std::clamp(closest_position.z(), -z_bound, z_bound);
+        closest_position.x() *= box_transform.const_scale().const_x();
+        closest_position.y() *= box_transform.const_scale().const_y();
+        closest_position.z() *= box_transform.const_scale().const_z();
+        closest_position = box_transform.const_rotation().get_rotated_vector(closest_position);
+        closest_position.x() += box_transform.const_position().const_x();
+        closest_position.y() += box_transform.const_position().const_y();
+        closest_position.z() += box_transform.const_position().const_z();
+        const vector3 displacement = (closest_position - center);
+        const vector3 normal = (-displacement).get_normalized();
+        const quaternion reflector(normal, M_PI);
+        const vector3 new_velocity = reflector.get_rotated_vector(-this_velocity);
+        const float distance = displacement.get_magnitude() - radius();
 
-        if(other_object->const_name() == "left_wall")
+        const float velocity_component = vector3::dot(displacement.get_normalized(), this_velocity);
+
+        if(std::abs(velocity_component) <= 0.0000001f)
         {
-            if(this_velocity.const_x() <= 0.0f)
-            {
-                return nullptr;
-            }
-
-            float distance_x = other_position.const_x() - this_position.const_x()
-                - radius() - wall_gap;
-
-            vector3 new_velocity = this_velocity;
-            new_velocity.x() = -this_velocity.const_x();
-            int64_t time = (int64_t)((distance_x * 1e9f) / this_velocity.const_x()) + time::now_ns();
-
-            return new collission_event(time, new_velocity);
-        }
-        else if(other_object->const_name() == "right_wall")
-        {
-            if(this_velocity.const_x() >= 0.0f)
-            {
-                return nullptr;
-            }
-
-            float distance_x = this_position.const_x() - other_position.const_x()
-                - radius() - wall_gap;
-
-            vector3 new_velocity = this_velocity;
-            new_velocity.x() = -this_velocity.const_x();
-            int64_t time = (int64_t)((distance_x * 1e9f) / -this_velocity.const_x()) + time::now_ns();
-
-            return new collission_event(time, new_velocity);
-        }
-        else if(other_object->const_name() == "top_wall")
-        {
-            if(this_velocity.const_z() <= 0.0f)
-            {
-                return nullptr;
-            }
-
-            float distance_z = other_position.const_z() - this_position.const_z()
-                - radius() - wall_gap;
-
-            vector3 new_velocity = this_velocity;
-            new_velocity.z() = -this_velocity.const_z();
-            int64_t time = (int64_t)((distance_z * 1e9f) / this_velocity.const_z()) + time::now_ns();
-
-            return new collission_event(time, new_velocity);
-        }
-        else if(other_object->const_name() == "bot_wall")
-        {
-            if(this_velocity.const_z() >= 0.0f)
-            {
-                return nullptr;
-            }
-
-            float distance_z = this_position.const_z() - other_position.const_z()
-                - radius() - wall_gap;
-
-            vector3 new_velocity = this_velocity;
-            new_velocity.z() = -this_velocity.const_z();
-            int64_t time = (int64_t)((distance_z * 1e9f) / -this_velocity.const_z()) + time::now_ns();
-
-            return new collission_event(time, new_velocity);
+            return nullptr; // will never collide
         }
 
-        // else is not going to happen
+        int64_t time = (distance * 1000000000) / velocity_component;
+
+        if(time < 0 && distance >= 0.0f)
+        {
+            return nullptr; // will never collide
+        }
+
+        time += time::now_ns();
+
+        return new collission_event(time, new_velocity);
     }
 
     return nullptr;

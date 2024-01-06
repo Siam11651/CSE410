@@ -25,6 +25,7 @@ public:
     vector3 operator + (const vector3 &other) const;
     vector3 &operator += (const vector3 &other);
     vector3 operator - (const vector3 &other) const;
+    vector3 operator - () const;
     vector3 &operator -= (const vector3 &other);
     vector3 operator * (const float &value) const;
     vector3 &operator *= (const float &value);
@@ -56,6 +57,7 @@ public:
     const float &const_y() const;
     const float &const_z() const;
     vector3 get_rotated_vector(const vector3 &source) const;
+    quaternion operator - () const;
     quaternion operator * (const quaternion &other) const;
     static quaternion get_rotation(const vector3 &from, const vector3 &to);
 };

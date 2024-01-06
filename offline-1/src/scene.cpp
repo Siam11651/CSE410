@@ -117,8 +117,6 @@ void scene::simulate_physics()
             int64_t now_ns = time::now_ns();
             const int64_t &collide_time_ns = next_collission_event->const_trigger_time();
 
-            // std::cout << now_ns << ' ' << collide_time_ns << ' ' << next_collission_event->const_new_velocity().const_z() << std::endl;
-
             if(now_ns >= collide_time_ns)
             {
                 collided = true;
@@ -135,6 +133,8 @@ void scene::simulate_physics()
                 translation_simulation(time::delta_time_s());
             }
         }
+
+        // std::cout << object_rigidbody->const_velocity().const_x() << ' ' << object_rigidbody->const_velocity().const_y() << ' ' << object_rigidbody->const_velocity().const_z() << std::endl;
     }
 
     if(collided)

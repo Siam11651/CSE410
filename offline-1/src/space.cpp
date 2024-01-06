@@ -82,6 +82,11 @@ vector3 vector3::operator - (const vector3 &other) const
     return vector3(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
 }
 
+vector3 vector3::operator - () const
+{
+    return vector3(-m_x, -m_y, -m_z);
+}
+
 vector3 &vector3::operator -= (const vector3 &other)
 {
     m_x -= other.m_x;
@@ -267,6 +272,11 @@ vector3 quaternion::get_rotated_vector(const vector3 &source) const
     return vector3(sx * matrix[0][0] + sy * matrix[0][1] + sz * matrix[0][2],
         sx * matrix[1][0] + sy * matrix[1][1] + sz * matrix[1][2],
         sx * matrix[2][0] + sy * matrix[2][1] + sz * matrix[2][2]);
+}
+
+quaternion quaternion::operator - () const
+{
+    return quaternion(this->m_w, -this->m_x, -this->m_y, -this->m_z);
 }
 
 quaternion quaternion::operator * (const quaternion &other) const

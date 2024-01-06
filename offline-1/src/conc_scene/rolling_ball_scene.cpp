@@ -43,7 +43,7 @@ rolling_ball_scene::rolling_ball_scene()
         color(1.0f, 0.0f, 0.0f, 1.0f));
     box_mesh horizontal_wall_mesh(vector3(0.2f, 0.5f, 9.8f),
         color(1.0f, 0.0f, 0.0f, 1.0f));
-    horizontal_wall_mesh.shade() =  true;
+    horizontal_wall_mesh.shade() = true;
     vertical_wall_mesh.shade() = true;
     transform left_wall_transform(vector3(5.0f, 0.25f, 0.0f));
     transform right_wall_transform(vector3(-5.0f, 0.25f, 0.0f));
