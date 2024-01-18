@@ -11,7 +11,7 @@
 #include <scene.hpp>
 
 const std::string input_dir("inputs/1/");
-const size_t ssaa = 8;
+const size_t ssaa = 1;
 
 size_t get_index(const double &_position, const size_t &_dimension)
 {
@@ -350,11 +350,7 @@ int main()
             {
                 if(z_buffer[i][j] < Z_MAX)
                 {
-                    z_stream << std::fixed << std::setprecision(6) << z_buffer[i][j] << ' ';
-                }
-                else
-                {
-                    z_stream << std::string(8, ' ') << ' ';
+                    z_stream << std::fixed << std::setprecision(6) << z_buffer[i][j] << '\t';
                 }
             }
 
