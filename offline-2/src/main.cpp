@@ -8,10 +8,11 @@
 #include <filesystem>
 #include <cmath>
 #include <iomanip>
+#include <cfloat>
 #include <scene.hpp>
 
 const std::string input_dir("inputs/1/");
-const size_t ssaa = 1;
+const size_t ssaa = 8;
 
 size_t get_index(const double &_position, const size_t &_dimension)
 {
@@ -229,8 +230,8 @@ int main()
 
         for(size_t i = 0; i < faces.size(); ++i)
         {
-            double top = -1.0;
-            double bot = 1.0;
+            double top = -DBL_MAX;
+            double bot = DBL_MAX;
 
             for(size_t j = 0; j < 3; ++j)
             {
@@ -243,7 +244,7 @@ int main()
 
             if(top < bot)
             {
-                continue;;
+                continue;
             }
 
             const size_t top_idx = get_index(top, ssaa_height);
@@ -252,8 +253,14 @@ int main()
             for(size_t j = bot_idx; j <= top_idx; ++j)
             {
                 const double ordinate = get_position(j, ssaa_width);
-                double left = 1.0;
-                double right = -1.0;
+
+                if(!(bot <= ordinate && ordinate <= top))
+                {
+                    continue;
+                }
+
+                double left = DBL_MAX;
+                double right = -DBL_MAX;
 
                 for(size_t k = 0; k < 3; ++k)
                 {
@@ -281,13 +288,13 @@ int main()
                     }
                 }
 
-                left = std::clamp(left, -1.0, 1.0);
-                right = std::clamp(right, -1.0, 1.0);
-
-                if(left > right)
+                if(left < -1.0 && right < -1.0 || 1.0 < left && 1.0 < right)
                 {
                     continue;
                 }
+
+                left = std::clamp(left, -1.0, 1.0);
+                right = std::clamp(right, -1.0, 1.0);
 
                 const size_t left_idx = get_index(left, ssaa_width);
                 const size_t right_idx = get_index(right, ssaa_width);
