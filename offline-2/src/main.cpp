@@ -12,7 +12,7 @@
 #include <scene.hpp>
 
 const std::string input_dir("inputs/1/");
-const size_t ssaa = 8;
+const size_t ssaa = 1;
 
 size_t get_index(const double &_position, const size_t &_dimension)
 {
@@ -252,13 +252,7 @@ int main()
 
             for(size_t j = bot_idx; j <= top_idx; ++j)
             {
-                const double ordinate = get_position(j, ssaa_width);
-
-                if(!(bot <= ordinate && ordinate <= top))
-                {
-                    continue;
-                }
-
+                const double ordinate = std::clamp(get_position(j, ssaa_width), bot, top);
                 double left = DBL_MAX;
                 double right = -DBL_MAX;
 
@@ -304,7 +298,7 @@ int main()
 
                 for(size_t l = left_idx; l <= right_idx; ++l)
                 {
-                    const double abscissa = get_position(l, ssaa_width);
+                    const double abscissa = std::clamp(get_position(l, ssaa_width), left, right);
                     const double k0 = (p1.y * (abscissa - s.x) - p1.x * (ordinate - s.y))
                         / (p0.x * p1.y - p0.y * p1.x);
                     const double k1 = (p0.y * (abscissa - s.x) - p0.x * (ordinate - s.y))
