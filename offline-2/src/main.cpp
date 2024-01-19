@@ -16,12 +16,19 @@ const size_t ssaa = 1;
 
 size_t get_index(const double &_position, const size_t &_dimension)
 {
-    return (size_t)std::round(((_position + 1.0) / 2.0) * (_dimension - 1));
+    size_t idx = ((_position + 1.0) / 2.0) * _dimension;
+
+    if(idx == _dimension)
+    {
+        --idx;
+    }
+
+    return idx;
 }
 
 double get_position(const size_t &_idx, const size_t &_dimension)
 {
-    return ((double)_idx / (_dimension - 1)) * 2.0 - 1.0;
+    return ((_idx + 0.5) / _dimension) * 2.0 - 1.0;
 }
 
 int main()
@@ -252,7 +259,14 @@ int main()
 
             for(size_t j = bot_idx; j <= top_idx; ++j)
             {
-                const double ordinate = std::clamp(get_position(j, ssaa_width), bot, top);
+                // const double ordinate = std::clamp(get_position(j, ssaa_width), bot, top);
+                const double ordinate = get_position(j, ssaa_width);
+
+                if(!(bot <= ordinate && ordinate <= top))
+                {
+                    continue;
+                }
+
                 double left = DBL_MAX;
                 double right = -DBL_MAX;
 
