@@ -10,19 +10,18 @@
 class rtx_scene : public scene
 {
 private:
+    float m_camera_speed;
+    float m_camera_spin;
     plane_mesh *m_plane_mesh;
     sphere_mesh *m_sphere_mesh;
     base_triangle_mesh *m_base_triangle_mesh;
     object *m_plane_object;
     object *m_sphere_object;
-    object *m_base_triangle_object;
 
 public:
     rtx_scene();
     void on_new_frame();
     void on_new_frame_late();
-    void on_ascii_key(uint8_t key, int32_t x, int32_t y);
-    void on_special_key(int32_t key, int32_t x, int32_t y);
 };
 
 #endif
