@@ -9,7 +9,7 @@ class input
 public:
     enum class key
     {
-        mouse_left, mouse_right, key_w, key_a, key_s, key_d, key_up, key_down, key_left, key_right, key_q, key_e
+        mouse_left, mouse_right, key_w, key_a, key_s, key_d, key_up, key_down, key_left, key_right, key_q, key_e, key_pg_up, key_pg_down
     };
 
     enum class status
@@ -30,7 +30,7 @@ public:
 
 private:
     static input::mouse s_mouse;
-    static std::array<input::status, 12> s_key_status;
+    static std::array<input::status, 14> s_key_status;
 
 public:
     static void set_mouse(const input::mouse &_mouse);

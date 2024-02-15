@@ -1,7 +1,7 @@
 #include <input.hpp>
 
 input::mouse input::s_mouse;
-std::array<input::status, 12> input::s_key_status;
+std::array<input::status, 14> input::s_key_status;
 
 input::mouse::mouse() {}
 

@@ -21,6 +21,8 @@ rtx_scene::rtx_scene() : scene()
     objects.push_back(m_sphere_object);
 }
 
+#include <iostream>
+
 void rtx_scene::on_new_frame()
 {
     if(input::get_key(input::key::key_w) == input::status::press)
@@ -41,6 +43,16 @@ void rtx_scene::on_new_frame()
     if(input::get_key(input::key::key_d) == input::status::press)
     {
         main_camera->cam_transform.position -= main_camera->cam_transform.get_left() * m_camera_speed * time::delta_time_s();
+    }
+
+    if(input::get_key(input::key::key_pg_up) == input::status::press)
+    {
+        main_camera->cam_transform.position += main_camera->cam_transform.get_up() * m_camera_speed * time::delta_time_s();
+    }
+
+    if(input::get_key(input::key::key_pg_down) == input::status::press)
+    {
+        main_camera->cam_transform.position -= main_camera->cam_transform.get_up() * m_camera_speed * time::delta_time_s();
     }
 
     if(input::get_key(input::key::key_up) == input::status::press)

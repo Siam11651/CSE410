@@ -83,6 +83,8 @@ int main(int argc, char **argv)
             input::set_key(input::key::key_right, (input::status)glfwGetKey(window, GLFW_KEY_RIGHT));
             input::set_key(input::key::key_q, (input::status)glfwGetKey(window, GLFW_KEY_Q));
             input::set_key(input::key::key_e, (input::status)glfwGetKey(window, GLFW_KEY_E));
+            input::set_key(input::key::key_pg_up, (input::status)glfwGetKey(window, GLFW_KEY_PAGE_UP));
+            input::set_key(input::key::key_pg_down, (input::status)glfwGetKey(window, GLFW_KEY_PAGE_DOWN));
 
             current_scene->setup_frame();
             current_scene->on_new_frame();
