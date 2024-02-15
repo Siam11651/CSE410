@@ -28,9 +28,9 @@ void object::draw() const
     }
 
     constexpr float RAD2DEG = 180.0f / M_PI;
-    const quaternion &rotation = object_transform.rotation;
-    const float angle = rotation.get_angle();
-    const glm::vec3 axis = rotation.get_axis();
+    const glm::quat &rotation = object_transform.rotation;
+    const float angle = glm::angle(rotation);
+    const glm::vec3 axis = glm::axis(rotation);
     const glm::vec3 &position = object_transform.position;
     const glm::vec3 &scale = object_transform.scale;
 

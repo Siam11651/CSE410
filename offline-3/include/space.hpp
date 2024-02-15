@@ -2,33 +2,13 @@
 #define SPACE_H
 
 #include <glm/glm.hpp>
-
-class quaternion
-{
-public:
-    float w;
-    float x;
-    float y;
-    float z;
-
-    quaternion();
-    quaternion(const glm::vec3 &_euler_rotation);
-    quaternion(const glm::vec3 &_axis, const float &_angle);
-    quaternion(const float &_w, const float &_x, const float &_y, const float &_z);
-    glm::vec3 get_axis() const;
-    float get_angle() const;
-    float get_magnitude() const;
-    quaternion get_normalized() const;
-    glm::vec3 get_rotated_vector(const glm::vec3 &source) const;
-    quaternion operator * (const quaternion &other) const;
-    static quaternion get_rotation(const glm::vec3 &from, const glm::vec3 &to);
-};
+#include <glm/ext.hpp>
 
 class transform
 {
 public:
     glm::vec3 position;
-    quaternion rotation;
+    glm::quat rotation;
     glm::vec3 scale;
 
     transform();
