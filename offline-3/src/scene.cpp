@@ -1,9 +1,11 @@
+#include <GL/gl.h>
 #include <scene.hpp>
 #include <time.hpp>
 #include <screen.hpp>
-#include <GL/freeglut.h>
 #include <functional>
 #include <iostream>
+#include <glm/mat4x4.hpp>
+#include <glm/ext.hpp>
 
 camera::camera()
 {
@@ -27,11 +29,13 @@ void scene::setup_frame()
     const vector3 &main_camera_position = main_camera_transform.position;
     const vector3 &main_camera_forward = main_camera_transform.get_forward();
     const vector3 &main_camera_up = main_camera_transform.get_up();
+    const glm::mat4 perspective = glm::perspective((float)M_PI / 4.0f, screen::aspect_ratio(), 0.01f, 100.0f);
+    const glm::mat4 view = glm::lookAt(glm::vec3(main_camera_position.x, main_camera_position.y, main_camera_position.z), glm::vec3(main_camera_position.x + main_camera_forward.x, main_camera_position.y + main_camera_forward.y, main_camera_position.z + main_camera_forward.z), glm::vec3(main_camera_up.x, main_camera_up.y, main_camera_up.z));
+    const glm::mat4 product = perspective * view;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    gluPerspective(45.0f, screen::aspect_ratio(), 0.01f, 100.0f);
-    gluLookAt(main_camera_position.x, main_camera_position.y, main_camera_position.z, main_camera_position.x + main_camera_forward.x, main_camera_position.y + main_camera_forward.y, main_camera_position.z + main_camera_forward.z, main_camera_up.x, main_camera_up.y, main_camera_up.z);
+    glLoadMatrixf(glm::value_ptr(product));
 }
 
 void scene::show()

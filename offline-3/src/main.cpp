@@ -1,5 +1,6 @@
+#include <GL/gl.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
-#include <GL/freeglut.h>
 #include <optional>
 #include <chrono>
 #include <set>
@@ -14,39 +15,6 @@
 
 scene *current_scene = nullptr;
 
-void ascii_key_callback(unsigned char key, int x, int y)
-{
-    if(current_scene != nullptr)
-    {
-        current_scene->on_ascii_key(key, x, y);
-    }
-}
-
-void special_key_callback(int key, int x, int y)
-{
-    if(current_scene != nullptr)
-    {
-        current_scene->on_special_key(key, x, y);
-    }
-}
-
-void display_callback()  // draw each frame
-{
-    time::start_frame();
-
-    if(current_scene != nullptr)
-    {
-        current_scene->setup_frame();
-        current_scene->on_new_frame();
-        current_scene->on_new_frame_late();
-        current_scene->show();
-    }
-
-    glutSwapBuffers();
-    glutPostRedisplay();    // draw next frame
-    time::end_frame();
-}
-
 int main(int argc, char **argv)
 {
     arg_parser parser(argv[0]);
@@ -59,23 +27,55 @@ int main(int argc, char **argv)
     screen::window_width() = 1366;
     screen::window_height() = 768;
 
-    glutInit(&argc, argv);
-    glutInitWindowSize(screen::window_width(), screen::window_height());
-    glutCreateWindow(screen::window_title().c_str());
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+    if(!glfwInit())
+    {
+        std::cerr << "Failed to initialise GLFW" << std::endl;
+
+        glfwTerminate();
+
+        return -1;
+    }
+
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
+    GLFWwindow *window = glfwCreateWindow(screen::window_width(), screen::window_height(), screen::window_title().c_str(), nullptr, nullptr);
+
+    if(!window)
+    {
+        std::cerr << "Failed to create window" << std::endl;
+
+        glfwTerminate();
+
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW_MATRIX);
-    glutDisplayFunc(display_callback);
-    glutKeyboardFunc(ascii_key_callback);
-    glutSpecialFunc(special_key_callback);
 
     current_scene = new rtx_scene();
 
-    glutMainLoop();
+    while(!glfwWindowShouldClose(window))
+    {
+        time::start_frame();
+        glfwPollEvents();
+
+        if(current_scene != nullptr)
+        {
+            current_scene->setup_frame();
+            current_scene->on_new_frame();
+            current_scene->on_new_frame_late();
+            current_scene->show();
+        }
+
+        glfwSwapBuffers(window);
+        time::end_frame();
+    }
 
     delete current_scene;
+
+    glfwTerminate();
 
     return 0;
 }
