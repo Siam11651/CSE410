@@ -10,6 +10,7 @@
 #include <time.hpp>
 #include <screen.hpp>
 #include <scene.hpp>
+#include <conc_scene/rtx_scene.hpp>
 
 scene *current_scene = nullptr;
 
@@ -69,6 +70,8 @@ int main(int argc, char **argv)
     glutDisplayFunc(display_callback);
     glutKeyboardFunc(ascii_key_callback);
     glutSpecialFunc(special_key_callback);
+
+    current_scene = new rtx_scene();
 
     glutMainLoop();
 

@@ -1,7 +1,6 @@
 #include <conc_mesh/plane_mesh.hpp>
 
-plane_mesh::plane_mesh(const float &size_x, const float &size_z,
-    const size_t &count_x, const size_t &count_z)
+plane_mesh::plane_mesh(const float &size_x, const float &size_z, const size_t &count_x, const size_t &count_z)
 {
     const float og_x = -size_x / 2.0f;
     const float og_z = -size_z / 2.0f;
@@ -12,13 +11,13 @@ plane_mesh::plane_mesh(const float &size_x, const float &size_z,
 
     for(size_t i = 0; i < count_x; ++i)
     {
-        const float left = og_x + (i + 1) * check_size_x;
-        const float right = og_x + i * check_size_x;
+        const float left = og_x + i * check_size_x;
+        const float right = og_x + (i + 1) * check_size_x;
 
         for(size_t j = 0; j < count_z; ++j)
         {
-            const float top = og_z + (j + 1) * check_size_z;
-            const float bot = og_z + j * check_size_z;
+            const float top = og_z + j * check_size_z;
+            const float bot = og_z + (j + 1) * check_size_z;
             const vector3 top_left(left, 0.0f, top);
             const vector3 top_right(right, 0.0f, top);
             const vector3 bot_left(left, 0.0f, bot);

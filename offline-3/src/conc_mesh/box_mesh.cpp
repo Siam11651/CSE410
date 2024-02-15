@@ -6,14 +6,14 @@ void box_mesh::initialise_mesh(const vector3 &dimensions, const color &mesh_colo
     const float &size_x = dimensions.x;
     const float &size_y = dimensions.y;
     const float &size_z = dimensions.z;
-    vector3 top_left_front(size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
-    vector3 top_right_front(-size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
-    vector3 bot_left_front(size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
-    vector3 bot_right_front(-size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
-    vector3 top_left_back(size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
-    vector3 top_right_back(-size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
-    vector3 bot_left_back(size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
-    vector3 bot_right_back(-size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
+    vector3 top_left_front(-size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
+    vector3 top_right_front(size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
+    vector3 bot_left_front(-size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
+    vector3 bot_right_front(size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
+    vector3 top_left_back(-size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
+    vector3 top_right_back(size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
+    vector3 bot_left_back(-size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
+    vector3 bot_right_back(size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
     m_faces = 
     {
         face({top_left_front, bot_left_front, top_right_front}, mesh_color),    // front face

@@ -7,7 +7,7 @@
 
 camera::camera()
 {
-
+    cam_transform.position.z = -1.0f;
 }
 
 camera::camera(const transform &_cam_transform)
@@ -17,13 +17,13 @@ camera::camera(const transform &_cam_transform)
 
 scene::scene()
 {
-
+    main_camera = nullptr;
 }
 
 void scene::setup_frame()
 {
-    const camera &main_camera = main_camera;
-    const transform &main_camera_transform = main_camera.cam_transform;
+    const camera &temp_camera = *main_camera;
+    const transform &main_camera_transform = temp_camera.cam_transform;
     const vector3 &main_camera_position = main_camera_transform.position;
     const vector3 &main_camera_forward = main_camera_transform.get_forward();
     const vector3 &main_camera_up = main_camera_transform.get_up();
@@ -40,4 +40,9 @@ void scene::show()
     {
         object_item->draw();
     }
+}
+
+scene::~scene()
+{
+    
 }
