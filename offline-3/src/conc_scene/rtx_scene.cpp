@@ -6,7 +6,7 @@ rtx_scene::rtx_scene() : scene()
     main_camera = new camera();
     main_camera->cam_transform.position.z = 5.0f;
     main_camera->cam_transform.position.y = 5.0f;
-    main_camera->cam_transform.rotation = quaternion(vector3(-M_PI / 4.0f, 0.0f, 0.0f)) * quaternion(vector3(0.0f, M_PI, 0.0f));
+    main_camera->cam_transform.rotation = quaternion(glm::vec3(-M_PI / 4.0f, 0.0f, 0.0f)) * quaternion(glm::vec3(0.0f, M_PI, 0.0f));
     m_plane_mesh = new plane_mesh(100, 100, 100, 100);
     m_sphere_mesh = new sphere_mesh(0.5f, 20, 20, color(1.0f, 0.0f, 0.0f, 1.0f));
     m_plane_object = new object(*m_plane_mesh);

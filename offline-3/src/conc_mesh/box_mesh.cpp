@@ -1,19 +1,19 @@
 #include <conc_mesh/box_mesh.hpp>
 
-void box_mesh::initialise_mesh(const vector3 &dimensions, const color &mesh_color)
+void box_mesh::initialise_mesh(const glm::vec3 &dimensions, const color &mesh_color)
 {
     m_dimensions = dimensions;
     const float &size_x = dimensions.x;
     const float &size_y = dimensions.y;
     const float &size_z = dimensions.z;
-    vector3 top_left_front(-size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
-    vector3 top_right_front(size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
-    vector3 bot_left_front(-size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
-    vector3 bot_right_front(size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
-    vector3 top_left_back(-size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
-    vector3 top_right_back(size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
-    vector3 bot_left_back(-size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
-    vector3 bot_right_back(size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
+    glm::vec3 top_left_front(-size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
+    glm::vec3 top_right_front(size_x / 2.0f, size_y / 2.0f, size_z / 2.0f);
+    glm::vec3 bot_left_front(-size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
+    glm::vec3 bot_right_front(size_x / 2.0f, -size_y / 2.0f, size_z / 2.0f);
+    glm::vec3 top_left_back(-size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
+    glm::vec3 top_right_back(size_x / 2.0f, size_y / 2.0f, -size_z / 2.0f);
+    glm::vec3 bot_left_back(-size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
+    glm::vec3 bot_right_back(size_x / 2.0f, -size_y / 2.0f, -size_z / 2.0f);
     m_faces = 
     {
         face({top_left_front, bot_left_front, top_right_front}, mesh_color),    // front face
@@ -33,20 +33,20 @@ void box_mesh::initialise_mesh(const vector3 &dimensions, const color &mesh_colo
 
 box_mesh::box_mesh()
 {
-    initialise_mesh(vector3(1.0f, 1.0f, 1.0f), color(1.0f, 1.0f, 1.0f, 1.0f));
+    initialise_mesh(glm::vec3(1.0f, 1.0f, 1.0f), color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
-box_mesh::box_mesh(const vector3 &dimensions)
+box_mesh::box_mesh(const glm::vec3 &dimensions)
 {
     initialise_mesh(dimensions, color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
-box_mesh::box_mesh(const vector3 &dimensions, const color &mesh_color)
+box_mesh::box_mesh(const glm::vec3 &dimensions, const color &mesh_color)
 {
     initialise_mesh(dimensions, mesh_color);
 }
 
-const vector3 &box_mesh::const_dimensions() const
+const glm::vec3 &box_mesh::const_dimensions() const
 {
     return m_dimensions;
 }

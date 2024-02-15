@@ -6,15 +6,15 @@
 class box_mesh : public mesh
 {
 private:
-    vector3 m_dimensions;
+    glm::vec3 m_dimensions;
 
-    void initialise_mesh(const vector3 &dimensions, const color &mesh_color);
+    void initialise_mesh(const glm::vec3 &dimensions, const color &mesh_color);
 
 public:
     box_mesh();
-    box_mesh(const vector3 &dimensions);
-    box_mesh(const vector3 &dimensions, const color &mesh_color);
-    const vector3 &const_dimensions() const;
+    box_mesh(const glm::vec3 &dimensions);
+    box_mesh(const glm::vec3 &dimensions, const color &mesh_color);
+    const glm::vec3 &const_dimensions() const;
 };
 
 #endif

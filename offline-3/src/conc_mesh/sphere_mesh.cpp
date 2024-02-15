@@ -27,13 +27,13 @@ sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count, const s
             float z_bot_left = std::sin(segment_start_angle) * stack_end_radius;
             float x_bot_right = std::cos(segment_end_angle) * stack_end_radius;
             float z_bot_right = std::sin(segment_end_angle) * stack_end_radius;
-            vector3 top_left(x_top_left, y_top, z_top_left);
-            vector3 bot_left(x_bot_left, y_bot, z_bot_left);
-            vector3 top_right(x_top_right, y_top, z_top_right);
-            vector3 bot_right(x_bot_right, y_bot, z_bot_right);
+            glm::vec3 top_left(x_top_left, y_top, z_top_left);
+            glm::vec3 bot_left(x_bot_left, y_bot, z_bot_left);
+            glm::vec3 top_right(x_top_right, y_top, z_top_right);
+            glm::vec3 bot_right(x_bot_right, y_bot, z_bot_right);
 
-            m_faces.emplace_back(std::array<vector3, 3>{top_left, bot_left, top_right}, _color);
-            m_faces.emplace_back(std::array<vector3, 3>{top_right, bot_left, bot_right}, _color);
+            m_faces.emplace_back(std::array<glm::vec3, 3>{top_left, bot_left, top_right}, _color);
+            m_faces.emplace_back(std::array<glm::vec3, 3>{top_right, bot_left, bot_right}, _color);
         }
     }
 }

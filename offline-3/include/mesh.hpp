@@ -21,12 +21,12 @@ public:
 class face
 {
 public:
-    std::array<vector3, 3> vertices; // keep the vertices anti-clockwise might help with shaders
+    std::array<glm::vec3, 3> vertices; // keep the vertices anti-clockwise might help with shaders
     color face_color;
 
-    face(const std::array<vector3, 3> &_vertices, const color &_face_color);
-    vector3 get_normal() const;
-    vector3 get_center() const;
+    face(const std::array<glm::vec3, 3> &_vertices, const color &_face_color);
+    glm::vec3 get_normal() const;
+    glm::vec3 get_center() const;
 };
 
 class mesh

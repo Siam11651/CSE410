@@ -30,9 +30,9 @@ void object::draw() const
     constexpr float RAD2DEG = 180.0f / M_PI;
     const quaternion &rotation = object_transform.rotation;
     const float angle = rotation.get_angle();
-    const vector3 axis = rotation.get_axis();
-    const vector3 &position = object_transform.position;
-    const vector3 &scale = object_transform.scale;
+    const glm::vec3 axis = rotation.get_axis();
+    const glm::vec3 &position = object_transform.position;
+    const glm::vec3 &scale = object_transform.scale;
 
     glPushMatrix();
     glTranslatef(position.x, position.y, position.z);

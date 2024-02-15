@@ -18,16 +18,16 @@ plane_mesh::plane_mesh(const float &size_x, const float &size_z, const size_t &c
         {
             const float top = og_z + j * check_size_z;
             const float bot = og_z + (j + 1) * check_size_z;
-            const vector3 top_left(left, 0.0f, top);
-            const vector3 top_right(right, 0.0f, top);
-            const vector3 bot_left(left, 0.0f, bot);
-            const vector3 bot_right(right, 0.0f, bot);
+            const glm::vec3 top_left(left, 0.0f, top);
+            const glm::vec3 top_right(right, 0.0f, top);
+            const glm::vec3 bot_left(left, 0.0f, bot);
+            const glm::vec3 bot_right(right, 0.0f, bot);
 
-            m_faces.emplace_back(std::array<vector3, 3>
+            m_faces.emplace_back(std::array<glm::vec3, 3>
             {
                 top_left, bot_left, top_right
             }, colors[color_idx % 2]);
-            m_faces.emplace_back(std::array<vector3, 3>
+            m_faces.emplace_back(std::array<glm::vec3, 3>
             {
                 top_right, bot_left, bot_right
             }, colors[color_idx % 2]);
