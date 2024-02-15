@@ -37,7 +37,6 @@ void display_callback()  // draw each frame
     {
         current_scene->setup_frame();
         current_scene->on_new_frame();
-        current_scene->simulate_physics();
         current_scene->on_new_frame_late();
         current_scene->show();
     }

@@ -4,177 +4,143 @@
 
 vector3 vector3::one(1.0f, 1.0f, 1.0f);
 
-vector3::vector3(const float &x, const float &y, const float &z)
+vector3::vector3(const float &_x, const float &_y, const float &_z)
 {
-    m_x = x;
-    m_y = y;
-    m_z = z;
-}
-
-float &vector3::x()
-{
-    return m_x;
-}
-
-float &vector3::y()
-{
-    return m_y;
-}
-
-float &vector3::z()
-{
-    return m_z;
-}
-
-const float &vector3::const_x() const
-{
-    return m_x;
-}
-
-const float &vector3::const_y() const
-{
-    return m_y;
-}
-
-const float &vector3::const_z() const
-{
-    return m_z;
+    x = _x;
+    y = _y;
+    z = _z;
 }
 
 float vector3::get_magnitude() const
 {
-    return std::sqrt(m_x * m_x + m_y * m_y + m_z * m_z);
+    return std::sqrt(x * x + y * y + z * z);
 }
 
 vector3 vector3::get_normalized() const
 {
     float magnitude = get_magnitude();
 
-    return vector3(m_x / magnitude, m_y / magnitude, m_z / magnitude);
+    return vector3(x / magnitude, y / magnitude, z / magnitude);
 }
 
 bool vector3::operator == (const vector3 &other) const
 {
-    return m_x == other.m_x && m_y == other.m_y && m_z == other.m_z;
+    return x == other.x && y == other.y && z == other.z;
 }
 
 bool vector3::operator != (const vector3 &other) const
 {
-    return !(m_x == other.m_x && m_y == other.m_y && m_z == other.m_z);
+    return !(x == other.x && y == other.y && z == other.z);
 }
 
 vector3 vector3::operator + (const vector3 &other) const
 {
-    return vector3(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
+    return vector3(x + other.x, y + other.y, z + other.z);
 }
 
 vector3 &vector3::operator += (const vector3 &other)
 {
-    m_x += other.m_x;
-    m_y += other.m_y;
-    m_z += other.m_z;
+    x += other.x;
+    y += other.y;
+    z += other.z;
 
     return *this;
 }
 
 vector3 vector3::operator - (const vector3 &other) const
 {
-    return vector3(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
+    return vector3(x - other.x, y - other.y, z - other.z);
 }
 
 vector3 &vector3::operator -= (const vector3 &other)
 {
-    m_x -= other.m_x;
-    m_y -= other.m_y;
-    m_z -= other.m_z;
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
 
     return *this;
 }
 
 vector3 vector3::operator * (const float &value) const
 {
-    return vector3(m_x * value, m_y * value, m_z * value);
+    return vector3(x * value, y * value, z * value);
 }
 
 vector3 &vector3::operator *= (const float &value)
 {
-    m_x *= value;
-    m_y *= value;
-    m_z *= value;
+    x *= value;
+    y *= value;
+    z *= value;
 
     return *this;
 }
 
 vector3 vector3::operator / (const float &value) const
 {
-    return vector3(m_x / value, m_y / value, m_z / value);
+    return vector3(x / value, y / value, z / value);
 }
 
 vector3 vector3::cross(const vector3 &vector_a, const vector3 &vector_b)
 {
-    return vector3(vector_a.const_y() * vector_b.const_z() - vector_a.const_z() * vector_b.const_y(),
-        vector_a.const_z() * vector_b.const_x() - vector_a.const_x() * vector_b.const_z(),
-        vector_a.const_x() * vector_b.const_y() - vector_a.const_y() * vector_b.const_x());
+    return vector3(vector_a.y * vector_b.z - vector_a.z * vector_b.y, vector_a.z * vector_b.x - vector_a.x * vector_b.z, vector_a.x * vector_b.y - vector_a.y * vector_b.x);
 }
 
 float vector3::dot(const vector3 &vector_a, const vector3 &vector_b)
 {
-    return vector_a.const_x() * vector_b.const_x()
-        + vector_a.const_y() * vector_b.const_y()
-        + vector_a.const_z() * vector_b.const_z();
+    return vector_a.x * vector_b.x + vector_a.y * vector_b.y + vector_a.z * vector_b.z;
 }
 
 quaternion::quaternion()
 {
-    m_w = 1.0f;
-    m_x = 0.0f;
-    m_y = 0.0f;
-    m_z = 0.0f;
+    w = 1.0f;
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
 }
 
-quaternion::quaternion(const vector3 &euler_rotation)
+quaternion::quaternion(const vector3 &_euler_rotation)
 {
-    const float &ex = euler_rotation.const_x();
-    const float &ey = euler_rotation.const_y();
-    const float &ez = euler_rotation.const_z();
+    const float &ex = _euler_rotation.x;
+    const float &ey = _euler_rotation.y;
+    const float &ez = _euler_rotation.z;
     quaternion qx(std::cos(ex / 2.0f), std::sin(ex / 2.0f), 0.0f, 0.0f);
     quaternion qy(std::cos(ey / 2.0f), 0.0f, std::sin(ey / 2.0f), 0.0f);
     quaternion qz(std::cos(ez / 2.0f), 0.0f, 0.0f, std::sin(ez / 2.0f));
     quaternion new_q = qz * qy * qx;
-    m_w = new_q.m_w;
-    m_x = new_q.m_x;
-    m_y = new_q.m_y;
-    m_z = new_q.m_z;
+    w = new_q.w;
+    x = new_q.x;
+    y = new_q.y;
+    z = new_q.z;
 }
 
-quaternion::quaternion(const vector3 &axis, const float &angle)
+quaternion::quaternion(const vector3 &_axis, const float &_angle)
 {
-    m_w = std::cos(angle / 2.0f);
-    m_x = axis.const_x() * std::sin(angle / 2.0f);
-    m_y = axis.const_y() * std::sin(angle / 2.0f);
-    m_z = axis.const_z() * std::sin(angle / 2.0f);
+    w = std::cos(_angle / 2.0f);
+    x = _axis.x * std::sin(_angle / 2.0f);
+    y = _axis.y * std::sin(_angle / 2.0f);
+    z = _axis.z * std::sin(_angle / 2.0f);
 }
 
-quaternion::quaternion(const float &w, const float &x, const float &y, const float &z)
+quaternion::quaternion(const float &_w, const float &_x, const float &_y, const float &_z)
 {
-    m_w = w;
-    m_x = x;
-    m_y = y;
-    m_z = z;
+    w = _w;
+    x = _x;
+    y = _y;
+    z = _z;
 }
 
 vector3 quaternion::get_axis() const
 {
-    const float angle = std::acos(m_w);
+    const float angle = std::acos(w);
 
     if(angle == 0.0f)
     {
         return vector3(0.0f, 0.0f, 0.0f);
     }
 
-    const float new_x = m_x / std::sin(angle);
-    const float new_y = m_y / std::sin(angle);
-    const float new_z = m_z / std::sin(angle);
+    const float new_x = x / std::sin(angle);
+    const float new_y = y / std::sin(angle);
+    const float new_z = z / std::sin(angle);
 
     return vector3(new_x, new_y, new_z);
 }
@@ -183,57 +149,17 @@ quaternion quaternion::get_normalized() const
 {
     const float magnitude = get_magnitude();
 
-    return quaternion(m_w / magnitude, m_x / magnitude, m_y / magnitude, m_z / magnitude);
+    return quaternion(w / magnitude, x / magnitude, y / magnitude, z / magnitude);
 }
 
 float quaternion::get_angle() const
 {
-    return std::acos(m_w) * 2.0f;
+    return std::acos(w) * 2.0f;
 }
 
 float quaternion::get_magnitude() const
 {
-    return std::sqrt(m_w * m_w + m_x * m_x + m_y * m_y + m_z * m_z);
-}
-
-float &quaternion::w()
-{
-    return m_w;
-}
-
-float &quaternion::x()
-{
-    return m_x;
-}
-
-float &quaternion::y()
-{
-    return m_y;
-}
-
-float &quaternion::z()
-{
-    return m_z;
-}
-
-const float &quaternion::const_w() const
-{
-    return m_w;
-}
-
-const float &quaternion::const_x() const
-{
-    return m_x;
-}
-
-const float &quaternion::const_y() const
-{
-    return m_y;
-}
-
-const float &quaternion::const_z() const
-{
-    return m_z;
+    return std::sqrt(w * w + x * x + y * y + z * z);
 }
 
 vector3 quaternion::get_rotated_vector(const vector3 &source) const
@@ -242,45 +168,39 @@ vector3 quaternion::get_rotated_vector(const vector3 &source) const
     {
         std::array<float, 3>
         {
-            1.0f - 2.0f * (m_y * m_y + m_z * m_z),
-            2.0f * (m_x * m_y - m_w * m_z),
-            2.0f * (m_x * m_z + m_w * m_y)
+            1.0f - 2.0f * (y * y + z * z),
+            2.0f * (x * y - w * z),
+            2.0f * (x * z + w * y)
         },
         std::array<float, 3>
         {
-            2.0f * (m_x * m_y + m_w * m_z),
-            1.0f - 2.0f * (m_x * m_x + m_z * m_z),
-            2.0f * (m_y * m_z - m_w * m_x)
+            2.0f * (x * y + w * z),
+            1.0f - 2.0f * (x * x + z * z),
+            2.0f * (y * z - w * x)
         },
         std::array<float, 3>
         {
-            2.0f * (m_x * m_z - m_w * m_y),
-            2.0f * (m_y * m_z + m_w * m_x),
-            1.0f - 2.0f * (m_x * m_x + m_y * m_y)
+            2.0f * (x * z - w * y),
+            2.0f * (y * z + w * x),
+            1.0f - 2.0f * (x * x + y * y)
         }
     };
 
-    const float &sx = source.const_x();
-    const float &sy = source.const_y();
-    const float &sz = source.const_z();
+    const float &sx = source.x;
+    const float &sy = source.y;
+    const float &sz = source.z;
 
-    return vector3(sx * matrix[0][0] + sy * matrix[0][1] + sz * matrix[0][2],
-        sx * matrix[1][0] + sy * matrix[1][1] + sz * matrix[1][2],
-        sx * matrix[2][0] + sy * matrix[2][1] + sz * matrix[2][2]);
+    return vector3(sx * matrix[0][0] + sy * matrix[0][1] + sz * matrix[0][2], sx * matrix[1][0] + sy * matrix[1][1] + sz * matrix[1][2], sx * matrix[2][0] + sy * matrix[2][1] + sz * matrix[2][2]);
 }
 
 quaternion quaternion::operator * (const quaternion &other) const
 {
     const quaternion &q1 = *this;
     const quaternion &q2 = other;
-    float new_w = q1.const_w() * q2.const_w() - q1.const_x() * q2.const_x()
-        - q1.const_y() * q2.const_y() - q1.const_z() * q2.const_z();
-    float new_x = q1.const_w() * q2.const_x() + q1.const_x() * q2.const_w()
-        + q1.const_y() * q2.const_z() - q1.const_z() * q2.const_y();
-    float new_y = q1.const_w() * q2.const_y() - q1.const_x() * q2.const_z()
-        + q1.const_y() * q2.const_w() + q1.const_z() * q2.const_x();
-    float new_z = q1.const_w() * q2.const_z() + q1.const_x() * q2.const_y()
-        - q1.const_y() * q2.const_x() + q1.const_z() * q2.const_w();
+    float new_w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
+    float new_x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
+    float new_y = q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x;
+    float new_z = q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w;
 
     return quaternion(new_w, new_x, new_y, new_z);
 }
@@ -291,9 +211,9 @@ quaternion quaternion::get_rotation(const vector3 &from, const vector3 &to)
     const float from_magn_2 = std::pow(from.get_magnitude(), 2.0f);
     const float to_magn_2 = std::pow(to.get_magnitude(), 2.0f);;
     const float qw = std::sqrt(from_magn_2 * to_magn_2) + vector3::dot(from, to);
-    float qx = cross_product.const_x();
-    float qy = cross_product.const_y();
-    float qz = cross_product.const_z();
+    float qx = cross_product.x;
+    float qy = cross_product.y;
+    float qz = cross_product.z;
 
     if(qw == 0.0f)
     {
@@ -307,70 +227,40 @@ quaternion quaternion::get_rotation(const vector3 &from, const vector3 &to)
 
 transform::transform()
 {
-    m_scale = vector3(1.0f, 1.0f, 1.0f);
+    scale = vector3(1.0f, 1.0f, 1.0f);
 }
 
-transform::transform(const vector3 &position)
+transform::transform(const vector3 &_position)
 {
-    m_position = position;
-    m_scale = vector3(1.0f, 1.0f, 1.0f);
+    position = _position;
+    scale = vector3(1.0f, 1.0f, 1.0f);
 }
 
-transform::transform(const vector3 &position, const vector3 &euler_rotation)
+transform::transform(const vector3 &_position, const vector3 &_euler_rotation)
 {
-    m_position = position;
-    m_rotation = quaternion(euler_rotation);
-    m_scale = vector3(1.0f, 1.0f, 1.0f);
+    position = _position;
+    rotation = quaternion(_euler_rotation);
+    scale = vector3(1.0f, 1.0f, 1.0f);
 }
 
-transform::transform(const vector3 &position, const vector3 &euler_rotation, const vector3 &scale)
+transform::transform(const vector3 &_position, const vector3 &_euler_rotation, const vector3 &_scale)
 {
-    m_position = position;
-    m_rotation = quaternion(euler_rotation);
-    m_scale = scale;
-}
-
-vector3 &transform::position()
-{
-    return m_position;
-}
-
-quaternion &transform::rotation()
-{
-    return m_rotation;
-}
-
-vector3 &transform::scale()
-{
-    return m_scale;
-}
-
-const vector3 &transform::const_position() const
-{
-    return m_position;
-}
-
-const quaternion &transform::const_rotation() const
-{
-    return m_rotation;
-}
-
-const vector3 &transform::const_scale() const
-{
-    return m_scale;
+    position = _position;
+    rotation = quaternion(_euler_rotation);
+    scale = _scale;
 }
 
 vector3 transform::get_forward() const
 {
-    return m_rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
+    return rotation.get_rotated_vector(vector3(0.0f, 0.0f, 1.0f));
 }
 
 vector3 transform::get_up() const
 {
-    return m_rotation.get_rotated_vector(vector3(0.0f, 1.0f, 0.0f));
+    return rotation.get_rotated_vector(vector3(0.0f, 1.0f, 0.0f));
 }
 
 vector3 transform::get_left() const
 {
-    return m_rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
+    return rotation.get_rotated_vector(vector3(1.0f, 0.0f, 0.0f));
 }

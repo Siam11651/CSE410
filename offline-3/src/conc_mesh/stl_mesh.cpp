@@ -19,9 +19,9 @@ void stl_mesh::constructor_helper(const std::string &file_path, const color &mes
 
         for(size_t i = 0; i < 3; ++i)
         {
-            stl_ifstream.read((char *)&vertices[i].x(), 4);
-            stl_ifstream.read((char *)&vertices[i].y(), 4);
-            stl_ifstream.read((char *)&vertices[i].z(), 4);
+            stl_ifstream.read((char *)&vertices[i].x, 4);
+            stl_ifstream.read((char *)&vertices[i].y, 4);
+            stl_ifstream.read((char *)&vertices[i].z, 4);
         }
 
         m_faces.emplace_back(vertices, mesh_color);

@@ -4,128 +4,47 @@
 
 object::object()
 {
-    m_active = true;
-    m_rigidbody = nullptr;
-    m_collider = nullptr;
+    active = true;
 }
 
-object::object(const mesh &object_mesh)
+object::object(const mesh &_object_mesh)
 {
-    m_active = true;
-    m_mesh = object_mesh;
-    m_rigidbody = nullptr;
-    m_collider = nullptr;
+    active = true;
+    object_mesh = _object_mesh;
 }
 
-object::object(const mesh &object_mesh, const transform &model_transform)
+object::object(const mesh &_object_mesh, const transform &_model_transform)
 {
-    m_active = true;
-    m_mesh = object_mesh;
-    m_transform = model_transform;
-    m_rigidbody = nullptr;
-    m_collider = nullptr;
+    active = true;
+    object_mesh = object_mesh;
+    object_transform = _model_transform;
 }
 
-std::string &object::name()
+void object::draw() const
 {
-    return m_name;
-}
-
-const std::string &object::const_name() const
-{
-    return m_name;
-}
-
-bool &object::active()
-{
-    return m_active;
-}
-
-const bool &object::const_active() const
-{
-    return m_active;
-}
-
-transform &object::object_transform()
-{
-    return m_transform;
-}
-
-const transform &object::const_object_transform() const
-{
-    return m_transform;
-}
-
-const mesh &object::const_object_mesh() const
-{
-    return m_mesh;
-}
-
-void object::set_rigidbody(rigidbody *object_rigidbody)
-{
-    m_rigidbody = object_rigidbody;
-
-    if(m_rigidbody != nullptr)
-    {
-        m_rigidbody->set_parent_object(this);
-    }
-}
-
-rigidbody *object::get_rigidbody() const
-{
-    return m_rigidbody;
-}
-
-void object::set_collider(collider *object_collider)
-{
-    m_collider = object_collider;
-
-    if(m_collider != nullptr)
-    {
-        m_collider->set_parent_object(this);
-    }
-}
-
-collider *object::get_collider() const
-{
-    return m_collider;
-}
-
-std::vector<object *> &object::child_ptrs()
-{
-    return m_child_ptrs;
-}
-
-const std::vector<object *> &object::const_child_ptrs() const
-{
-    return m_child_ptrs;
-}
-
-void object::draw(const light &scene_light) const
-{
-    if(!m_active)
+    if(!active)
     {
         return;
     }
 
     constexpr float RAD2DEG = 180.0f / M_PI;
-    const quaternion &rotation = m_transform.const_rotation();
+    const quaternion &rotation = object_transform.rotation;
     const float angle = rotation.get_angle();
     const vector3 axis = rotation.get_axis();
-    const vector3 &position = m_transform.const_position();
-    const vector3 &scale = m_transform.const_scale();
+    const vector3 &position = object_transform.position;
+    const vector3 &scale = object_transform.scale;
 
     glPushMatrix();
-    glTranslatef(position.const_x(), position.const_y(), position.const_z());
-    glRotatef(RAD2DEG * angle, axis.const_x(), axis.const_y(), axis.const_z());
-    glScalef(scale.const_x(), scale.const_y(), scale.const_z());
-    m_mesh.draw(scene_light, m_transform);
+    glTranslatef(position.x, position.y, position.z);
+    glRotatef(RAD2DEG * angle, axis.x, axis.y, axis.z);
+    glScalef(scale.x, scale.y, scale.z);
+    object_mesh.draw(object_transform);
 
-    for(object *child : m_child_ptrs)
+    for(object *child : child_ptrs)
     {
         if(child)
         {
-            child->draw(scene_light);
+            child->draw();
         }
     }
 

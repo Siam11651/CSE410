@@ -3,21 +3,13 @@
 
 class vector3
 {
-private:
-    float m_x;
-    float m_y;
-    float m_z;
-
 public:
+    float x;
+    float y;
+    float z;
     static vector3 one;
 
-    vector3(const float &x = 0, const float &y = 0, const float &z = 0);
-    float &x();
-    float &y();
-    float &z();
-    const float &const_x() const;
-    const float &const_y() const;
-    const float &const_z() const;
+    vector3(const float &_x = 0, const float &_y = 0, const float &_z = 0);
     float get_magnitude() const;
     vector3 get_normalized() const;
     bool operator == (const vector3 &other) const;
@@ -35,26 +27,20 @@ public:
 
 class quaternion
 {
-private:
-    float m_w, m_x, m_y, m_z;
-
 public:
+    float w;
+    float x;
+    float y;
+    float z;
+
     quaternion();
-    quaternion(const vector3 &euler_rotation);
-    quaternion(const vector3 &axis, const float &angle);
-    quaternion(const float &w, const float &x, const float &y, const float &z);
+    quaternion(const vector3 &_euler_rotation);
+    quaternion(const vector3 &_axis, const float &_angle);
+    quaternion(const float &_w, const float &_x, const float &_y, const float &_z);
     vector3 get_axis() const;
     float get_angle() const;
     float get_magnitude() const;
     quaternion get_normalized() const;
-    float &w();
-    float &x();
-    float &y();
-    float &z();
-    const float &const_w() const;
-    const float &const_x() const;
-    const float &const_y() const;
-    const float &const_z() const;
     vector3 get_rotated_vector(const vector3 &source) const;
     quaternion operator * (const quaternion &other) const;
     static quaternion get_rotation(const vector3 &from, const vector3 &to);
@@ -62,22 +48,15 @@ public:
 
 class transform
 {
-private:
-    vector3 m_position;
-    quaternion m_rotation;
-    vector3 m_scale;
-
 public:
+    vector3 position;
+    quaternion rotation;
+    vector3 scale;
+
     transform();
-    transform(const vector3 &position);
-    transform(const vector3 &position, const vector3 &euler_rotation);
-    transform(const vector3 &position, const vector3 &euler_rotation, const vector3 &scale);
-    vector3 &position();
-    quaternion &rotation();
-    vector3 &scale();
-    const vector3 &const_position() const;
-    const quaternion &const_rotation() const;
-    const vector3 &const_scale() const;
+    transform(const vector3 &_position);
+    transform(const vector3 &_position, const vector3 &_euler_rotation);
+    transform(const vector3 &_position, const vector3 &_euler_rotation, const vector3 &_scale);
     vector3 get_forward() const;
     vector3 get_up() const;
     vector3 get_left() const;
