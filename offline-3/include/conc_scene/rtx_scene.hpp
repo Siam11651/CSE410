@@ -5,7 +5,7 @@
 #include <object.hpp>
 #include <conc_mesh/plane_mesh.hpp>
 #include <conc_mesh/sphere_mesh.hpp>
-#include <conc_mesh/base_triangle_mesh.hpp>
+#include <conc_mesh/pyramid_mesh.hpp>
 
 class rtx_scene : public scene
 {
@@ -14,9 +14,10 @@ private:
     float m_camera_spin;
     plane_mesh *m_plane_mesh;
     sphere_mesh *m_sphere_mesh;
-    base_triangle_mesh *m_base_triangle_mesh;
+    pyramid_mesh *m_pyramid_mesh;
     object *m_plane_object;
     object *m_sphere_object;
+    object *m_pyramid_object;
 
 public:
     rtx_scene();
