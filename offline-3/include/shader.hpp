@@ -31,6 +31,10 @@ R"(
     uniform float circle_ambients[2];
     uniform float circle_diffuses[2];
     uniform vec3 circle_centers[2];
+    uniform vec3 triangle_colors[1];
+    uniform float triangle_ambients[1];
+    uniform float triangle_diffuses[1];
+    uniform vec3 triangle_vertices[3];
 
     float circle_distance(vec3 center, vec3 source, vec3 ray)
     {
@@ -71,6 +75,7 @@ R"(
         frag_color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float min_t = -1.0f;
+        int min_object = -1;
         int min_circle_index = -1;
 
         for(int i = 0; i < 2; ++i)
@@ -86,55 +91,60 @@ R"(
             {
                 min_t = t;
                 min_circle_index = i;
+                min_object = 1;
             }
             else if(t < min_t)
             {
                 min_t = t;
                 min_circle_index = i;
+                min_object = 1;
             }
         }
-
-        if(min_circle_index < 0)
-        {
-            return;
-        }
-
-        vec3 color = circle_colors[min_circle_index] * circle_ambients[min_circle_index];
 
         for(int i = 0; i < 1; ++i)
         {
-            vec3 point = camera_pos + ray * min_t;
-            vec3 light_ray = normalize(point - point_light_positions[i]);
-            float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
-            bool hit = true;
-
-            for(int j = 0; j < 2; ++j)
-            {
-                float t = circle_distance(circle_centers[j], point_light_positions[i], light_ray);
-
-                if(t < 0.0f)
-                {
-                    continue;
-                }
-
-                if(t < target_t)
-                {
-                    hit = false;
-
-                    break;
-                }
-            }
-
-            if(hit)
-            {
-                vec3 normal = normalize(point - circle_centers[min_circle_index]);
-                float lambert = dot(normal, -light_ray);
-                vec3 c_color = circle_colors[min_circle_index] * max(lambert, 0);
-                color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color;
-            }
+            
         }
 
-        frag_color = vec4(color, 1.0f);
+        if(min_object == 1)
+        {
+            vec3 color = circle_colors[min_circle_index] * circle_ambients[min_circle_index];
+
+            for(int i = 0; i < 1; ++i)
+            {
+                vec3 point = camera_pos + ray * min_t;
+                vec3 light_ray = normalize(point - point_light_positions[i]);
+                float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
+                bool hit = true;
+
+                for(int j = 0; j < 2; ++j)
+                {
+                    float t = circle_distance(circle_centers[j], point_light_positions[i], light_ray);
+
+                    if(t < 0.0f)
+                    {
+                        continue;
+                    }
+
+                    if(t < target_t)
+                    {
+                        hit = false;
+
+                        break;
+                    }
+                }
+
+                if(hit)
+                {
+                    vec3 normal = normalize(point - circle_centers[min_circle_index]);
+                    float lambert = dot(normal, -light_ray);
+                    vec3 c_color = circle_colors[min_circle_index] * max(lambert, 0);
+                    color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color;
+                }
+            }
+
+            frag_color = vec4(color, 1.0f);
+        }
     }
 )";
 

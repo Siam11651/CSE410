@@ -317,6 +317,38 @@ int main(int argc, char **argv)
         glUniform3fv(circle_center_uinform_loc, 1, glm::value_ptr(circle_centers[i]));
     }
 
+    glm::vec3 triangle_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
+    float triangle_ambients[] = {0.3f};
+    float triangle_diffuses[] = {0.5f};
+    glm::vec3 triangle_vertices[] = {glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(0.5f, 0.0f, -0.5f), glm::vec3(0.0f, 0.0f, 0.5f)};
+
+    for(size_t i = 0; i < 1; ++i)
+    {
+        std::stringstream ss;
+
+        ss << i;
+
+        uint32_t triangle_color_uinform_loc = glGetUniformLocation(shader_program, ("triangle_colors[" + ss.str() + "]").c_str());
+        uint32_t triangle_ambient_uinform_loc = glGetUniformLocation(shader_program, ("triangle_ambients[" + ss.str() + "]").c_str());
+        uint32_t triangle_diffuses_uinform_loc = glGetUniformLocation(shader_program, ("triangle_diffuses[" + ss.str() + "]").c_str());
+
+        glUniform3fv(triangle_color_uinform_loc, 1, glm::value_ptr(triangle_colors[i]));
+        glUniform1f(triangle_ambient_uinform_loc, triangle_ambients[i]);
+        glUniform1f(triangle_diffuses_uinform_loc, triangle_diffuses[i]);
+
+        for(size_t j = 0; j < 3; ++j)
+        {
+            std::stringstream ss3;
+            size_t idx = i * 3 + j;
+
+            ss3 << idx;
+
+            uint32_t triangle_vertices_uinform_loc = glGetUniformLocation(shader_program, ("triangle_vertices[" + ss3.str() + "]").c_str());
+
+            glUniform3fv(triangle_vertices_uinform_loc, 1, glm::value_ptr(triangle_vertices[idx]));
+        }
+    }
+
     glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
     glUniform1f(dx_loc, 0.5f / screen::window_width());
     glUniform1f(dy_loc, 0.5f / screen::window_height());
