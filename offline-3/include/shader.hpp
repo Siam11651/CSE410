@@ -72,6 +72,7 @@ R"(
         vec3 v1 = triangle_vertices[index * 3 + 1];
         vec3 v2 = triangle_vertices[index * 3 + 2];
         vec3 normal = normalize(cross(v1 - v0, v2 - v0));
+        
         float D = -dot(normal, v0);
         float t = -(D + dot(source, normal)) / dot(normal, ray);
 
@@ -80,7 +81,38 @@ R"(
             return -1.0f;
         }
 
-        
+        vec3 e1 = v1 - v0;
+        vec3 e2 = v2 - v0;
+        vec3 P = source + t * ray;
+        float a = (P.x * e2.y - P.y * e2.x) / (e1.x * e2.y - e1.y * e2.x);
+        float b = (P.x * e1.y - P.y * e1.x) / (e2.x * e1.y - e1.x * e2.y);
+
+        if(a < -100000.0f)
+        {
+            return -2.0f;
+        }
+
+        if(a > 1.0f)
+        {
+            return -3.0f;
+        }
+
+        if(b < 0.0f)
+        {
+            return -4.0f;
+        }
+
+        if(b > 1.0f)
+        {
+            return -5.0f;
+        }
+
+        if(!(a + b <= 1))
+        {
+            return -6.0f;
+        }
+
+        return t;
     }
 
     void main()
@@ -94,6 +126,7 @@ R"(
         float min_t = -1.0f;
         int min_object = -1;
         int min_circle_index = -1;
+        int min_triangle_index = -1;
 
         for(int i = 0; i < 2; ++i)
         {
@@ -120,7 +153,32 @@ R"(
 
         for(int i = 0; i < 1; ++i)
         {
-            
+            float t = triangle_distance(camera_pos, ray, i);
+
+            if(t < 0.0f)
+            {
+                if(t == -7.0f)
+                {
+                    frag_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+                    return;
+                }
+
+                continue;
+            }
+
+            if(min_t == -1)
+            {
+                min_t = t;
+                min_triangle_index = i;
+                min_object = 2;
+            }
+            else if(t < min_t)
+            {
+                min_t = t;
+                min_triangle_index = i;
+                min_object = 2;
+            }
         }
 
         if(min_object == 1)
@@ -160,6 +218,11 @@ R"(
                 }
             }
 
+            frag_color = vec4(color, 1.0f);
+        }
+        else if(min_object == 2)
+        {
+            vec3 color = triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
             frag_color = vec4(color, 1.0f);
         }
     }
