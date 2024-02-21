@@ -21,6 +21,7 @@ R"(
     out vec4 frag_color;
     uniform int screen_dimension;
     uniform vec3 camera_pos;
+    uniform mat4 camera_transform;
     uniform vec3 bot_left;
     uniform float dx;
     uniform float dy;
@@ -29,15 +30,17 @@ R"(
 
     void main()
     {
-        float x = bot_left.x + gl_FragCoord.x / screen_dimension + dx;
-        float y = bot_left.y + gl_FragCoord.y / screen_dimension + dy;
+        vec4 pixel = camera_transform * vec4(bot_left.x + gl_FragCoord.x / screen_dimension + dx, bot_left.y + gl_FragCoord.y / screen_dimension + dy, bot_left.z, 1.0f);
+        float x = pixel.x;
+        float y = pixel.y;
+        float z = pixel.z;
         vec4 color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
         float min_t = -1.0f;
 
         for(int i = 0; i < 2; ++i)
         {
             vec3 center = centers[i];
-            vec3 ray = normalize(vec3(x, y, bot_left.z) - camera_pos);
+            vec3 ray = normalize(vec3(x, y, z) - camera_pos);
             vec3 _camera_pos = camera_pos - center;
             float a = dot(ray, ray);
             float b = 2.0f * dot(ray, _camera_pos);
@@ -53,7 +56,12 @@ R"(
             float t_minus = (-b - discriminant) / (2.0f * a);
             float t = (-b + discriminant) / (2.0f * a);
 
-            if(t_minus >= 0)
+            if(t < 0.0f)
+            {
+                continue;
+            }
+
+            if(t_minus >= 0.0f)
             {
                 t = t_minus;
             }

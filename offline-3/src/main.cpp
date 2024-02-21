@@ -83,7 +83,7 @@ void handle_inputs(GLFWwindow *window)
     if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
         const glm::vec3 &up = camera.transform.get_up();
-        const float angle = m_camera_spin * time::delta_time_s();
+        const float angle = -m_camera_spin * time::delta_time_s();
         const float qw = std::cos(angle / 2.0f);
         const float qx = std::sin(angle / 2.0f) * up.x;
         const float qy = std::sin(angle / 2.0f) * up.y;
@@ -94,7 +94,7 @@ void handle_inputs(GLFWwindow *window)
     if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
         const glm::vec3 &up = camera.transform.get_up();
-        const float angle = -m_camera_spin * time::delta_time_s();
+        const float angle = m_camera_spin * time::delta_time_s();
         const float qw = std::cos(angle / 2.0f);
         const float qx = std::sin(angle / 2.0f) * up.x;
         const float qy = std::sin(angle / 2.0f) * up.y;
@@ -275,11 +275,13 @@ int main(int argc, char **argv)
 
     uint32_t screen_dimension_loc = glGetUniformLocation(shader_program, "screen_dimension");
     uint32_t camera_pos_loc = glGetUniformLocation(shader_program, "camera_pos");
+    uint32_t camera_transform_loc = glGetUniformLocation(shader_program, "camera_transform");
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
+
     glm::vec3 circle_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
-    glm::vec3 centers[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
+    glm::vec3 centers[] = {glm::vec3(1.25f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -299,6 +301,11 @@ int main(int argc, char **argv)
     glUniform1f(dy_loc, 0.5f / screen::window_height());
 
     const float plane_distance = 1.0f / std::tan(fovy / 2.0f);
+
+    glm::vec3 bot_left = glm::vec3(-0.5f, -0.5f, plane_distance);
+
+    glUniform3fv(bot_left_loc, 1, glm::value_ptr(bot_left));
+
     // current_scene = new rtx_scene();
     double mouse_pos_x;
     double mouse_pos_y;
@@ -312,10 +319,13 @@ int main(int argc, char **argv)
         handle_inputs(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::vec3 bot_left = camera.transform.position - camera.transform.get_right() * 0.5f - camera.transform.get_up() * 0.5f + camera.transform.get_forward() * plane_distance;
+        const float angle = glm::angle(camera.transform.rotation);
+        const glm::vec3 axis = glm::axis(camera.transform.rotation);
+        glm::mat4 camera_transform = glm::translate(glm::mat4(1.0f), camera.transform.position);
+        camera_transform = glm::rotate(camera_transform, angle, axis);;
 
-        glUniform3fv(bot_left_loc, 1, glm::value_ptr(bot_left));
         glUniform3fv(camera_pos_loc, 1, glm::value_ptr(camera.transform.position));
+        glUniformMatrix4fv(camera_transform_loc, 1, GL_FALSE, glm::value_ptr(camera_transform));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         time::end_frame();
