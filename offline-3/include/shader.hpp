@@ -34,7 +34,7 @@ R"(
 
     float circle_distance(vec3 center, vec3 source, vec3 ray)
     {
-        vec3 _camera_pos = camera_pos - center;
+        vec3 _camera_pos = source - center;
         float a = dot(ray, ray);
         float b = 2.0f * dot(ray, _camera_pos);
         float c = dot(_camera_pos, _camera_pos) - 0.5f;
@@ -105,7 +105,7 @@ R"(
         {
             vec3 point = camera_pos + ray * min_t;
             vec3 light_ray = normalize(point - point_light_positions[i]);
-            float target_t = length(point - point_light_positions[i]);
+            float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
             bool hit = true;
 
             for(int j = 0; j < 2; ++j)
@@ -129,7 +129,7 @@ R"(
             {
                 vec3 normal = normalize(point - circle_centers[min_circle_index]);
                 float lambert = dot(normal, -light_ray);
-                vec3 c_color = circle_colors[min_circle_index] * lambert;
+                vec3 c_color = circle_colors[min_circle_index] * max(lambert, 0);
                 color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color;
             }
         }
