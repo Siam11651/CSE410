@@ -4,6 +4,7 @@
 sphere_mesh::sphere_mesh(const float &_radius, const size_t &stack_count, const size_t &segment_count, const color &_color)
 {
     radius = _radius;
+    sphere_color = _color;
     float stack_gap = M_PI / stack_count;
     float segment_gap = (2.0f * M_PI) / segment_count;
 

@@ -20,8 +20,6 @@ rtx_scene::rtx_scene() : scene()
     });
 }
 
-#include <iostream>
-
 void rtx_scene::on_new_frame()
 {
     if(input::get_key(input::key::key_w) == input::status::press)
