@@ -84,10 +84,30 @@ R"(
         vec3 e1 = v1 - v0;
         vec3 e2 = v2 - v0;
         vec3 P = source + t * ray;
-        float a = (P.x * e2.y - P.y * e2.x) / (e1.x * e2.y - e1.y * e2.x);
-        float b = (P.x * e1.y - P.y * e1.x) / (e2.x * e1.y - e1.x * e2.y);
+        float a = -1.0f;
+        float b = -1.0f ;
 
-        if(a < -100000.0f)
+        if(abs(e1.x * e2.y - e1.y * e2.x) >= 0.000001f && abs(e2.x * e1.y - e1.x * e2.y) >= 0.000001f)
+        {
+            a = (P.x * e2.y - P.y * e2.x) / (e1.x * e2.y - e1.y * e2.x);
+            b = (P.x * e1.y - P.y * e1.x) / (e2.x * e1.y - e1.x * e2.y);
+        }
+        else if(abs(e1.y * e2.z - e1.z * e2.y) >= 0.000001f && abs(e2.y * e1.z - e1.y * e2.z) >= 0.000001f)
+        {
+            a = (P.y * e2.z - P.z * e2.y) / (e1.y * e2.z - e1.z * e2.y);
+            b = (P.y * e1.z - P.z * e1.y) / (e2.y * e1.z - e1.y * e2.z);
+        }
+        else if(abs(e1.z * e2.x - e1.x * e2.z) >= 0.000001f && abs(e2.x * e1.x - e1.z * e2.x) >= 0.000001f)
+        {
+            a = (P.z * e2.x - P.x * e2.z) / (e1.z * e2.x - e1.x * e2.z);
+            b = (P.z * e1.x - P.x * e1.z) / (e2.z * e1.x - e1.z * e2.x);
+        }
+        else
+        {
+            return -7.0f;
+        }
+
+        if(a < 0.0f)
         {
             return -2.0f;
         }
@@ -107,7 +127,7 @@ R"(
             return -5.0f;
         }
 
-        if(!(a + b <= 1))
+        if(!(a + b <= 1.0f))
         {
             return -6.0f;
         }
@@ -157,13 +177,6 @@ R"(
 
             if(t < 0.0f)
             {
-                if(t == -7.0f)
-                {
-                    frag_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-
-                    return;
-                }
-
                 continue;
             }
 
