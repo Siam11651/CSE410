@@ -6,16 +6,17 @@
 
 class object
 {
+private:
+    const mesh *m_object_mesh_ptr;
+
 public:
     std::string name;
     bool active;
-    mesh object_mesh;
     transform object_transform;
     std::vector<object *> child_ptrs;
 
-    object();
-    object(const mesh &_object_mesh);
-    object(const mesh &_object_mesh, const transform &_model_transform);
+    object(const mesh *_object_mesh_ptr);
+    object(const mesh *_object_mesh_ptr, const transform &_model_transform);
     void draw() const;
 };
 

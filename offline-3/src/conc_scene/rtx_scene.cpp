@@ -1,7 +1,7 @@
-#include <conc_scene/rtx_scene.hpp>
 #include <cmath>
 #include <input.hpp>
 #include <time.hpp>
+#include <conc_scene/rtx_scene.hpp>
 
 rtx_scene::rtx_scene() : scene()
 {
@@ -11,17 +11,13 @@ rtx_scene::rtx_scene() : scene()
     main_camera->cam_transform.position.z = 5.0f;
     main_camera->cam_transform.position.y = 5.0f;
     main_camera->cam_transform.rotation = glm::quat(glm::vec3(-M_PI / 4.0f, 0.0f, 0.0f)) * glm::quat(glm::vec3(0.0f, M_PI, 0.0f));
-    m_plane_mesh = new plane_mesh(100, 100, 100, 100);
-    m_sphere_mesh = new sphere_mesh(0.5f, 20, 20, color(1.0f, 0.0f, 0.0f, 1.0f));
-    m_pyramid_mesh = new pyramid_mesh(1.0f, 0.5f, 0.5f, color(0.0f, 0.0f, 1.0f, 1.0f));
-    m_plane_object = new object(*m_plane_mesh);
-    m_sphere_object = new object(*m_sphere_mesh);
-    m_sphere_object->object_transform.position.y = 0.5f;
-    m_pyramid_object = new object(*m_pyramid_mesh);
+    m_sphere_mesh = new sphere_mesh(1.0f, 50, 50, color(1.0f, 0.0f, 0.0f));
+    m_sphere = new object(m_sphere_mesh);
 
-    objects.push_back(m_plane_object);
-    // objects.push_back(m_sphere_object);
-    objects.push_back(m_pyramid_object);
+    objects.insert(objects.end(),
+    {
+        m_sphere
+    });
 }
 
 #include <iostream>

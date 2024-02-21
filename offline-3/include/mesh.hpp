@@ -14,6 +14,7 @@ public:
     float a;
 
     color();
+    color(const float &_r, const float &_g, const float &_b);
     color(const float &_r, const float &_g, const float &_b, const float &_a);
     color operator * (const float &value) const;
 };

@@ -7,7 +7,9 @@
 class sphere_mesh : public mesh
 {
 public:
-    sphere_mesh(const float &radius, const size_t &stack_count, const size_t &segment_count, const color &_color);
+    float radius;
+
+    sphere_mesh(const float &_radius, const size_t &stack_count, const size_t &segment_count, const color &_color);
 };
 
 #endif

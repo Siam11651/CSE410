@@ -2,21 +2,16 @@
 #include <GL/gl.h>
 #include <cmath>
 
-object::object()
+object::object(const mesh *_object_mesh_ptr)
 {
     active = true;
+    m_object_mesh_ptr = _object_mesh_ptr;
 }
 
-object::object(const mesh &_object_mesh)
+object::object(const mesh *_object_mesh_ptr, const transform &_model_transform)
 {
     active = true;
-    object_mesh = _object_mesh;
-}
-
-object::object(const mesh &_object_mesh, const transform &_model_transform)
-{
-    active = true;
-    object_mesh = object_mesh;
+    m_object_mesh_ptr = m_object_mesh_ptr;
     object_transform = _model_transform;
 }
 
@@ -38,7 +33,11 @@ void object::draw() const
     glTranslatef(position.x, position.y, position.z);
     glRotatef(RAD2DEG * angle, axis.x, axis.y, axis.z);
     glScalef(scale.x, scale.y, scale.z);
-    object_mesh.draw(object_transform);
+
+    if(m_object_mesh_ptr)
+    {
+        m_object_mesh_ptr->draw(object_transform);
+    }
 
     for(object *child : child_ptrs)
     {

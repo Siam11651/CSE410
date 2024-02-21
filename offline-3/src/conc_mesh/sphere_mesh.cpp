@@ -1,8 +1,9 @@
 #include <conc_mesh/sphere_mesh.hpp>
 #include <cmath>
 
-sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count, const size_t &segment_count, const color &_color)
+sphere_mesh::sphere_mesh(const float &_radius, const size_t &stack_count, const size_t &segment_count, const color &_color)
 {
+    radius = _radius;
     float stack_gap = M_PI / stack_count;
     float segment_gap = (2.0f * M_PI) / segment_count;
 
@@ -10,10 +11,10 @@ sphere_mesh::sphere_mesh(const float &radius, const size_t &stack_count, const s
     {
         float stack_start_angle = i * stack_gap;
         float stack_end_angle = (i + 1) * stack_gap;
-        float y_top = std::cos(stack_start_angle) * radius;
-        float y_bot = std::cos(stack_end_angle) * radius;
-        float stack_start_radius = std::sin(stack_start_angle) * radius;
-        float stack_end_radius = std::sin(stack_end_angle) * radius;
+        float y_top = std::cos(stack_start_angle) * _radius;
+        float y_bot = std::cos(stack_end_angle) * _radius;
+        float stack_start_radius = std::sin(stack_start_angle) * _radius;
+        float stack_end_radius = std::sin(stack_end_angle) * _radius;
 
         for(size_t j = 0; j < segment_count; ++j)
         {

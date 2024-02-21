@@ -5,19 +5,14 @@
 #include <object.hpp>
 #include <conc_mesh/plane_mesh.hpp>
 #include <conc_mesh/sphere_mesh.hpp>
-#include <conc_mesh/pyramid_mesh.hpp>
 
 class rtx_scene : public scene
 {
 private:
     float m_camera_speed;
     float m_camera_spin;
-    plane_mesh *m_plane_mesh;
     sphere_mesh *m_sphere_mesh;
-    pyramid_mesh *m_pyramid_mesh;
-    object *m_plane_object;
-    object *m_sphere_object;
-    object *m_pyramid_object;
+    object *m_sphere;
 
 public:
     rtx_scene();
