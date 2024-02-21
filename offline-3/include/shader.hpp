@@ -66,6 +66,23 @@ R"(
         return t;
     }
 
+    float triangle_distance(vec3 source, vec3 ray, int index)
+    {
+        vec3 v0 = triangle_vertices[index * 3];
+        vec3 v1 = triangle_vertices[index * 3 + 1];
+        vec3 v2 = triangle_vertices[index * 3 + 2];
+        vec3 normal = normalize(cross(v1 - v0, v2 - v0));
+        float D = -dot(normal, v0);
+        float t = -(D + dot(source, normal)) / dot(normal, ray);
+
+        if(t < 0.0f)
+        {
+            return -1.0f;
+        }
+
+        
+    }
+
     void main()
     {
         vec4 pixel = camera_transform * vec4(bot_left.x + gl_FragCoord.x / screen_dimension + dx, bot_left.y + gl_FragCoord.y / screen_dimension + dy, bot_left.z, 1.0f);
