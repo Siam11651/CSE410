@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <sstream>
 #include <optional>
 #include <chrono>
 #include <set>
@@ -21,7 +22,7 @@
 // scene *current_scene = nullptr;
 
 constexpr float fovy = M_PI / 4.0f;
-constexpr float camera_speed = 1.0f;
+constexpr float camera_speed = 2.0f;
 o3::camera camera;
 
 void handle_inputs(GLFWwindow *window)
@@ -33,7 +34,7 @@ void handle_inputs(GLFWwindow *window)
 
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.transform.position += camera.transform.get_right() * camera_speed * time::delta_time_s();
+        camera.transform.position -= camera.transform.get_right() * camera_speed * time::delta_time_s();
     }
 
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -43,7 +44,7 @@ void handle_inputs(GLFWwindow *window)
 
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.transform.position -= camera.transform.get_right() * camera_speed * time::delta_time_s();
+        camera.transform.position += camera.transform.get_right() * camera_speed * time::delta_time_s();
     }
 }
 
@@ -200,6 +201,18 @@ int main(int argc, char **argv)
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
+    glm::vec3 centers[] ={glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
+
+    for(size_t i = 0; i < 2; ++i)
+    {
+        std::stringstream ss;
+
+        ss << i;
+
+        uint32_t center_uinform_loc = glGetUniformLocation(shader_program, ("centers[" + ss.str() + "]").c_str());
+
+        glUniform3fv(center_uinform_loc, 1, glm::value_ptr(centers[i]));
+    }
 
     glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
     glUniform1f(dx_loc, 0.5f / screen::window_width());
@@ -209,6 +222,8 @@ int main(int argc, char **argv)
     // current_scene = new rtx_scene();
     double mouse_pos_x;
     double mouse_pos_y;
+
+    camera.transform.position.z = -10.0f;
 
     while(!glfwWindowShouldClose(window))
     {
