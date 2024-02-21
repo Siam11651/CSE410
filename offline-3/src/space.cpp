@@ -43,7 +43,7 @@ glm::vec3 o3::transform::get_up() const
     return glm::toMat4(rotation) * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 
-glm::vec3 o3::transform::get_left() const
+glm::vec3 o3::transform::get_right() const
 {
     return glm::toMat4(rotation) * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }

@@ -33,7 +33,7 @@ void handle_inputs(GLFWwindow *window)
 
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.transform.position += camera.transform.get_left() * camera_speed * time::delta_time_s();
+        camera.transform.position += camera.transform.get_right() * camera_speed * time::delta_time_s();
     }
 
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -43,7 +43,7 @@ void handle_inputs(GLFWwindow *window)
 
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.transform.position -= camera.transform.get_left() * camera_speed * time::delta_time_s();
+        camera.transform.position -= camera.transform.get_right() * camera_speed * time::delta_time_s();
     }
 }
 
@@ -196,11 +196,16 @@ int main(int argc, char **argv)
     glDeleteShader(fragment_shader); 
 
     uint32_t screen_dimension_loc = glGetUniformLocation(shader_program, "screen_dimension");
-    uint32_t top_left_loc = glGetUniformLocation(shader_program, "top_left");
+    uint32_t camera_pos_loc = glGetUniformLocation(shader_program, "camera_pos");
+    uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
+    uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
+    uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
 
     glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
+    glUniform1f(dx_loc, 0.5f / screen::window_width());
+    glUniform1f(dy_loc, 0.5f / screen::window_height());
 
-    const float plane_distance = screen::window_height() / std::tan(fovy / 2.0f);
+    const float plane_distance = 1.0f / std::tan(fovy / 2.0f);
     // current_scene = new rtx_scene();
     double mouse_pos_x;
     double mouse_pos_y;
@@ -212,9 +217,10 @@ int main(int argc, char **argv)
         handle_inputs(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::vec3 top_left = camera.transform.position + glm::vec3(screen::window_width() / 2.0f, screen::window_height() / 2.0f, plane_distance);
+        glm::vec3 bot_left = camera.transform.position - camera.transform.get_right() * 0.5f - camera.transform.get_up() * 0.5f + camera.transform.get_forward() * plane_distance;
 
-        glUniform3fv(top_left_loc, 1, glm::value_ptr(top_left));
+        glUniform3fv(bot_left_loc, 1, glm::value_ptr(bot_left));
+        glUniform3fv(camera_pos_loc, 1, glm::value_ptr(camera.transform.position));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         time::end_frame();

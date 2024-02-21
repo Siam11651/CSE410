@@ -19,7 +19,7 @@ namespace o3
         transform(const glm::vec3 &_position, const glm::vec3 &_euler_rotation, const glm::vec3 &_scale);
         glm::vec3 get_forward() const;
         glm::vec3 get_up() const;
-        glm::vec3 get_left() const;
+        glm::vec3 get_right() const;
     };
 }
 
