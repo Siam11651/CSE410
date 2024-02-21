@@ -279,9 +279,26 @@ int main(int argc, char **argv)
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
+    glm::vec3 point_light_positions[] = {glm::vec3(-15.0f, 0.0f, 0.0f)};
+    glm::vec3 point_light_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
+
+    for(size_t i = 0; i < 1; ++i)
+    {
+        std::stringstream ss;
+
+        ss << i;
+
+        uint32_t point_light_position_uinform_loc = glGetUniformLocation(shader_program, ("point_light_positions[" + ss.str() + "]").c_str());
+        uint32_t point_light_colors_uinform_loc = glGetUniformLocation(shader_program, ("point_light_colors[" + ss.str() + "]").c_str());
+
+        glUniform3fv(point_light_position_uinform_loc, 1, glm::value_ptr(point_light_positions[i]));
+        glUniform3fv(point_light_colors_uinform_loc, 1, glm::value_ptr(point_light_colors[i]));
+    }
 
     glm::vec3 circle_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
-    glm::vec3 centers[] = {glm::vec3(1.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
+    float circle_ambients[] = {0.1f, 0.2f};
+    float circle_diffuses[] = {0.5f, 0.8f};
+    glm::vec3 circle_centers[] = {glm::vec3(1.5f, 0.0f, 0.0f), glm::vec3(-1.5f, 0.0f, 0.0f)};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -289,11 +306,15 @@ int main(int argc, char **argv)
 
         ss << i;
 
-        uint32_t center_uinform_loc = glGetUniformLocation(shader_program, ("circle_centers[" + ss.str() + "]").c_str());
-        uint32_t color_uinform_loc = glGetUniformLocation(shader_program, ("circle_colors[" + ss.str() + "]").c_str());
+        uint32_t circle_color_uinform_loc = glGetUniformLocation(shader_program, ("circle_colors[" + ss.str() + "]").c_str());
+        uint32_t circle_ambient_uinform_loc = glGetUniformLocation(shader_program, ("circle_ambients[" + ss.str() + "]").c_str());
+        uint32_t circle_diffuses_uinform_loc = glGetUniformLocation(shader_program, ("circle_diffuses[" + ss.str() + "]").c_str());
+        uint32_t circle_center_uinform_loc = glGetUniformLocation(shader_program, ("circle_centers[" + ss.str() + "]").c_str());
 
-        glUniform3fv(center_uinform_loc, 1, glm::value_ptr(centers[i]));
-        glUniform3fv(color_uinform_loc, 1, glm::value_ptr(circle_colors[i]));
+        glUniform3fv(circle_color_uinform_loc, 1, glm::value_ptr(circle_colors[i]));
+        glUniform1f(circle_ambient_uinform_loc, circle_ambients[i]);
+        glUniform1f(circle_diffuses_uinform_loc, circle_diffuses[i]);
+        glUniform3fv(circle_center_uinform_loc, 1, glm::value_ptr(circle_centers[i]));
     }
 
     glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
