@@ -11,17 +11,18 @@ find_package(OpenGL REQUIRED)
 find_package(glm REQUIRED)
 
 add_library(offline_3_helper
-    "src/conc_mesh/box_mesh.cpp"
-    "src/conc_mesh/plane_mesh.cpp"
-    "src/conc_mesh/sphere_mesh.cpp"
-    "src/conc_mesh/triangle_mesh.cpp"
-    "src/conc_scene/rtx_scene.cpp"
-    "src/input.cpp"
-    "src/mesh.cpp"
-    "src/object.cpp"
-    "src/scene.cpp"
+    "src/glad/glad.c"
+    # "src/conc_mesh/box_mesh.cpp"
+    # "src/conc_mesh/plane_mesh.cpp"
+    # "src/conc_mesh/sphere_mesh.cpp"
+    # "src/conc_mesh/triangle_mesh.cpp"
+    # "src/conc_scene/rtx_scene.cpp"
+    # "src/input.cpp"
+    # "src/mesh.cpp"
+    # "src/object.cpp"
+    # "src/scene.cpp"
     "src/screen.cpp"
-    "src/space.cpp"
+    # "src/space.cpp"
     "src/time.cpp"
 )
 
