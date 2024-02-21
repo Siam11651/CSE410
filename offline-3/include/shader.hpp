@@ -26,7 +26,8 @@ R"(
     uniform float dx;
     uniform float dy;
     uniform vec3 circle_colors[2];
-    uniform vec3 centers[2];
+    uniform float circle_ambients[2];
+    uniform vec3 circle_centers[2];
 
     void main()
     {
@@ -34,12 +35,13 @@ R"(
         float x = pixel.x;
         float y = pixel.y;
         float z = pixel.z;
-        vec4 color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        frag_color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
         float min_t = -1.0f;
+        int min_circle_index = -1;
 
         for(int i = 0; i < 2; ++i)
         {
-            vec3 center = centers[i];
+            vec3 center = circle_centers[i];
             vec3 ray = normalize(vec3(x, y, z) - camera_pos);
             vec3 _camera_pos = camera_pos - center;
             float a = dot(ray, ray);
@@ -69,16 +71,16 @@ R"(
             if(min_t < 0.0f)
             {
                 min_t = t;
-                color = vec4(circle_colors[i], 1.0f);
+                min_circle_index = i;
             }
             else if(t < min_t)
             {
                 min_t = t;
-                color = vec4(circle_colors[i], 1.0f);
+                min_circle_index = i;
             }
         }
 
-        frag_color = color;
+        frag_color = vec4(circle_colors[min_circle_index], 1.0f);
     }
 )";
 

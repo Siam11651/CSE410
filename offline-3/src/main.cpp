@@ -289,7 +289,7 @@ int main(int argc, char **argv)
 
         ss << i;
 
-        uint32_t center_uinform_loc = glGetUniformLocation(shader_program, ("centers[" + ss.str() + "]").c_str());
+        uint32_t center_uinform_loc = glGetUniformLocation(shader_program, ("circle_centers[" + ss.str() + "]").c_str());
         uint32_t color_uinform_loc = glGetUniformLocation(shader_program, ("circle_colors[" + ss.str() + "]").c_str());
 
         glUniform3fv(center_uinform_loc, 1, glm::value_ptr(centers[i]));
