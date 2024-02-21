@@ -23,6 +23,7 @@
 
 constexpr float fovy = M_PI / 4.0f;
 constexpr float camera_speed = 2.0f;
+constexpr float m_camera_spin = 0.5f;
 o3::camera camera;
 
 void handle_inputs(GLFWwindow *window)
@@ -45,6 +46,82 @@ void handle_inputs(GLFWwindow *window)
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         camera.transform.position += camera.transform.get_right() * camera_speed * time::delta_time_s();
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+    {
+        camera.transform.position += camera.transform.get_up() * camera_speed * time::delta_time_s();
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+    {
+        camera.transform.position -= camera.transform.get_up() * camera_speed * time::delta_time_s();
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        const glm::vec3 &right = camera.transform.get_right();
+        const float angle = -m_camera_spin * time::delta_time_s();
+        const float qw = std::cos(angle / 2.0f);
+        const float qx = std::sin(angle / 2.0f) * right.x;
+        const float qy = std::sin(angle / 2.0f) * right.y;
+        const float qz = std::sin(angle / 2.0f) * right.z;
+        camera.transform.rotation = glm::quat(qw, qx, qy, qz) * camera.transform.rotation;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+        const glm::vec3 &right = camera.transform.get_right();
+        const float angle = m_camera_spin * time::delta_time_s();
+        const float qw = std::cos(angle / 2.0f);
+        const float qx = std::sin(angle / 2.0f) * right.x;
+        const float qy = std::sin(angle / 2.0f) * right.y;
+        const float qz = std::sin(angle / 2.0f) * right.z;
+        camera.transform.rotation = glm::quat(qw, qx, qy, qz) * camera.transform.rotation;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    {
+        const glm::vec3 &up = camera.transform.get_up();
+        const float angle = m_camera_spin * time::delta_time_s();
+        const float qw = std::cos(angle / 2.0f);
+        const float qx = std::sin(angle / 2.0f) * up.x;
+        const float qy = std::sin(angle / 2.0f) * up.y;
+        const float qz = std::sin(angle / 2.0f) * up.z;
+        camera.transform.rotation = glm::quat(qw, qx, qy, qz) * camera.transform.rotation;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    {
+        const glm::vec3 &up = camera.transform.get_up();
+        const float angle = -m_camera_spin * time::delta_time_s();
+        const float qw = std::cos(angle / 2.0f);
+        const float qx = std::sin(angle / 2.0f) * up.x;
+        const float qy = std::sin(angle / 2.0f) * up.y;
+        const float qz = std::sin(angle / 2.0f) * up.z;
+        camera.transform.rotation = glm::quat(qw, qx, qy, qz) * camera.transform.rotation;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        const glm::vec3 &forward = camera.transform.get_forward();
+        const float angle = -m_camera_spin * time::delta_time_s();
+        const float qw = std::cos(angle / 2.0f);
+        const float qx = std::sin(angle / 2.0f) * forward.x;
+        const float qy = std::sin(angle / 2.0f) * forward.y;
+        const float qz = std::sin(angle / 2.0f) * forward.z;
+        camera.transform.rotation = glm::quat(qw, qx, qy, qz) * camera.transform.rotation;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {
+        const glm::vec3 &forward = camera.transform.get_forward();
+        const float angle = m_camera_spin * time::delta_time_s();
+        const float qw = std::cos(angle / 2.0f);
+        const float qx = std::sin(angle / 2.0f) * forward.x;
+        const float qy = std::sin(angle / 2.0f) * forward.y;
+        const float qz = std::sin(angle / 2.0f) * forward.z;
+        camera.transform.rotation = glm::quat(qw, qx, qy, qz) * camera.transform.rotation;
     }
 }
 
@@ -201,7 +278,8 @@ int main(int argc, char **argv)
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
-    glm::vec3 centers[] ={glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
+    glm::vec3 circle_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
+    glm::vec3 centers[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -210,8 +288,10 @@ int main(int argc, char **argv)
         ss << i;
 
         uint32_t center_uinform_loc = glGetUniformLocation(shader_program, ("centers[" + ss.str() + "]").c_str());
+        uint32_t color_uinform_loc = glGetUniformLocation(shader_program, ("circle_colors[" + ss.str() + "]").c_str());
 
         glUniform3fv(center_uinform_loc, 1, glm::value_ptr(centers[i]));
+        glUniform3fv(color_uinform_loc, 1, glm::value_ptr(circle_colors[i]));
     }
 
     glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
