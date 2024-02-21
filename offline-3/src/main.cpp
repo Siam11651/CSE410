@@ -7,15 +7,45 @@
 #include <functional>
 #include <thread>
 #include <cmath>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include <arg_parser.hpp>
 #include <time.hpp>
 #include <screen.hpp>
 #include <shader.hpp>
-// #include <scene.hpp>
+#include <scene.hpp>
 // #include <input.hpp>
 // #include <conc_scene/rtx_scene.hpp>
+#include <iostream>
 
 // scene *current_scene = nullptr;
+
+constexpr float fovy = M_PI / 4.0f;
+constexpr float camera_speed = 1.0f;
+o3::camera camera;
+
+void handle_inputs(GLFWwindow *window)
+{
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        camera.transform.position += camera.transform.get_forward() * camera_speed * time::delta_time_s();
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        camera.transform.position += camera.transform.get_left() * camera_speed * time::delta_time_s();
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        camera.transform.position -= camera.transform.get_forward() * camera_speed * time::delta_time_s();
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        camera.transform.position -= camera.transform.get_left() * camera_speed * time::delta_time_s();
+    }
+}
 
 int main(int argc, char **argv)
 {
@@ -165,10 +195,12 @@ int main(int argc, char **argv)
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader); 
 
-    uint32_t dimension_loc = glGetUniformLocation(shader_program, "screen_dimension");
+    uint32_t screen_dimension_loc = glGetUniformLocation(shader_program, "screen_dimension");
+    uint32_t top_left_loc = glGetUniformLocation(shader_program, "top_left");
 
-    glUniform1i(dimension_loc, (int32_t)screen::window_width());
+    glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
 
+    const float plane_distance = screen::window_height() / std::tan(fovy / 2.0f);
     // current_scene = new rtx_scene();
     double mouse_pos_x;
     double mouse_pos_y;
@@ -177,6 +209,12 @@ int main(int argc, char **argv)
     {
         time::start_frame();
         glfwPollEvents();
+        handle_inputs(window);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glm::vec3 top_left = camera.transform.position + glm::vec3(screen::window_width() / 2.0f, screen::window_height() / 2.0f, plane_distance);
+
+        glUniform3fv(top_left_loc, 1, glm::value_ptr(top_left));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         time::end_frame();

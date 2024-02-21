@@ -18,10 +18,13 @@ R"(
     in vec4 gl_FragCoord;
     out vec4 frag_color;
     uniform int screen_dimension;
+    uniform vec3 top_left;
 
     void main()
     {
-        frag_color = vec4(gl_FragCoord.x / screen_dimension, 0.0f, gl_FragCoord.y / screen_dimension, 1.0f);
+        float x = (2.0f * gl_FragCoord.x) / screen_dimension - 1.0f;
+        float y = (2.0f * gl_FragCoord.y) / screen_dimension - 1.0f;
+        frag_color = vec4(x, y, 0.0f, 1.0f);
     }
 )";
 

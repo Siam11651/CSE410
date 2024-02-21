@@ -3,30 +3,33 @@
 
 #include <vector>
 #include <space.hpp>
-#include <object.hpp>
+// #include <object.hpp>
 #include <cstdint>
 
-class camera
+namespace o3
 {
-public:
-    transform cam_transform;
+    class camera
+    {
+    public:
+        o3::transform transform;
 
-    camera();
-    camera(const transform &_cam_transform);
-};
+        camera();
+        camera(const o3::transform &_transform);
+    };
+}
 
-class scene
-{
-public:
-    camera *main_camera;
-    std::vector<object *> objects;
+// class scene
+// {
+// public:
+//     camera *main_camera;
+//     std::vector<object *> objects;
 
-    scene();
-    void setup_frame();
-    void show();
-    virtual void on_new_frame() = 0;
-    virtual void on_new_frame_late() = 0;
-    virtual ~scene();
-};
+//     scene();
+//     void setup_frame();
+//     void show();
+//     virtual void on_new_frame() = 0;
+//     virtual void on_new_frame_late() = 0;
+//     virtual ~scene();
+// };
 
 #endif

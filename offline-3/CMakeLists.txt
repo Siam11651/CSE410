@@ -20,9 +20,9 @@ add_library(offline_3_helper
     # "src/input.cpp"
     # "src/mesh.cpp"
     # "src/object.cpp"
-    # "src/scene.cpp"
+    "src/scene.cpp"
     "src/screen.cpp"
-    # "src/space.cpp"
+    "src/space.cpp"
     "src/time.cpp"
 )
 
