@@ -18,14 +18,10 @@ scene *current_scene = nullptr;
 
 int main(int argc, char **argv)
 {
-    arg_parser parser(argv[0]);
-
-    parser.add_value("scene", "roll");
-    parser.parse(argc, argv);
     time::initialise();
 
-    screen::window_title() = "offline-1";
-    screen::window_width() = 1366;
+    screen::window_title() = "offline-3";
+    screen::window_width() = 768;
     screen::window_height() = 768;
 
     if(!glfwInit())

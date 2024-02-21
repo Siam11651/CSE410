@@ -11,13 +11,6 @@ rtx_scene::rtx_scene() : scene()
     main_camera->cam_transform.position.z = 5.0f;
     main_camera->cam_transform.position.y = 5.0f;
     main_camera->cam_transform.rotation = glm::quat(glm::vec3(-M_PI / 4.0f, 0.0f, 0.0f)) * glm::quat(glm::vec3(0.0f, M_PI, 0.0f));
-    m_sphere_mesh = new sphere_mesh(1.0f, 50, 50, color(1.0f, 0.0f, 0.0f));
-    m_sphere = new object(m_sphere_mesh);
-
-    objects.insert(objects.end(),
-    {
-        m_sphere
-    });
 }
 
 void rtx_scene::on_new_frame()
@@ -122,4 +115,9 @@ void rtx_scene::on_new_frame()
 void rtx_scene::on_new_frame_late()
 {
 
+}
+
+rtx_scene::~rtx_scene()
+{
+    
 }
