@@ -72,7 +72,7 @@ R"(
         vec3 v0 = triangle_vertices[index * 3];
         vec3 v1 = triangle_vertices[index * 3 + 1];
         vec3 v2 = triangle_vertices[index * 3 + 2];
-        vec3 normal = normalize(cross(v1 - v0, v2 - v0));
+        vec3 normal = normalize(cross(v2 - v0, v1 - v0));
         
         float D = -dot(normal, v0);
         float ray_dot = dot(normal, ray);
@@ -278,7 +278,7 @@ R"(
                     vec3 v0 = triangle_vertices[min_triangle_index * 3];
                     vec3 v1 = triangle_vertices[min_triangle_index * 3 + 1];
                     vec3 v2 = triangle_vertices[min_triangle_index * 3 + 2];
-                    vec3 normal = normalize(cross(v1 - v0, v2 - v0));
+                    vec3 normal = normalize(cross(v2 - v0, v1 - v0));
                     float lambert = dot(normal, -light_ray);
                     vec3 c_color = triangle_colors[min_triangle_index] * max(lambert, 0);
                     color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color;
