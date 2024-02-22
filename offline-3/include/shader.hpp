@@ -142,6 +142,26 @@ R"(
         return t;
     }
 
+    bool hit_other(float target_t, vec3 source, vec3 ray)
+    {
+        for(int j = 0; j < 2; ++j)
+        {
+            float t = circle_distance(circle_centers[j], source, ray);
+
+            if(t < 0.0f)
+            {
+                continue;
+            }
+
+            if(t < target_t)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     void main()
     {
         vec4 pixel = camera_transform * vec4(bot_left.x + gl_FragCoord.x / screen_dimension + dx, bot_left.y + gl_FragCoord.y / screen_dimension + dy, bot_left.z, 1.0f);
@@ -210,24 +230,7 @@ R"(
                 vec3 point = camera_pos + ray * min_t;
                 vec3 light_ray = normalize(point - point_light_positions[i]);
                 float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
-                bool hit = true;
-
-                for(int j = 0; j < 2; ++j)
-                {
-                    float t = circle_distance(circle_centers[j], point_light_positions[i], light_ray);
-
-                    if(t < 0.0f)
-                    {
-                        continue;
-                    }
-
-                    if(t < target_t)
-                    {
-                        hit = false;
-
-                        break;
-                    }
-                }
+                bool hit = hit_other(target_t, point_light_positions[i], light_ray);
 
                 if(hit)
                 {
