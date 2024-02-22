@@ -279,7 +279,7 @@ int main(int argc, char **argv)
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
-    glm::vec3 point_light_positions[] = {glm::vec3(0.0f, -10.0f, 0.0f)};
+    glm::vec3 point_light_positions[] = {glm::vec3(0.0f, 10.0f, 0.0f)};
     glm::vec3 point_light_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
 
     for(size_t i = 0; i < 1; ++i)
@@ -298,7 +298,7 @@ int main(int argc, char **argv)
     glm::vec3 circle_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
     float circle_ambients[] = {0.2f, 0.5f};
     float circle_diffuses[] = {0.5f, 0.8f};
-    glm::vec3 circle_centers[] = {glm::vec3(0.5f, 2.5f, 0.0f), glm::vec3(-1.5f, 2.0f, 0.0f)};
+    glm::vec3 circle_centers[] = {glm::vec3(-1.5f, 2.0f, 0.0f), glm::vec3(0.5f, 2.5f, 0.0f)};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -319,8 +319,8 @@ int main(int argc, char **argv)
 
     glm::vec3 triangle_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
     float triangle_ambients[] = {0.3f};
-    float triangle_diffuses[] = {0.5f};
-    glm::vec3 triangle_vertices[] = {glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(0.5f, 0.0f, -0.5f), glm::vec3(0.0f, 0.0f, 5.0f)};
+    float triangle_diffuses[] = {0.8f};
+    glm::vec3 triangle_vertices[] = {glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
 
     for(size_t i = 0; i < 1; ++i)
     {

@@ -27,6 +27,7 @@ R"(
     uniform float dy;
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
+    int circle_count = 2;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
     uniform float circle_diffuses[2];
@@ -90,7 +91,7 @@ R"(
 
         vec3 e1 = v1 - v0;
         vec3 e2 = v2 - v0;
-        vec3 P = source + t * ray;
+        vec3 P = source + t * ray - v0;
         float a = -1.0f;
         float b = -1.0f ;
 
@@ -144,7 +145,7 @@ R"(
 
     bool hit_other(float target_t, vec3 source, vec3 ray)
     {
-        for(int j = 0; j < 2; ++j)
+        for(int j = 0; j < circle_count; ++j)
         {
             float t = circle_distance(circle_centers[j], source, ray);
 
@@ -190,7 +191,7 @@ R"(
         int min_circle_index = -1;
         int min_triangle_index = -1;
 
-        for(int i = 0; i < 2; ++i)
+        for(int i = 0; i < circle_count; ++i)
         {
             float t = circle_distance(circle_centers[i], camera_pos, ray);
 
@@ -238,29 +239,52 @@ R"(
 
         if(min_object == 1)
         {
-            vec3 color = circle_colors[min_circle_index] * circle_ambients[min_circle_index];
+            if(min_circle_index >= 0)
+            {
+                vec3 color = circle_colors[min_circle_index] * circle_ambients[min_circle_index];
+
+                for(int i = 0; i < 1; ++i)
+                {
+                    vec3 point = camera_pos + ray * min_t;
+                    vec3 light_ray = normalize(point - point_light_positions[i]);
+                    float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
+                    bool hit = hit_other(target_t, point_light_positions[i], light_ray);
+
+                    if(hit)
+                    {
+                        vec3 normal = normalize(point - circle_centers[min_circle_index]);
+                        float lambert = dot(normal, -light_ray);
+                        vec3 c_color = circle_colors[min_circle_index] * max(lambert, 0);
+                        color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color;
+                    }
+                }
+
+                frag_color = vec4(color, 1.0f);
+            }
+        }
+        else if(min_object == 2)
+        {
+            vec3 color = triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
 
             for(int i = 0; i < 1; ++i)
             {
                 vec3 point = camera_pos + ray * min_t;
                 vec3 light_ray = normalize(point - point_light_positions[i]);
-                float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
+                float target_t = triangle_distance(point_light_positions[i], light_ray, min_triangle_index);
                 bool hit = hit_other(target_t, point_light_positions[i], light_ray);
 
                 if(hit)
                 {
-                    vec3 normal = normalize(point - circle_centers[min_circle_index]);
+                    vec3 v0 = triangle_vertices[min_triangle_index * 3];
+                    vec3 v1 = triangle_vertices[min_triangle_index * 3 + 1];
+                    vec3 v2 = triangle_vertices[min_triangle_index * 3 + 2];
+                    vec3 normal = normalize(cross(v1 - v0, v2 - v0));
                     float lambert = dot(normal, -light_ray);
-                    vec3 c_color = circle_colors[min_circle_index] * max(lambert, 0);
-                    color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color;
+                    vec3 c_color = triangle_colors[min_triangle_index] * max(lambert, 0);
+                    color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color;
                 }
             }
 
-            frag_color = vec4(color, 1.0f);
-        }
-        else if(min_object == 2)
-        {
-            vec3 color = triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
             frag_color = vec4(color, 1.0f);
         }
     }
