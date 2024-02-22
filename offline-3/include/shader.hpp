@@ -74,6 +74,13 @@ R"(
         vec3 normal = normalize(cross(v1 - v0, v2 - v0));
         
         float D = -dot(normal, v0);
+        float ray_dot = dot(normal, ray);
+
+        if(abs(ray_dot) < 0.000001f)
+        {
+            return -8.0f;
+        }
+
         float t = -(D + dot(source, normal)) / dot(normal, ray);
 
         if(t < 0.0f)
