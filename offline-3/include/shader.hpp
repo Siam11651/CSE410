@@ -32,6 +32,7 @@ R"(
     uniform float circle_ambients[2];
     uniform float circle_diffuses[2];
     uniform vec3 circle_centers[2];
+    int triangle_count = 1;
     uniform vec3 triangle_colors[1];
     uniform float triangle_ambients[1];
     uniform float triangle_diffuses[1];
@@ -160,7 +161,7 @@ R"(
             }
         }
 
-        for(int j = 0; j < 1; ++j)
+        for(int j = 0; j < triangle_count; ++j)
         {
             float t = triangle_distance(source, ray, j);
 
@@ -214,7 +215,7 @@ R"(
             }
         }
 
-        for(int i = 0; i < 1; ++i)
+        for(int i = 0; i < triangle_count; ++i)
         {
             float t = triangle_distance(camera_pos, ray, i);
 
