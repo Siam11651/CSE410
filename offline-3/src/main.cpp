@@ -279,7 +279,7 @@ int main(int argc, char **argv)
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
-    glm::vec3 point_light_positions[] = {glm::vec3(15.0f, 10.0f, 0.0f)};
+    glm::vec3 point_light_positions[] = {glm::vec3(0.0f, -10.0f, 0.0f)};
     glm::vec3 point_light_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
 
     for(size_t i = 0; i < 1; ++i)

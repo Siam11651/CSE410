@@ -159,6 +159,21 @@ R"(
             }
         }
 
+        for(int j = 0; j < 1; ++j)
+        {
+            float t = triangle_distance(source, ray, j);
+
+            if(t < 0.0f)
+            {
+                continue;
+            }
+
+            if(t < target_t)
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
