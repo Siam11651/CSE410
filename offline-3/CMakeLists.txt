@@ -4,10 +4,7 @@ project(offline_3 VERSION 0.1.0 LANGUAGES C CXX)
 include(CTest)
 enable_testing()
 
-set(OpenGL_GL_PREFERENCE GLVND)
-
 find_package(glfw3 REQUIRED)
-find_package(OpenGL REQUIRED)
 find_package(glm REQUIRED)
 
 add_library(offline_3_helper
@@ -27,7 +24,7 @@ add_library(offline_3_helper
 )
 
 target_include_directories(offline_3_helper PRIVATE "include")
-target_link_libraries(offline_3_helper GL glfw)
+target_link_libraries(offline_3_helper glfw)
 
 add_executable(offline_3
     "src/arg_parser.cpp"
