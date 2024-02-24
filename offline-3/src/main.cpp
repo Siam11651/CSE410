@@ -298,8 +298,8 @@ int main(int argc, char **argv)
     glm::vec3 circle_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
     float circle_ambients[] = {0.6f, 0.5f};
     float circle_diffuses[] = {0.2f, 0.3f};
-    float circle_speculars[] = {0.001f, 0.015f};
-    float circle_shininesses[] = {3, 2};
+    float circle_speculars[] = {0.3f, 0.2f};
+    float circle_shininesses[] = {5, 7};
     glm::vec3 circle_centers[] = {glm::vec3(-1.5f, 2.0f, 0.0f), glm::vec3(0.5f, 2.5f, 0.0f)};
 
     for(size_t i = 0; i < 2; ++i)

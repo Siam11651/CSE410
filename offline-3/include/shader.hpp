@@ -343,7 +343,7 @@ R"(
                         vec3 normal = normalize(point - circle_centers[min_circle_index]);
                         vec3 reflection = light_ray + 2.0f * dot(light_ray, normal) * normal;
                         float lambert = dot(normal, -light_ray);
-                        float phong = pow(max(dot(reflection, ray * min_t), 0.0f), circle_shininesses[min_circle_index]);
+                        float phong = pow(max(dot(reflection, normalize(ray * min_t)), 0.0f), circle_shininesses[min_circle_index]);
                         vec3 c_color_diff = circle_colors[min_circle_index] * max(lambert, 0);
                         vec3 c_color_phong = circle_colors[min_circle_index] * phong;
                         color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff;
