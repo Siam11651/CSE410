@@ -29,6 +29,7 @@ R"(
     uniform vec3 point_light_colors[1];
     float ground_dimension = 100.0f;
     float ground_ambient = 0.2f;
+    float ground_diffuse = 0.9f;
     int circle_count = 2;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
@@ -224,6 +225,15 @@ R"(
             }
         }
 
+        {
+            float t = ground_distance(source, ray);
+
+            if(t >= 0.0f && t < target_t)
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -364,32 +374,47 @@ R"(
             vec3 P = point - v0;
             int x = int(P.x);
             int z = int(P.z);
-            vec3 color;
+            vec3 og_color;
 
             if(x % 2 == 0)
             {
                 if(z % 2 == 0)
                 {
-                    color = vec3(1.0f, 1.0f, 1.0f);
+                    og_color = vec3(1.0f, 1.0f, 1.0f);
                 }
                 else
                 {
-                    color = vec3(0.0f, 0.0f, 0.0f);
+                    og_color = vec3(0.0f, 0.0f, 0.0f);
                 }
             }
             else
             {
                 if(z % 2 == 0)
                 {
-                    color = vec3(0.0f, 0.0f, 0.0f);
+                    og_color = vec3(0.0f, 0.0f, 0.0f);
                 }
                 else
                 {
-                    color = vec3(1.0f, 1.0f, 1.0f);
+                    og_color = vec3(1.0f, 1.0f, 1.0f);
                 }
             }
 
-            color *= ground_ambient;
+            vec3 color = og_color * ground_ambient;
+
+            for(int i = 0; i < 1; ++i)
+            {
+                vec3 light_ray = normalize(point - point_light_positions[i]);
+                float target_t = ground_distance(point_light_positions[i], light_ray);
+                bool hit = hit_other(target_t, point_light_positions[i], light_ray);
+
+                if(hit)
+                {
+                    vec3 normal = vec3(0.0f, 1.0f, 0.0f);
+                    float lambert = dot(normal, -light_ray);
+                    vec3 c_color = og_color * max(lambert, 0);
+                    color += point_light_colors[i] * ground_diffuse * c_color;
+                }
+            }
 
             frag_color = vec4(color, 1.0f);
         }
