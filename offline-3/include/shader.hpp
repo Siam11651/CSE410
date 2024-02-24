@@ -28,18 +28,20 @@ R"(
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
     float ground_dimension = 100.0f;
-    float ground_ambient = 0.2f;
+    float ground_ambient = 0.7f;
     float ground_diffuse = 0.9f;
     int circle_count = 2;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
     uniform float circle_diffuses[2];
     uniform vec3 circle_centers[2];
-    int triangle_count = 0;
+    int triangle_count = 1;
     uniform vec3 triangle_colors[1];
     uniform float triangle_ambients[1];
     uniform float triangle_diffuses[1];
-    uniform vec3 triangle_vertices[3];
+    uniform vec3 triangle_vertices0[1];
+    uniform vec3 triangle_vertices1[1];
+    uniform vec3 triangle_vertices2[1];
 
     float circle_distance(vec3 center, vec3 source, vec3 ray)
     {
@@ -73,23 +75,23 @@ R"(
 
     float triangle_distance(vec3 source, vec3 ray, int index)
     {
-        vec3 v0 = triangle_vertices[index * 3];
-        vec3 v1 = triangle_vertices[index * 3 + 1];
-        vec3 v2 = triangle_vertices[index * 3 + 2];
+        vec3 v0 = triangle_vertices0[index];
+        vec3 v1 = triangle_vertices1[index];
+        vec3 v2 = triangle_vertices2[index];
         vec3 normal = normalize(cross(v2 - v0, v1 - v0));
         float D = -dot(normal, v0);
         float ray_dot = dot(normal, ray);
 
         if(abs(ray_dot) < 0.000001f)
         {
-            return -8.0f;
+            return -1.0f;
         }
 
         float t = -(D + dot(source, normal)) / ray_dot;
 
         if(t < 0.0f)
         {
-            return -1.0f;
+            return -2.0f;
         }
 
         vec3 e1 = v1 - v0;
@@ -115,32 +117,32 @@ R"(
         }
         else
         {
-            return -7.0f;
+            return -3.0f;
         }
 
         if(a < 0.0f)
         {
-            return -2.0f;
+            return -4.0f;
         }
 
         if(a > 1.0f)
         {
-            return -3.0f;
+            return -5.0f;
         }
 
         if(b < 0.0f)
         {
-            return -4.0f;
+            return -6.0f;
         }
 
         if(b > 1.0f)
         {
-            return -5.0f;
+            return -7.0f;
         }
 
         if(!(a + b <= 1.0f))
         {
-            return -6.0f;
+            return -8.0f;
         }
 
         return t;
@@ -279,6 +281,13 @@ R"(
 
             if(t < 0.0f)
             {
+                if(t == -9.0f)
+                {
+                    frag_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+                    return;
+                }
+
                 continue;
             }
 
@@ -354,9 +363,9 @@ R"(
 
                     if(hit)
                     {
-                        vec3 v0 = triangle_vertices[min_triangle_index * 3];
-                        vec3 v1 = triangle_vertices[min_triangle_index * 3 + 1];
-                        vec3 v2 = triangle_vertices[min_triangle_index * 3 + 2];
+                        vec3 v0 = triangle_vertices0[min_triangle_index];
+                        vec3 v1 = triangle_vertices1[min_triangle_index];
+                        vec3 v2 = triangle_vertices2[min_triangle_index];
                         vec3 normal = normalize(cross(v2 - v0, v1 - v0));
                         float lambert = dot(normal, -light_ray);
                         vec3 c_color = triangle_colors[min_triangle_index] * max(lambert, 0);
