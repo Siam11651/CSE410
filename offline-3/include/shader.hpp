@@ -41,6 +41,8 @@ R"(
     uniform vec3 triangle_colors[1];
     uniform float triangle_ambients[1];
     uniform float triangle_diffuses[1];
+    uniform float triangle_speculars[1];
+    uniform float triangle_shininesses[1];
     uniform vec3 triangle_vertices0[1];
     uniform vec3 triangle_vertices1[1];
     uniform vec3 triangle_vertices2[1];
@@ -373,9 +375,13 @@ R"(
                         vec3 v1 = triangle_vertices1[min_triangle_index];
                         vec3 v2 = triangle_vertices2[min_triangle_index];
                         vec3 normal = normalize(cross(v2 - v0, v1 - v0));
+                        vec3 reflection = light_ray + 2.0f * dot(light_ray, normal) * normal;
                         float lambert = dot(normal, -light_ray);
-                        vec3 c_color = triangle_colors[min_triangle_index] * max(lambert, 0);
-                        color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color;
+                        float phong = pow(max(dot(reflection, normalize(ray * min_t)), 0.0f), triangle_shininesses[min_triangle_index]);
+                        vec3 c_color_diff = triangle_colors[min_triangle_index] * max(lambert, 0);
+                        vec3 c_color_phong = triangle_colors[min_triangle_index] * phong;
+                        color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color_diff;
+                        color += point_light_colors[i] * triangle_speculars[min_triangle_index] * c_color_phong;
                     }
                 }
 

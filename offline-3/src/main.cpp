@@ -300,7 +300,7 @@ int main(int argc, char **argv)
     float circle_diffuses[] = {0.2f, 0.3f};
     float circle_speculars[] = {0.3f, 0.2f};
     float circle_shininesses[] = {5, 7};
-    glm::vec3 circle_centers[] = {glm::vec3(-1.5f, 2.0f, 0.0f), glm::vec3(0.5f, 2.5f, 0.0f)};
+    glm::vec3 circle_centers[] = {glm::vec3(-0.75f, 2.0f, 0.0f), glm::vec3(0.5f, 3.0f, 0.0f)};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -325,7 +325,9 @@ int main(int argc, char **argv)
 
     glm::vec3 triangle_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
     float triangle_ambients[] = {0.3f};
-    float triangle_diffuses[] = {0.8f};
+    float triangle_diffuses[] = {0.2f};
+    float triangle_speculars[] = {0.3f};
+    float triangle_shininesses[] = {9};
     glm::vec3 triangle_vertices0[] = {glm::vec3(-1.0f, 0.1f, 5.0f)};
     glm::vec3 triangle_vertices1[] = {glm::vec3(1.0f, 0.1f, 5.0f)};
     glm::vec3 triangle_vertices2[] = {glm::vec3(-1.0f, 1.1f, 5.0f)};
@@ -339,6 +341,8 @@ int main(int argc, char **argv)
         uint32_t triangle_color_uinform_loc = glGetUniformLocation(shader_program, ("triangle_colors[" + ss.str() + "]").c_str());
         uint32_t triangle_ambient_uinform_loc = glGetUniformLocation(shader_program, ("triangle_ambients[" + ss.str() + "]").c_str());
         uint32_t triangle_diffuses_uinform_loc = glGetUniformLocation(shader_program, ("triangle_diffuses[" + ss.str() + "]").c_str());
+        uint32_t triangle_speculars_uinform_loc = glGetUniformLocation(shader_program, ("triangle_speculars[" + ss.str() + "]").c_str());
+        uint32_t triangle_shininesses_uinform_loc = glGetUniformLocation(shader_program, ("triangle_shininesses[" + ss.str() + "]").c_str());
         uint32_t triangle_vertices0_uinform_loc = glGetUniformLocation(shader_program, ("triangle_vertices0[" + ss.str() + "]").c_str());
         uint32_t triangle_vertices1_uinform_loc = glGetUniformLocation(shader_program, ("triangle_vertices1[" + ss.str() + "]").c_str());
         uint32_t triangle_vertices2_uinform_loc = glGetUniformLocation(shader_program, ("triangle_vertices2[" + ss.str() + "]").c_str());
@@ -346,6 +350,8 @@ int main(int argc, char **argv)
         glUniform3fv(triangle_color_uinform_loc, 1, glm::value_ptr(triangle_colors[i]));
         glUniform1f(triangle_ambient_uinform_loc, triangle_ambients[i]);
         glUniform1f(triangle_diffuses_uinform_loc, triangle_diffuses[i]);
+        glUniform1f(triangle_speculars_uinform_loc, triangle_speculars[i]);
+        glUniform1f(triangle_shininesses_uinform_loc, triangle_shininesses[i]);
         glUniform3fv(triangle_vertices0_uinform_loc, 1, glm::value_ptr(triangle_vertices0[i]));
         glUniform3fv(triangle_vertices1_uinform_loc, 1, glm::value_ptr(triangle_vertices1[i]));
         glUniform3fv(triangle_vertices2_uinform_loc, 1, glm::value_ptr(triangle_vertices2[i]));
