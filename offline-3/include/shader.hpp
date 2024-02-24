@@ -28,7 +28,7 @@ R"(
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
     float ground_dimension = 100.0f;
-    float ground_ambients = 0.2f;
+    float ground_ambient = 0.2f;
     int circle_count = 2;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
@@ -359,7 +359,38 @@ R"(
         }
         if(min_object == 3)
         {
-            vec3 color = vec3(1.0f, 1.0f, 1.0f) * ground_ambients;
+            vec3 point = camera_pos + ray * min_t;
+            vec3 v0 = vec3(-ground_dimension / 2.0f, 0.0f, -ground_dimension / 2.0f);
+            vec3 P = point - v0;
+            int x = int(P.x);
+            int z = int(P.z);
+            vec3 color;
+
+            if(x % 2 == 0)
+            {
+                if(z % 2 == 0)
+                {
+                    color = vec3(1.0f, 1.0f, 1.0f);
+                }
+                else
+                {
+                    color = vec3(0.0f, 0.0f, 0.0f);
+                }
+            }
+            else
+            {
+                if(z % 2 == 0)
+                {
+                    color = vec3(0.0f, 0.0f, 0.0f);
+                }
+                else
+                {
+                    color = vec3(1.0f, 1.0f, 1.0f);
+                }
+            }
+
+            color *= ground_ambient;
+
             frag_color = vec4(color, 1.0f);
         }
     }
