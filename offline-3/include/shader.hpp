@@ -34,6 +34,8 @@ R"(
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
     uniform float circle_diffuses[2];
+    uniform float circle_speculars[2];
+    uniform float circle_shininesses[2];
     uniform vec3 circle_centers[2];
     int triangle_count = 1;
     uniform vec3 triangle_colors[1];
@@ -339,9 +341,13 @@ R"(
                     if(hit)
                     {
                         vec3 normal = normalize(point - circle_centers[min_circle_index]);
+                        vec3 reflection = light_ray + 2.0f * dot(light_ray, normal) * normal;
                         float lambert = dot(normal, -light_ray);
-                        vec3 c_color = circle_colors[min_circle_index] * max(lambert, 0);
-                        color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color;
+                        float phong = pow(max(dot(reflection, ray * min_t), 0.0f), circle_shininesses[min_circle_index]);
+                        vec3 c_color_diff = circle_colors[min_circle_index] * max(lambert, 0);
+                        vec3 c_color_phong = circle_colors[min_circle_index] * phong;
+                        color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff;
+                        color += point_light_colors[i] * circle_speculars[min_circle_index] * c_color_phong;
                     }
                 }
 
