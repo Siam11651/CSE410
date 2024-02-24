@@ -27,6 +27,8 @@ R"(
     uniform float dy;
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
+    float ground_dimension = 100.0f;
+    float ground_ambients = 0.2f;
     int circle_count = 2;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
@@ -74,7 +76,6 @@ R"(
         vec3 v1 = triangle_vertices[index * 3 + 1];
         vec3 v2 = triangle_vertices[index * 3 + 2];
         vec3 normal = normalize(cross(v2 - v0, v1 - v0));
-        
         float D = -dot(normal, v0);
         float ray_dot = dot(normal, ray);
 
@@ -83,7 +84,7 @@ R"(
             return -8.0f;
         }
 
-        float t = -(D + dot(source, normal)) / dot(normal, ray);
+        float t = -(D + dot(source, normal)) / ray_dot;
 
         if(t < 0.0f)
         {
@@ -137,6 +138,53 @@ R"(
         }
 
         if(!(a + b <= 1.0f))
+        {
+            return -6.0f;
+        }
+
+        return t;
+    }
+
+    float ground_distance(vec3 source, vec3 ray)
+    {
+        float half_dim = ground_dimension / 2.0f;
+        vec3 v0 = vec3(-half_dim, 0.0f, -half_dim);
+        vec3 v1 = vec3(-half_dim + ground_dimension, 0.0f, -half_dim);
+        vec3 v2 = vec3(-half_dim, 0.0f, -half_dim + ground_dimension);
+        vec3 normal = vec3(0.0f, 1.0f, 0.0f);
+        float D = -dot(normal, v0);
+        float ray_dot = dot(normal, ray);
+
+        if(abs(ray_dot) < 0.000001f)
+        {
+            return -1.0f;
+        }
+
+        float t = -(D + dot(source, normal)) / ray_dot;
+
+        if(t < 0.0f)
+        {
+            return -2.0f;
+        }
+
+        vec3 P = source + t * ray - v0;
+        
+        if(P.x < 0.0f)
+        {
+            return -3.0f;
+        }
+
+        if(P.x >= ground_dimension)
+        {
+            return -4.0f;
+        }
+
+        if(P.z < 0.0f)
+        {
+            return -5.0f;
+        }
+
+        if(P.z >= ground_dimension)
         {
             return -6.0f;
         }
@@ -224,7 +272,7 @@ R"(
                 continue;
             }
 
-            if(min_t == -1)
+            if(min_t < 0.0f)
             {
                 min_t = t;
                 min_triangle_index = i;
@@ -235,6 +283,24 @@ R"(
                 min_t = t;
                 min_triangle_index = i;
                 min_object = 2;
+            }
+        }
+
+        {
+            float t = ground_distance(camera_pos, ray);
+
+            if(t >= 0.0f)
+            {
+                if(min_t < 0.0f)
+                {
+                    min_t = t;
+                    min_object = 3;
+                }
+                else if(t < min_t)
+                {
+                    min_t = t;
+                    min_object = 3;
+                }   
             }
         }
 
@@ -290,6 +356,11 @@ R"(
 
                 frag_color = vec4(color, 1.0f);
             }
+        }
+        if(min_object == 3)
+        {
+            vec3 color = vec3(1.0f, 1.0f, 1.0f) * ground_ambients;
+            frag_color = vec4(color, 1.0f);
         }
     }
 )";
