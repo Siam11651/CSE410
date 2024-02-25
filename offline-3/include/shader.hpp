@@ -29,15 +29,17 @@ R"(
     uniform vec3 point_light_colors[1];
     float ground_dimension = 100.0f;
     float ground_ambient = 0.5f;
-    float ground_diffuse = 0.9f;
-    float ground_specular = 0.7f;
+    float ground_diffuse = 0.3f;
+    float ground_specular = 0.25f;
     int ground_shininess = 50;
+    float ground_reflection = 0.125f;
     int circle_count = 2;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
     uniform float circle_diffuses[2];
     uniform float circle_speculars[2];
     uniform float circle_shininesses[2];
+    uniform float circle_reflections[2];
     uniform vec3 circle_centers[2];
     int triangle_count = 1;
     uniform vec3 triangle_colors[1];
@@ -45,6 +47,7 @@ R"(
     uniform float triangle_diffuses[1];
     uniform float triangle_speculars[1];
     uniform float triangle_shininesses[1];
+    uniform float triangle_reflections[1];
     uniform vec3 triangle_vertices0[1];
     uniform vec3 triangle_vertices1[1];
     uniform vec3 triangle_vertices2[1];
@@ -254,6 +257,7 @@ R"(
         vec3 cam_pos = camera_pos;
         vec3 color = vec3(0.0f, 0.0f, 0.0f);
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
+        float reflection_fraction = 1.0f;
 
         for(int j = 0; j < 4; ++j)
         {
@@ -330,7 +334,7 @@ R"(
             {
                 if(min_circle_index >= 0)
                 {
-                    color += circle_colors[min_circle_index] * circle_ambients[min_circle_index];
+                    color += circle_colors[min_circle_index] * circle_ambients[min_circle_index] * reflection_fraction;
                     vec3 point = cam_pos + ray * min_t;
                     vec3 normal = normalize(point - circle_centers[min_circle_index]);
 
@@ -347,13 +351,14 @@ R"(
                             float phong = pow(max(dot(reflection, -ray), 0.0f), circle_shininesses[min_circle_index]);
                             vec3 c_color_diff = circle_colors[min_circle_index] * max(lambert, 0);
                             vec3 c_color_phong = circle_colors[min_circle_index] * phong;
-                            color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff;
-                            color += point_light_colors[i] * circle_speculars[min_circle_index] * c_color_phong;
+                            color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff * reflection_fraction;
+                            color += point_light_colors[i] * circle_speculars[min_circle_index] * c_color_phong * reflection_fraction;
                         }
                     }
 
                     ray = ray + 2.0f * dot(-ray, normal) * normal;
                     cam_pos = point;
+                    reflection_fraction *= circle_reflections[min_circle_index];
                 }
                 else
                 {
@@ -364,7 +369,7 @@ R"(
             {
                 if(min_triangle_index >= 0)
                 {
-                    color += triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
+                    color += triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index] * reflection_fraction;
                     vec3 point = cam_pos + ray * min_t;
                     vec3 v0 = triangle_vertices0[min_triangle_index];
                     vec3 v1 = triangle_vertices1[min_triangle_index];
@@ -384,13 +389,14 @@ R"(
                             float phong = pow(max(dot(reflection, -ray), 0.0f), triangle_shininesses[min_triangle_index]);
                             vec3 c_color_diff = triangle_colors[min_triangle_index] * max(lambert, 0);
                             vec3 c_color_phong = triangle_colors[min_triangle_index] * phong;
-                            color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color_diff;
-                            color += point_light_colors[i] * triangle_speculars[min_triangle_index] * c_color_phong;
+                            color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color_diff * reflection_fraction;
+                            color += point_light_colors[i] * triangle_speculars[min_triangle_index] * c_color_phong * reflection_fraction;
                         }
                     }
 
                     ray = ray + 2.0f * dot(-ray, normal) * normal;
                     cam_pos = point;
+                    reflection_fraction *= triangle_reflections[min_triangle_index];
                 }
                 else
                 {
@@ -429,7 +435,7 @@ R"(
                     }
                 }
 
-                color += og_color * ground_ambient;
+                color += og_color * ground_ambient * reflection_fraction;
                 vec3 normal = vec3(0.0f, 1.0f, 0.0f);
 
                 for(int i = 0; i < 1; ++i)
@@ -445,13 +451,14 @@ R"(
                         float phong = pow(max(dot(reflection, -ray), 0.0f), ground_shininess);
                         vec3 c_color_diff = og_color * max(lambert, 0);
                         vec3 c_color_phong = og_color * phong;
-                        color += point_light_colors[i] * ground_diffuse * c_color_diff;
-                        color += point_light_colors[i] * ground_specular * c_color_phong;
+                        color += point_light_colors[i] * ground_diffuse * c_color_diff * reflection_fraction;
+                        color += point_light_colors[i] * ground_specular * c_color_phong * reflection_fraction;
                     }
                 }
 
                 ray = ray + 2.0f * dot(-ray, normal) * normal;
                 cam_pos = point;
+                reflection_fraction *= ground_reflection;
             }
             else
             {

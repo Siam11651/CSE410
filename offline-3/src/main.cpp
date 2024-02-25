@@ -299,7 +299,8 @@ int main(int argc, char **argv)
     float circle_ambients[] = {0.6f, 0.5f};
     float circle_diffuses[] = {0.2f, 0.3f};
     float circle_speculars[] = {0.3f, 0.2f};
-    float circle_shininesses[] = {5, 7};
+    int32_t circle_shininesses[] = {5, 7};
+    float circle_reflections[] = {0.1f, 0.15f};
     glm::vec3 circle_centers[] = {glm::vec3(-0.75f, 2.0f, 0.0f), glm::vec3(0.5f, 3.0f, 0.0f)};
 
     for(size_t i = 0; i < 2; ++i)
@@ -313,6 +314,7 @@ int main(int argc, char **argv)
         uint32_t circle_diffuses_uinform_loc = glGetUniformLocation(shader_program, ("circle_diffuses[" + ss.str() + "]").c_str());
         uint32_t circle_speculars_uinform_loc = glGetUniformLocation(shader_program, ("circle_speculars[" + ss.str() + "]").c_str());
         uint32_t circle_shininesses_uinform_loc = glGetUniformLocation(shader_program, ("circle_shininesses[" + ss.str() + "]").c_str());
+        uint32_t circle_reflections_uinform_loc = glGetUniformLocation(shader_program, ("circle_reflections[" + ss.str() + "]").c_str());
         uint32_t circle_center_uinform_loc = glGetUniformLocation(shader_program, ("circle_centers[" + ss.str() + "]").c_str());
 
         glUniform3fv(circle_color_uinform_loc, 1, glm::value_ptr(circle_colors[i]));
@@ -320,6 +322,7 @@ int main(int argc, char **argv)
         glUniform1f(circle_diffuses_uinform_loc, circle_diffuses[i]);
         glUniform1f(circle_speculars_uinform_loc, circle_speculars[i]);
         glUniform1f(circle_shininesses_uinform_loc, circle_shininesses[i]);
+        glUniform1f(circle_reflections_uinform_loc, circle_reflections[i]);
         glUniform3fv(circle_center_uinform_loc, 1, glm::value_ptr(circle_centers[i]));
     }
 
@@ -327,7 +330,8 @@ int main(int argc, char **argv)
     float triangle_ambients[] = {0.3f};
     float triangle_diffuses[] = {0.2f};
     float triangle_speculars[] = {0.9f};
-    float triangle_shininesses[] = {90};
+    int32_t triangle_shininesses[] = {90};
+    float triangle_reflections[] = {0.25f};
     glm::vec3 triangle_vertices0[] = {glm::vec3(-1.0f, 1.0f, -5.0f)};
     glm::vec3 triangle_vertices1[] = {glm::vec3(1.0f, 1.0f, -5.0f)};
     glm::vec3 triangle_vertices2[] = {glm::vec3(0.0f, 1.0f, -4.5f)};
@@ -343,6 +347,7 @@ int main(int argc, char **argv)
         uint32_t triangle_diffuses_uinform_loc = glGetUniformLocation(shader_program, ("triangle_diffuses[" + ss.str() + "]").c_str());
         uint32_t triangle_speculars_uinform_loc = glGetUniformLocation(shader_program, ("triangle_speculars[" + ss.str() + "]").c_str());
         uint32_t triangle_shininesses_uinform_loc = glGetUniformLocation(shader_program, ("triangle_shininesses[" + ss.str() + "]").c_str());
+        uint32_t triangle_reflections_uinform_loc = glGetUniformLocation(shader_program, ("triangle_reflections[" + ss.str() + "]").c_str());
         uint32_t triangle_vertices0_uinform_loc = glGetUniformLocation(shader_program, ("triangle_vertices0[" + ss.str() + "]").c_str());
         uint32_t triangle_vertices1_uinform_loc = glGetUniformLocation(shader_program, ("triangle_vertices1[" + ss.str() + "]").c_str());
         uint32_t triangle_vertices2_uinform_loc = glGetUniformLocation(shader_program, ("triangle_vertices2[" + ss.str() + "]").c_str());
@@ -352,6 +357,7 @@ int main(int argc, char **argv)
         glUniform1f(triangle_diffuses_uinform_loc, triangle_diffuses[i]);
         glUniform1f(triangle_speculars_uinform_loc, triangle_speculars[i]);
         glUniform1f(triangle_shininesses_uinform_loc, triangle_shininesses[i]);
+        glUniform1f(triangle_reflections_uinform_loc, triangle_reflections[i]);
         glUniform3fv(triangle_vertices0_uinform_loc, 1, glm::value_ptr(triangle_vertices0[i]));
         glUniform3fv(triangle_vertices1_uinform_loc, 1, glm::value_ptr(triangle_vertices1[i]));
         glUniform3fv(triangle_vertices2_uinform_loc, 1, glm::value_ptr(triangle_vertices2[i]));
