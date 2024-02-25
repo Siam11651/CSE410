@@ -164,7 +164,7 @@ R"(
         float D = -dot(normal, v0);
         float ray_dot = dot(normal, ray);
 
-        if(abs(ray_dot) < 0.000001f)
+        if(abs(ray_dot) < 0.0f)
         {
             return -1.0f;
         }
@@ -207,7 +207,7 @@ R"(
         {
             float t = circle_distance(circle_centers[j], source, ray);
 
-            if(t < 0.0f)
+            if(t <= 0.001f)
             {
                 continue;
             }
@@ -222,7 +222,7 @@ R"(
         {
             float t = triangle_distance(source, ray, j);
 
-            if(t < 0.0f)
+            if(t <= 0.001f)
             {
                 continue;
             }
@@ -236,7 +236,7 @@ R"(
         {
             float t = ground_distance(source, ray);
 
-            if(t >= 0.0f && t < target_t)
+            if(t > 0.001f && t < target_t)
             {
                 return false;
             }
@@ -254,190 +254,208 @@ R"(
         vec3 cam_pos = camera_pos;
         vec3 color = vec3(0.0f, 0.0f, 0.0f);
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
-        float min_t = -1.0f;
-        int min_object = -1;
-        int min_circle_index = -1;
-        int min_triangle_index = -1;
 
-        for(int i = 0; i < circle_count; ++i)
+        for(int j = 0; j < 4; ++j)
         {
-            float t = circle_distance(circle_centers[i], cam_pos, ray);
+            float min_t = -1.0f;
+            int min_object = -1;
+            int min_circle_index = -1;
+            int min_triangle_index = -1;
 
-            if(t < 0.0f)
+            for(int i = 0; i < circle_count; ++i)
             {
-                continue;
-            }
+                float t = circle_distance(circle_centers[i], cam_pos, ray);
 
-            if(min_t < 0.0f)
-            {
-                min_t = t;
-                min_circle_index = i;
-                min_object = 1;
-            }
-            else if(t < min_t)
-            {
-                min_t = t;
-                min_circle_index = i;
-                min_object = 1;
-            }
-        }
-
-        for(int i = 0; i < triangle_count; ++i)
-        {
-            float t = triangle_distance(cam_pos, ray, i);
-
-            if(t < 0.0f)
-            {
-                if(t == -9.0f)
+                if(t <= 0.001f)
                 {
-                    frag_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-
-                    return;
+                    continue;
                 }
 
-                continue;
-            }
-
-            if(min_t < 0.0f)
-            {
-                min_t = t;
-                min_triangle_index = i;
-                min_object = 2;
-            }
-            else if(t < min_t)
-            {
-                min_t = t;
-                min_triangle_index = i;
-                min_object = 2;
-            }
-        }
-
-        {
-            float t = ground_distance(cam_pos, ray);
-
-            if(t >= 0.0f)
-            {
-                if(min_t < 0.0f)
+                if(min_t == -1.0f)
                 {
                     min_t = t;
-                    min_object = 3;
+                    min_circle_index = i;
+                    min_object = 1;
                 }
                 else if(t < min_t)
                 {
                     min_t = t;
-                    min_object = 3;
-                }   
-            }
-        }
-
-        if(min_object == 1)
-        {
-            if(min_circle_index >= 0)
-            {
-                color += circle_colors[min_circle_index] * circle_ambients[min_circle_index];
-
-                for(int i = 0; i < 1; ++i)
-                {
-                    vec3 point = cam_pos + ray * min_t;
-                    vec3 light_ray = normalize(point - point_light_positions[i]);
-                    float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
-                    bool hit = hit_other(target_t, point_light_positions[i], light_ray);
-
-                    if(hit)
-                    {
-                        vec3 normal = normalize(point - circle_centers[min_circle_index]);
-                        vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
-                        float lambert = dot(normal, -light_ray);
-                        float phong = pow(max(dot(reflection, -ray), 0.0f), circle_shininesses[min_circle_index]);
-                        vec3 c_color_diff = circle_colors[min_circle_index] * max(lambert, 0);
-                        vec3 c_color_phong = circle_colors[min_circle_index] * phong;
-                        color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff;
-                        color += point_light_colors[i] * circle_speculars[min_circle_index] * c_color_phong;
-                    }
+                    min_circle_index = i;
+                    min_object = 1;
                 }
             }
-        }
-        else if(min_object == 2)
-        {
-            if(min_triangle_index >= 0)
+
+            for(int i = 0; i < triangle_count; ++i)
             {
-                color += triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
+                float t = triangle_distance(cam_pos, ray, i);
 
-                for(int i = 0; i < 1; ++i)
+                if(t <= 0.001f)
                 {
-                    vec3 point = cam_pos + ray * min_t;
-                    vec3 light_ray = normalize(point - point_light_positions[i]);
-                    float target_t = triangle_distance(point_light_positions[i], light_ray, min_triangle_index);
-                    bool hit = hit_other(target_t, point_light_positions[i], light_ray);
+                    continue;
+                }
 
-                    if(hit)
-                    {
-                        vec3 v0 = triangle_vertices0[min_triangle_index];
-                        vec3 v1 = triangle_vertices1[min_triangle_index];
-                        vec3 v2 = triangle_vertices2[min_triangle_index];
-                        vec3 normal = normalize(cross(v2 - v0, v1 - v0));
-                        vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
-                        float lambert = dot(normal, -light_ray);
-                        float phong = pow(max(dot(reflection, -ray), 0.0f), triangle_shininesses[min_triangle_index]);
-                        vec3 c_color_diff = triangle_colors[min_triangle_index] * max(lambert, 0);
-                        vec3 c_color_phong = triangle_colors[min_triangle_index] * phong;
-                        color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color_diff;
-                        color += point_light_colors[i] * triangle_speculars[min_triangle_index] * c_color_phong;
-                    }
+                if(min_t == -1.0f)
+                {
+                    min_t = t;
+                    min_triangle_index = i;
+                    min_object = 2;
+                }
+                else if(t < min_t)
+                {
+                    min_t = t;
+                    min_triangle_index = i;
+                    min_object = 2;
                 }
             }
-        }
-        if(min_object == 3)
-        {
-            vec3 point = cam_pos + ray * min_t;
-            vec3 v0 = vec3(-ground_dimension / 2.0f, 0.0f, -ground_dimension / 2.0f);
-            vec3 P = point - v0;
-            int x = int(P.x);
-            int z = int(P.z);
-            vec3 og_color;
 
-            if(x % 2 == 0)
             {
-                if(z % 2 == 0)
+                float t = ground_distance(cam_pos, ray);
+
+                if(t > 0.001f)
                 {
-                    og_color = vec3(1.0f, 1.0f, 1.0f);
+                    if(min_t == -1.0f)
+                    {
+                        min_t = t;
+                        min_object = 3;
+                    }
+                    else if(t < min_t)
+                    {
+                        min_t = t;
+                        min_object = 3;
+                    }   
+                }
+            }
+
+            if(min_object == 1)
+            {
+                if(min_circle_index >= 0)
+                {
+                    color += circle_colors[min_circle_index] * circle_ambients[min_circle_index];
+                    vec3 point = cam_pos + ray * min_t;
+                    vec3 normal = normalize(point - circle_centers[min_circle_index]);
+
+                    for(int i = 0; i < 1; ++i)
+                    {
+                        vec3 light_ray = normalize(point - point_light_positions[i]);
+                        float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
+                        bool hit = hit_other(target_t, point_light_positions[i], light_ray);
+
+                        if(hit)
+                        {
+                            vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
+                            float lambert = dot(normal, -light_ray);
+                            float phong = pow(max(dot(reflection, -ray), 0.0f), circle_shininesses[min_circle_index]);
+                            vec3 c_color_diff = circle_colors[min_circle_index] * max(lambert, 0);
+                            vec3 c_color_phong = circle_colors[min_circle_index] * phong;
+                            color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff;
+                            color += point_light_colors[i] * circle_speculars[min_circle_index] * c_color_phong;
+                        }
+                    }
+
+                    ray = ray + 2.0f * dot(-ray, normal) * normal;
+                    cam_pos = point;
                 }
                 else
                 {
-                    og_color = vec3(0.0f, 0.0f, 0.0f);
+                    break;
                 }
+            }
+            else if(min_object == 2)
+            {
+                if(min_triangle_index >= 0)
+                {
+                    color += triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
+                    vec3 point = cam_pos + ray * min_t;
+                    vec3 v0 = triangle_vertices0[min_triangle_index];
+                    vec3 v1 = triangle_vertices1[min_triangle_index];
+                    vec3 v2 = triangle_vertices2[min_triangle_index];
+                    vec3 normal = normalize(cross(v2 - v0, v1 - v0));
+
+                    for(int i = 0; i < 1; ++i)
+                    {
+                        vec3 light_ray = normalize(point - point_light_positions[i]);
+                        float target_t = triangle_distance(point_light_positions[i], light_ray, min_triangle_index);
+                        bool hit = hit_other(target_t, point_light_positions[i], light_ray);
+
+                        if(hit)
+                        {
+                            vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
+                            float lambert = dot(normal, -light_ray);
+                            float phong = pow(max(dot(reflection, -ray), 0.0f), triangle_shininesses[min_triangle_index]);
+                            vec3 c_color_diff = triangle_colors[min_triangle_index] * max(lambert, 0);
+                            vec3 c_color_phong = triangle_colors[min_triangle_index] * phong;
+                            color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color_diff;
+                            color += point_light_colors[i] * triangle_speculars[min_triangle_index] * c_color_phong;
+                        }
+                    }
+
+                    ray = ray + 2.0f * dot(-ray, normal) * normal;
+                    cam_pos = point;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else if(min_object == 3)
+            {
+                vec3 point = cam_pos + ray * min_t;
+                vec3 v0 = vec3(-ground_dimension / 2.0f, 0.0f, -ground_dimension / 2.0f);
+                vec3 P = point - v0;
+                int x = int(P.x);
+                int z = int(P.z);
+                vec3 og_color;
+
+                if(x % 2 == 0)
+                {
+                    if(z % 2 == 0)
+                    {
+                        og_color = vec3(1.0f, 1.0f, 1.0f);
+                    }
+                    else
+                    {
+                        og_color = vec3(0.0f, 0.0f, 0.0f);
+                    }
+                }
+                else
+                {
+                    if(z % 2 == 0)
+                    {
+                        og_color = vec3(0.0f, 0.0f, 0.0f);
+                    }
+                    else
+                    {
+                        og_color = vec3(1.0f, 1.0f, 1.0f);
+                    }
+                }
+
+                color += og_color * ground_ambient;
+                vec3 normal = vec3(0.0f, 1.0f, 0.0f);
+
+                for(int i = 0; i < 1; ++i)
+                {
+                    vec3 light_ray = normalize(point - point_light_positions[i]);
+                    float target_t = ground_distance(point_light_positions[i], light_ray);
+                    bool hit = hit_other(target_t, point_light_positions[i], light_ray);
+
+                    if(hit)
+                    {
+                        vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
+                        float lambert = dot(normal, -light_ray);
+                        float phong = pow(max(dot(reflection, -ray), 0.0f), ground_shininess);
+                        vec3 c_color_diff = og_color * max(lambert, 0);
+                        vec3 c_color_phong = og_color * phong;
+                        color += point_light_colors[i] * ground_diffuse * c_color_diff;
+                        color += point_light_colors[i] * ground_specular * c_color_phong;
+                    }
+                }
+
+                ray = ray + 2.0f * dot(-ray, normal) * normal;
+                cam_pos = point;
             }
             else
             {
-                if(z % 2 == 0)
-                {
-                    og_color = vec3(0.0f, 0.0f, 0.0f);
-                }
-                else
-                {
-                    og_color = vec3(1.0f, 1.0f, 1.0f);
-                }
-            }
-
-            color += og_color * ground_ambient;
-
-            for(int i = 0; i < 1; ++i)
-            {
-                vec3 light_ray = normalize(point - point_light_positions[i]);
-                float target_t = ground_distance(point_light_positions[i], light_ray);
-                bool hit = hit_other(target_t, point_light_positions[i], light_ray);
-
-                if(hit)
-                {
-                    vec3 normal = vec3(0.0f, 1.0f, 0.0f);
-                    vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
-                    float lambert = dot(normal, -light_ray);
-                    float phong = pow(max(dot(reflection, -ray), 0.0f), ground_shininess);
-                    vec3 c_color_diff = og_color * max(lambert, 0);
-                    vec3 c_color_phong = og_color * phong;
-                    color += point_light_colors[i] * ground_diffuse * c_color_diff;
-                    color += point_light_colors[i] * ground_specular * c_color_phong;
-                }
+                break;
             }
         }
 
