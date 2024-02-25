@@ -332,9 +332,9 @@ int main(int argc, char **argv)
     float triangle_speculars[] = {0.9f};
     int32_t triangle_shininesses[] = {90};
     float triangle_reflections[] = {0.25f};
-    glm::vec3 triangle_vertices0[] = {glm::vec3(-1.0f, 1.0f, -5.0f)};
-    glm::vec3 triangle_vertices1[] = {glm::vec3(1.0f, 1.0f, -5.0f)};
-    glm::vec3 triangle_vertices2[] = {glm::vec3(0.0f, 1.0f, -4.5f)};
+    glm::vec3 triangle_vertices0[] = {glm::vec3(-1.0f, 1.0f, 5.0f)};
+    glm::vec3 triangle_vertices1[] = {glm::vec3(1.0f, 1.0f, 5.0f)};
+    glm::vec3 triangle_vertices2[] = {glm::vec3(0.0f, 1.0f, 4.5f)};
 
     for(size_t i = 0; i < 1; ++i)
     {
