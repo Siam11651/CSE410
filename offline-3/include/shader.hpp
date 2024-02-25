@@ -251,6 +251,7 @@ R"(
         float x = pixel.x;
         float y = pixel.y;
         float z = pixel.z;
+        vec3 cam_pos = camera_pos;
         frag_color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float min_t = -1.0f;
@@ -260,7 +261,7 @@ R"(
 
         for(int i = 0; i < circle_count; ++i)
         {
-            float t = circle_distance(circle_centers[i], camera_pos, ray);
+            float t = circle_distance(circle_centers[i], cam_pos, ray);
 
             if(t < 0.0f)
             {
@@ -283,7 +284,7 @@ R"(
 
         for(int i = 0; i < triangle_count; ++i)
         {
-            float t = triangle_distance(camera_pos, ray, i);
+            float t = triangle_distance(cam_pos, ray, i);
 
             if(t < 0.0f)
             {
@@ -312,7 +313,7 @@ R"(
         }
 
         {
-            float t = ground_distance(camera_pos, ray);
+            float t = ground_distance(cam_pos, ray);
 
             if(t >= 0.0f)
             {
@@ -337,7 +338,7 @@ R"(
 
                 for(int i = 0; i < 1; ++i)
                 {
-                    vec3 point = camera_pos + ray * min_t;
+                    vec3 point = cam_pos + ray * min_t;
                     vec3 light_ray = normalize(point - point_light_positions[i]);
                     float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
                     bool hit = hit_other(target_t, point_light_positions[i], light_ray);
@@ -345,9 +346,9 @@ R"(
                     if(hit)
                     {
                         vec3 normal = normalize(point - circle_centers[min_circle_index]);
-                        vec3 reflection = light_ray + 2.0f * dot(light_ray, normal) * normal;
+                        vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
                         float lambert = dot(normal, -light_ray);
-                        float phong = pow(max(dot(reflection, normalize(ray * min_t)), 0.0f), circle_shininesses[min_circle_index]);
+                        float phong = pow(max(dot(reflection, -ray), 0.0f), circle_shininesses[min_circle_index]);
                         vec3 c_color_diff = circle_colors[min_circle_index] * max(lambert, 0);
                         vec3 c_color_phong = circle_colors[min_circle_index] * phong;
                         color += point_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff;
@@ -366,7 +367,7 @@ R"(
 
                 for(int i = 0; i < 1; ++i)
                 {
-                    vec3 point = camera_pos + ray * min_t;
+                    vec3 point = cam_pos + ray * min_t;
                     vec3 light_ray = normalize(point - point_light_positions[i]);
                     float target_t = triangle_distance(point_light_positions[i], light_ray, min_triangle_index);
                     bool hit = hit_other(target_t, point_light_positions[i], light_ray);
@@ -377,7 +378,7 @@ R"(
                         vec3 v1 = triangle_vertices1[min_triangle_index];
                         vec3 v2 = triangle_vertices2[min_triangle_index];
                         vec3 normal = normalize(cross(v2 - v0, v1 - v0));
-                        vec3 reflection = light_ray + 2.0f * abs(dot(light_ray, normal)) * normal;
+                        vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
                         float lambert = dot(normal, -light_ray);
                         float phong = pow(max(dot(reflection, -ray), 0.0f), triangle_shininesses[min_triangle_index]);
                         vec3 c_color_diff = triangle_colors[min_triangle_index] * max(lambert, 0);
@@ -392,7 +393,7 @@ R"(
         }
         if(min_object == 3)
         {
-            vec3 point = camera_pos + ray * min_t;
+            vec3 point = cam_pos + ray * min_t;
             vec3 v0 = vec3(-ground_dimension / 2.0f, 0.0f, -ground_dimension / 2.0f);
             vec3 P = point - v0;
             int x = int(P.x);
@@ -433,7 +434,7 @@ R"(
                 if(hit)
                 {
                     vec3 normal = vec3(0.0f, 1.0f, 0.0f);
-                    vec3 reflection = light_ray + 2.0f * abs(dot(light_ray, normal)) * normal;
+                    vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
                     float lambert = dot(normal, -light_ray);
                     float phong = pow(max(dot(reflection, -ray), 0.0f), ground_shininess);
                     vec3 c_color_diff = og_color * max(lambert, 0);
