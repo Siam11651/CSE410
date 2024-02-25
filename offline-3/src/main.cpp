@@ -328,7 +328,7 @@ int main(int argc, char **argv)
 
     glm::vec3 triangle_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
     float triangle_ambients[] = {0.3f};
-    float triangle_diffuses[] = {0.2f};
+    float triangle_diffuses[] = {0.5f};
     float triangle_speculars[] = {0.9f};
     int32_t triangle_shininesses[] = {90};
     float triangle_reflections[] = {0.25f};
