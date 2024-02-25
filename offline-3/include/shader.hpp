@@ -28,8 +28,10 @@ R"(
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
     float ground_dimension = 100.0f;
-    float ground_ambient = 0.7f;
-    float ground_diffuse = 0.9f;
+    float ground_ambient = 0.2f;
+    float ground_diffuse = 0.1f;
+    float ground_specular = 0.7f;
+    int ground_shininess = 50;
     int circle_count = 2;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
@@ -431,9 +433,13 @@ R"(
                 if(hit)
                 {
                     vec3 normal = vec3(0.0f, 1.0f, 0.0f);
+                    vec3 reflection = light_ray + 2.0f * dot(light_ray, normal) * normal;
                     float lambert = dot(normal, -light_ray);
-                    vec3 c_color = og_color * max(lambert, 0);
-                    color += point_light_colors[i] * ground_diffuse * c_color;
+                    float phong = pow(max(dot(reflection, normalize(ray * min_t)), 0.0f), ground_shininess);
+                    vec3 c_color_diff = og_color * max(lambert, 0);
+                    vec3 c_color_phong = og_color * phong;
+                    color += point_light_colors[i] * ground_diffuse * c_color_diff;
+                    color += point_light_colors[i] * ground_specular * c_color_phong;
                 }
             }
 
