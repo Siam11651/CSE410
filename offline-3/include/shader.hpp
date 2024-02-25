@@ -252,7 +252,7 @@ R"(
         float y = pixel.y;
         float z = pixel.z;
         vec3 cam_pos = camera_pos;
-        frag_color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        vec3 color = vec3(0.0f, 0.0f, 0.0f);
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float min_t = -1.0f;
         int min_object = -1;
@@ -334,7 +334,7 @@ R"(
         {
             if(min_circle_index >= 0)
             {
-                vec3 color = circle_colors[min_circle_index] * circle_ambients[min_circle_index];
+                color += circle_colors[min_circle_index] * circle_ambients[min_circle_index];
 
                 for(int i = 0; i < 1; ++i)
                 {
@@ -355,15 +355,13 @@ R"(
                         color += point_light_colors[i] * circle_speculars[min_circle_index] * c_color_phong;
                     }
                 }
-
-                frag_color = vec4(color, 1.0f);
             }
         }
         else if(min_object == 2)
         {
             if(min_triangle_index >= 0)
             {
-                vec3 color = triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
+                color += triangle_colors[min_triangle_index] * triangle_ambients[min_triangle_index];
 
                 for(int i = 0; i < 1; ++i)
                 {
@@ -387,8 +385,6 @@ R"(
                         color += point_light_colors[i] * triangle_speculars[min_triangle_index] * c_color_phong;
                     }
                 }
-
-                frag_color = vec4(color, 1.0f);
             }
         }
         if(min_object == 3)
@@ -423,7 +419,7 @@ R"(
                 }
             }
 
-            vec3 color = og_color * ground_ambient;
+            color += og_color * ground_ambient;
 
             for(int i = 0; i < 1; ++i)
             {
@@ -443,9 +439,9 @@ R"(
                     color += point_light_colors[i] * ground_specular * c_color_phong;
                 }
             }
-
-            frag_color = vec4(color, 1.0f);
         }
+
+        frag_color = vec4(color, 1.0f);
     }
 )";
 

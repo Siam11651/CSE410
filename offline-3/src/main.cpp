@@ -326,11 +326,11 @@ int main(int argc, char **argv)
     glm::vec3 triangle_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
     float triangle_ambients[] = {0.3f};
     float triangle_diffuses[] = {0.2f};
-    float triangle_speculars[] = {0.3f};
-    float triangle_shininesses[] = {9};
-    glm::vec3 triangle_vertices0[] = {glm::vec3(-1.0f, 0.1f, 5.0f)};
-    glm::vec3 triangle_vertices1[] = {glm::vec3(1.0f, 0.1f, 5.0f)};
-    glm::vec3 triangle_vertices2[] = {glm::vec3(-1.0f, 1.1f, 5.0f)};
+    float triangle_speculars[] = {0.9f};
+    float triangle_shininesses[] = {90};
+    glm::vec3 triangle_vertices0[] = {glm::vec3(-1.0f, 1.0f, -5.0f)};
+    glm::vec3 triangle_vertices1[] = {glm::vec3(1.0f, 1.0f, -5.0f)};
+    glm::vec3 triangle_vertices2[] = {glm::vec3(0.0f, 1.0f, -4.5f)};
 
     for(size_t i = 0; i < 1; ++i)
     {
