@@ -28,8 +28,8 @@ R"(
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
     float ground_dimension = 100.0f;
-    float ground_ambient = 0.2f;
-    float ground_diffuse = 0.1f;
+    float ground_ambient = 0.5f;
+    float ground_diffuse = 0.9f;
     float ground_specular = 0.7f;
     int ground_shininess = 50;
     int circle_count = 2;
@@ -377,9 +377,9 @@ R"(
                         vec3 v1 = triangle_vertices1[min_triangle_index];
                         vec3 v2 = triangle_vertices2[min_triangle_index];
                         vec3 normal = normalize(cross(v2 - v0, v1 - v0));
-                        vec3 reflection = light_ray + 2.0f * dot(light_ray, normal) * normal;
+                        vec3 reflection = light_ray + 2.0f * abs(dot(light_ray, normal)) * normal;
                         float lambert = dot(normal, -light_ray);
-                        float phong = pow(max(dot(reflection, normalize(ray * min_t)), 0.0f), triangle_shininesses[min_triangle_index]);
+                        float phong = pow(max(dot(reflection, -ray), 0.0f), triangle_shininesses[min_triangle_index]);
                         vec3 c_color_diff = triangle_colors[min_triangle_index] * max(lambert, 0);
                         vec3 c_color_phong = triangle_colors[min_triangle_index] * phong;
                         color += point_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color_diff;
@@ -433,9 +433,9 @@ R"(
                 if(hit)
                 {
                     vec3 normal = vec3(0.0f, 1.0f, 0.0f);
-                    vec3 reflection = light_ray + 2.0f * dot(light_ray, normal) * normal;
+                    vec3 reflection = light_ray + 2.0f * abs(dot(light_ray, normal)) * normal;
                     float lambert = dot(normal, -light_ray);
-                    float phong = pow(max(dot(reflection, normalize(ray * min_t)), 0.0f), ground_shininess);
+                    float phong = pow(max(dot(reflection, -ray), 0.0f), ground_shininess);
                     vec3 c_color_diff = og_color * max(lambert, 0);
                     vec3 c_color_phong = og_color * phong;
                     color += point_light_colors[i] * ground_diffuse * c_color_diff;
