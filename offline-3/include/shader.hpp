@@ -25,6 +25,7 @@ R"(
     uniform vec3 bot_left;
     uniform float dx;
     uniform float dy;
+    int point_light_count = 1;
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
     int spot_light_count = 1;
@@ -488,7 +489,7 @@ R"(
                     vec3 point = cam_pos + ray * min_t;
                     vec3 normal = normalize(point - circle_centers[min_circle_index]);
 
-                    for(int i = 0; i < 1; ++i)
+                    for(int i = 0; i < point_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - point_light_positions[i]);
                         float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray, circle_radius[min_circle_index]);
@@ -517,7 +518,7 @@ R"(
                             continue;
                         }
 
-                        float target_t = ground_distance(spot_light_positions[i], light_ray);
+                        float target_t = circle_distance(circle_centers[min_circle_index], spot_light_positions[i], light_ray, circle_radius[min_circle_index]);
                         bool hit = hit_other(target_t, spot_light_positions[i], light_ray);
 
                         if(hit)
@@ -527,8 +528,8 @@ R"(
                             float phong = pow(max(dot(reflection, -ray), 0.0f), circle_shininesses[min_circle_index]);
                             vec3 c_color_diff = circle_colors[min_circle_index] * max(lambert, 0);
                             vec3 c_color_phong = circle_colors[min_circle_index] * phong;
-                            color += spot_light_colors[i] * ground_diffuse * c_color_diff * reflection_fraction * dot_value;
-                            color += spot_light_colors[i] * ground_specular * c_color_phong * reflection_fraction * dot_value;
+                            color += spot_light_colors[i] * circle_diffuses[min_circle_index] * c_color_diff * reflection_fraction * dot_value;
+                            color += spot_light_colors[i] * circle_speculars[min_circle_index] * c_color_phong * reflection_fraction * dot_value;
                         }
                     }
 
@@ -552,7 +553,7 @@ R"(
                     vec3 v2 = triangle_vertices2[min_triangle_index];
                     vec3 normal = normalize(cross(v2 - v0, v1 - v0));
 
-                    for(int i = 0; i < 1; ++i)
+                    for(int i = 0; i < point_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - point_light_positions[i]);
                         float target_t = triangle_distance(point_light_positions[i], light_ray, min_triangle_index);
@@ -581,7 +582,7 @@ R"(
                             continue;
                         }
 
-                        float target_t = ground_distance(spot_light_positions[i], light_ray);
+                        float target_t = triangle_distance(spot_light_positions[i], light_ray, min_triangle_index);
                         bool hit = hit_other(target_t, spot_light_positions[i], light_ray);
 
                         if(hit)
@@ -591,8 +592,8 @@ R"(
                             float phong = pow(max(dot(reflection, -ray), 0.0f), triangle_shininesses[min_triangle_index]);
                             vec3 c_color_diff = triangle_colors[min_triangle_index] * max(lambert, 0);
                             vec3 c_color_phong = triangle_colors[min_triangle_index] * phong;
-                            color += spot_light_colors[i] * ground_diffuse * c_color_diff * reflection_fraction * dot_value;
-                            color += spot_light_colors[i] * ground_specular * c_color_phong * reflection_fraction * dot_value;
+                            color += spot_light_colors[i] * triangle_diffuses[min_triangle_index] * c_color_diff * reflection_fraction * dot_value;
+                            color += spot_light_colors[i] * triangle_speculars[min_triangle_index] * c_color_phong * reflection_fraction * dot_value;
                         }
                     }
 
@@ -640,7 +641,7 @@ R"(
                 color += og_color * ground_ambient * reflection_fraction;
                 vec3 normal = vec3(0.0f, 1.0f, 0.0f);
 
-                for(int i = 0; i < 1; ++i)
+                for(int i = 0; i < point_light_count; ++i)
                 {
                     vec3 light_ray = normalize(point - point_light_positions[i]);
                     float target_t = ground_distance(point_light_positions[i], light_ray);
@@ -699,7 +700,7 @@ R"(
                     float norm_z = 2.0f * shape_c[min_shape_index] * point.z + shape_e[min_shape_index] * point.x + shape_f[min_shape_index] * point.y;
                     vec3 normal = normalize(vec3(norm_x, norm_y, norm_z));
 
-                    for(int i = 0; i < 1; ++i)
+                    for(int i = 0; i < point_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - point_light_positions[i]);
                         float target_t = shape_distance(point_light_positions[i], light_ray, min_shape_index);
@@ -728,7 +729,7 @@ R"(
                             continue;
                         }
 
-                        float target_t = ground_distance(spot_light_positions[i], light_ray);
+                        float target_t = shape_distance(spot_light_positions[i], light_ray, min_shape_index);
                         bool hit = hit_other(target_t, spot_light_positions[i], light_ray);
 
                         if(hit)
@@ -738,8 +739,8 @@ R"(
                             float phong = pow(max(dot(reflection, -ray), 0.0f), shape_shininesses[min_shape_index]);
                             vec3 c_color_diff = shape_colors[min_shape_index] * max(lambert, 0);
                             vec3 c_color_phong = shape_colors[min_shape_index] * phong;
-                            color += spot_light_colors[i] * ground_diffuse * c_color_diff * reflection_fraction * dot_value;
-                            color += spot_light_colors[i] * ground_specular * c_color_phong * reflection_fraction * dot_value;
+                            color += spot_light_colors[i] * shape_diffuses[min_shape_index] * c_color_diff * reflection_fraction * dot_value;
+                            color += spot_light_colors[i] * shape_speculars[min_shape_index] * c_color_phong * reflection_fraction * dot_value;
                         }
                     }
 

@@ -322,7 +322,7 @@ int main(int argc, char **argv)
     float circle_diffuses[] = {0.2f, 0.3f};
     float circle_speculars[] = {0.3f, 0.2f};
     int32_t circle_shininesses[] = {5, 7};
-    float circle_reflections[] = {0.1f, 0.9f};
+    float circle_reflections[] = {0.1f, 0.15f};
     glm::vec3 circle_centers[] = {glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
     float circle_radius[] = {1.0f, 2.0f};
 
