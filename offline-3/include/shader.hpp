@@ -251,60 +251,62 @@ R"(
             return -1.0f;
         }
 
-        float t = (-_b - sqrt(_d)) / (2.0f * _a);
+        float min_t = (-_b - sqrt(_d)) / (2.0f * _a);
+        float max_t = (-_b + sqrt(_b * _b - 4.0f * _a * _c)) / (2.0f * _a);
+        float t[] = {min_t, max_t};
 
-        if(t < 0.0f)
+        for(int i = 0; i < 2; ++i)
         {
-            t = (-_b + sqrt(_b * _b - 4.0f * _a * _c)) / (2.0f * _a);
+            if(t[i] < 0.0f)
+            {
+                continue;
+            }
+
+            vec3 point = source + t[i] * ray;
+
+            if(shape_cube_dimensions[index].x > 0.0f)
+            {
+                if(shape_cube_positions[index].x - shape_cube_dimensions[index].x / 2.0f > point.x)
+                {
+                    continue;
+                }
+
+                if(point.x > shape_cube_positions[index].x + shape_cube_dimensions[index].x / 2.0f)
+                {
+                    continue;
+                }
+            }
+
+            if(shape_cube_dimensions[index].y > 0.0f)
+            {
+                if(shape_cube_positions[index].y - shape_cube_dimensions[index].y / 2.0f > point.y)
+                {
+                    continue;
+                }
+
+                if(point.y > shape_cube_positions[index].y + shape_cube_dimensions[index].y / 2.0f)
+                {
+                    continue;
+                }
+            }
+
+            if(shape_cube_dimensions[index].z > 0.0f)
+            {
+                if(shape_cube_positions[index].z - shape_cube_dimensions[index].z / 2.0f > point.z)
+                {
+                    continue;
+                }
+
+                if(point.z > shape_cube_positions[index].z + shape_cube_dimensions[index].z / 2.0f)
+                {
+                    continue;
+                }
+            }
+
+            return t[i];
         }
 
-        if(t < 0.0f)
-        {
-            return -2.0f;
-        }
-
-        vec3 point = source + t * ray;
-
-        if(shape_cube_dimensions[index].x > 0.0f)
-        {
-            if(shape_cube_positions[index].x - shape_cube_dimensions[index].x / 2.0f > point.x)
-            {
-                return -3.0f;
-            }
-
-            if(point.x > shape_cube_positions[index].x + shape_cube_dimensions[index].x / 2.0f)
-            {
-                return -4.0f;
-            }
-        }
-
-        if(shape_cube_dimensions[index].y > 0.0f)
-        {
-            if(shape_cube_positions[index].y - shape_cube_dimensions[index].y / 2.0f > point.y)
-            {
-                return -5.0f;
-            }
-
-            if(point.y > shape_cube_positions[index].y + shape_cube_dimensions[index].y / 2.0f)
-            {
-                return -6.0f;
-            }
-        }
-
-        if(shape_cube_dimensions[index].z > 0.0f)
-        {
-            if(shape_cube_positions[index].z - shape_cube_dimensions[index].z / 2.0f > point.z)
-            {
-                return -7.0f;
-            }
-
-            if(point.z > shape_cube_positions[index].z + shape_cube_dimensions[index].z / 2.0f)
-            {
-                return -8.0f;
-            }
-        }
-
-        return t;
+        return -2.0f;
     }
 
     bool hit_other(float target_t, vec3 source, vec3 ray)
@@ -352,7 +354,12 @@ R"(
         {
             float t = shape_distance(source, ray, j);
 
-            if(t > 0.001f && t < target_t)
+            if(t <= 0.001f)
+            {
+                continue;
+            }
+
+            if(t < target_t)
             {
                 return false;
             }
@@ -450,13 +457,6 @@ R"(
 
                 if(t <= 0.001f)
                 {
-                    if(t == -7.0f)
-                    {
-                        frag_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-
-                        return;
-                    }
-
                     continue;
                 }
 
