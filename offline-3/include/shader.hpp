@@ -329,7 +329,7 @@ R"(
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float reflection_fraction = 1.0f;
 
-        for(int j = 0; j < 1; ++j)
+        for(int j = 0; j < 4; ++j)
         {
             float min_t = -1.0f;
             int min_object = -1;
@@ -585,7 +585,7 @@ R"(
 
                     ray = ray + 2.0f * dot(-ray, normal) * normal;
                     cam_pos = point;
-                    reflection_fraction *= triangle_reflections[min_triangle_index];
+                    reflection_fraction *= shape_reflections[min_shape_index];
                 }
                 else
                 {
