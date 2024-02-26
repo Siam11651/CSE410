@@ -279,7 +279,7 @@ int main(int argc, char **argv)
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
-    glm::vec3 point_light_positions[] = {glm::vec3(0.0f, 10.0f, 0.0f)};
+    glm::vec3 point_light_positions[] = {glm::vec3(0.0f, 10.0f, -5.0f)};
     glm::vec3 point_light_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
 
     for(size_t i = 0; i < 1; ++i)
@@ -301,7 +301,7 @@ int main(int argc, char **argv)
     float circle_speculars[] = {0.3f, 0.2f};
     int32_t circle_shininesses[] = {5, 7};
     float circle_reflections[] = {0.1f, 0.15f};
-    glm::vec3 circle_centers[] = {glm::vec3(-0.75f, 2.0f, 0.0f), glm::vec3(0.5f, 3.0f, 0.0f)};
+    glm::vec3 circle_centers[] = {glm::vec3(-3.75f, 2.0f, 0.0f), glm::vec3(3.5f, 3.0f, 0.0f)};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -364,20 +364,20 @@ int main(int argc, char **argv)
     }
 
     float shape_a[] = {1.0f};
-    float shape_b[] = {1.0f};
+    float shape_b[] = {0.0f};
     float shape_c[] = {1.0f};
     float shape_d[] = {0.0f};
     float shape_e[] = {0.0f};
     float shape_f[] = {0.0f};
-    float shape_g[] = {-0.2f};
-    float shape_h[] = {-0.2f};
-    float shape_i[] = {-0.2f};
+    float shape_g[] = {0.0f};
+    float shape_h[] = {0.0f};
+    float shape_i[] = {0.0f};
     float shape_j[] = {-2.0f};
     glm::vec3 shape_colors[] = {glm::vec3(1.0f, 0.0f, 1.0f)};
     float shape_ambients[] = {0.4f};
-    float shape_diffuses[] = {0.6f};
-    float shape_speculars[] = {0.7f};
-    int32_t shape_shininesses[] = {100};
+    float shape_diffuses[] = {0.1f};
+    float shape_speculars[] = {0.5f};
+    int32_t shape_shininesses[] = {1};
     float shape_reflections[] = {0.35f};
 
     for(size_t i = 0; i < 1; ++i)

@@ -305,6 +305,16 @@ R"(
             }
         }
 
+        for(int j = 0; j < shape_count; ++j)
+        {
+            float t = shape_distance(source, ray, j);
+
+            if(t > 0.001f && t < target_t)
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -546,7 +556,41 @@ R"(
             }
             else if(min_object == 4)
             {
-                color += shape_colors[min_shape_index] * shape_ambients[min_shape_index] * reflection_fraction;
+                if(min_shape_index >= 0)
+                {
+                    color += shape_colors[min_shape_index] * shape_ambients[min_shape_index] * reflection_fraction;
+                    vec3 point = cam_pos + ray * min_t;
+                    float norm_x = 2.0f * shape_a[min_shape_index] * point.x + shape_d[min_shape_index] * point.y + shape_e[min_shape_index] * point.z;
+                    float norm_y = 2.0f * shape_b[min_shape_index] * point.y + shape_d[min_shape_index] * point.x + shape_f[min_shape_index] * point.z;
+                    float norm_z = 2.0f * shape_c[min_shape_index] * point.z + shape_e[min_shape_index] * point.x + shape_f[min_shape_index] * point.y;
+                    vec3 normal = normalize(vec3(norm_x, norm_y, norm_z));
+
+                    for(int i = 0; i < 1; ++i)
+                    {
+                        vec3 light_ray = normalize(point - point_light_positions[i]);
+                        float target_t = shape_distance(point_light_positions[i], light_ray, min_shape_index);
+                        bool hit = hit_other(target_t, point_light_positions[i], light_ray);
+
+                        if(hit)
+                        {
+                            vec3 reflection = light_ray + 2.0f * dot(-light_ray, normal) * normal;
+                            float lambert = dot(normal, reflection);
+                            float phong = pow(max(dot(reflection, -ray), 0.0f), shape_shininesses[min_shape_index]);
+                            vec3 c_color_diff = shape_colors[min_shape_index] * max(lambert, 0);
+                            vec3 c_color_phong = shape_colors[min_shape_index] * phong;
+                            color += point_light_colors[i] * shape_diffuses[min_shape_index] * c_color_diff * reflection_fraction;
+                            color += point_light_colors[i] * shape_speculars[min_shape_index] * c_color_phong * reflection_fraction;
+                        }
+                    }
+
+                    ray = ray + 2.0f * dot(-ray, normal) * normal;
+                    cam_pos = point;
+                    reflection_fraction *= triangle_reflections[min_triangle_index];
+                }
+                else
+                {
+                    break;
+                }
             }
             else
             {
