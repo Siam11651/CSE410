@@ -41,6 +41,7 @@ R"(
     uniform float circle_shininesses[2];
     uniform float circle_reflections[2];
     uniform vec3 circle_centers[2];
+    uniform float circle_radius[2];
     int triangle_count = 1;
     uniform vec3 triangle_colors[1];
     uniform float triangle_ambients[1];
@@ -71,12 +72,12 @@ R"(
     uniform vec3 shape_cube_positions[1];
     uniform vec3 shape_cube_dimensions[1];
 
-    float circle_distance(vec3 center, vec3 source, vec3 ray)
+    float circle_distance(vec3 center, vec3 source, vec3 ray, float radius)
     {
         vec3 _camera_pos = source - center;
         float a = dot(ray, ray);
         float b = 2.0f * dot(ray, _camera_pos);
-        float c = dot(_camera_pos, _camera_pos) - 0.25f;
+        float c = dot(_camera_pos, _camera_pos) - radius * radius;
         float discriminant = b * b - 4 * c * a;
 
         if(discriminant < 0.0f)
@@ -313,7 +314,7 @@ R"(
     {
         for(int j = 0; j < circle_count; ++j)
         {
-            float t = circle_distance(circle_centers[j], source, ray);
+            float t = circle_distance(circle_centers[j], source, ray, circle_radius[j]);
 
             if(t <= 0.001f)
             {
@@ -389,7 +390,7 @@ R"(
 
             for(int i = 0; i < circle_count; ++i)
             {
-                float t = circle_distance(circle_centers[i], cam_pos, ray);
+                float t = circle_distance(circle_centers[i], cam_pos, ray, circle_radius[i]);
 
                 if(t <= 0.001f)
                 {
@@ -485,7 +486,7 @@ R"(
                     for(int i = 0; i < 1; ++i)
                     {
                         vec3 light_ray = normalize(point - point_light_positions[i]);
-                        float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray);
+                        float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray, circle_radius[min_circle_index]);
                         bool hit = hit_other(target_t, point_light_positions[i], light_ray);
 
                         if(hit)

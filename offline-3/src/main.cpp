@@ -302,6 +302,7 @@ int main(int argc, char **argv)
     int32_t circle_shininesses[] = {5, 7};
     float circle_reflections[] = {0.1f, 0.15f};
     glm::vec3 circle_centers[] = {glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
+    float circle_radius[] = {1.0f, 2.0f};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -316,6 +317,7 @@ int main(int argc, char **argv)
         uint32_t circle_shininesses_uinform_loc = glGetUniformLocation(shader_program, ("circle_shininesses[" + ss.str() + "]").c_str());
         uint32_t circle_reflections_uinform_loc = glGetUniformLocation(shader_program, ("circle_reflections[" + ss.str() + "]").c_str());
         uint32_t circle_center_uinform_loc = glGetUniformLocation(shader_program, ("circle_centers[" + ss.str() + "]").c_str());
+        uint32_t circle_radius_uinform_loc = glGetUniformLocation(shader_program, ("circle_radius[" + ss.str() + "]").c_str());
 
         glUniform3fv(circle_color_uinform_loc, 1, glm::value_ptr(circle_colors[i]));
         glUniform1f(circle_ambient_uinform_loc, circle_ambients[i]);
@@ -324,6 +326,7 @@ int main(int argc, char **argv)
         glUniform1f(circle_shininesses_uinform_loc, circle_shininesses[i]);
         glUniform1f(circle_reflections_uinform_loc, circle_reflections[i]);
         glUniform3fv(circle_center_uinform_loc, 1, glm::value_ptr(circle_centers[i]));
+        glUniform1f(circle_radius_uinform_loc, circle_radius[i]);
     }
 
     glm::vec3 triangle_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
