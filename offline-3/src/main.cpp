@@ -372,15 +372,15 @@ int main(int argc, char **argv)
     float shape_g[] = {0.0f};
     float shape_h[] = {0.0f};
     float shape_i[] = {0.0f};
-    float shape_j[] = {-2.0f};
+    float shape_j[] = {-1.0f};
     glm::vec3 shape_colors[] = {glm::vec3(1.0f, 0.0f, 1.0f)};
     float shape_ambients[] = {0.4f};
     float shape_diffuses[] = {0.1f};
     float shape_speculars[] = {0.5f};
     int32_t shape_shininesses[] = {1};
     float shape_reflections[] = {0.35f};
-    glm::vec3 shape_cube_positions[] = {glm::vec3(2.0f, 1.0f, 0.0f)};
-    glm::vec3 shape_cube_dimensions[] = {glm::vec3(2.0f, 2.0f, 2.0f)};
+    glm::vec3 shape_cube_positions[] = {glm::vec3(1.0f, 1.0f, 0.0f)};
+    glm::vec3 shape_cube_dimensions[] = {glm::vec3(3.0f, 1.0f, 0.0f)};
 
     for(size_t i = 0; i < 1; ++i)
     {
