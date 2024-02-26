@@ -363,6 +363,64 @@ int main(int argc, char **argv)
         glUniform3fv(triangle_vertices2_uinform_loc, 1, glm::value_ptr(triangle_vertices2[i]));
     }
 
+    float shape_a[] = {1.0f};
+    float shape_b[] = {1.0f};
+    float shape_c[] = {1.0f};
+    float shape_d[] = {0.0f};
+    float shape_e[] = {0.0f};
+    float shape_f[] = {0.0f};
+    float shape_g[] = {-0.2f};
+    float shape_h[] = {-0.2f};
+    float shape_i[] = {-0.2f};
+    float shape_j[] = {-2.0f};
+    glm::vec3 shape_colors[] = {glm::vec3(1.0f, 0.0f, 1.0f)};
+    float shape_ambients[] = {0.4f};
+    float shape_diffuses[] = {0.6f};
+    float shape_speculars[] = {0.7f};
+    int32_t shape_shininesses[] = {100};
+    float shape_reflections[] = {0.35f};
+
+    for(size_t i = 0; i < 1; ++i)
+    {
+        std::stringstream ss;
+
+        ss << i;
+
+        uint32_t shape_a_loc = glGetUniformLocation(shader_program, ("shape_a[" + ss.str() + "]").c_str());
+        uint32_t shape_b_loc = glGetUniformLocation(shader_program, ("shape_b[" + ss.str() + "]").c_str());
+        uint32_t shape_c_loc = glGetUniformLocation(shader_program, ("shape_c[" + ss.str() + "]").c_str());
+        uint32_t shape_d_loc = glGetUniformLocation(shader_program, ("shape_d[" + ss.str() + "]").c_str());
+        uint32_t shape_e_loc = glGetUniformLocation(shader_program, ("shape_e[" + ss.str() + "]").c_str());
+        uint32_t shape_f_loc = glGetUniformLocation(shader_program, ("shape_f[" + ss.str() + "]").c_str());
+        uint32_t shape_g_loc = glGetUniformLocation(shader_program, ("shape_g[" + ss.str() + "]").c_str());
+        uint32_t shape_h_loc = glGetUniformLocation(shader_program, ("shape_h[" + ss.str() + "]").c_str());
+        uint32_t shape_i_loc = glGetUniformLocation(shader_program, ("shape_i[" + ss.str() + "]").c_str());
+        uint32_t shape_j_loc = glGetUniformLocation(shader_program, ("shape_j[" + ss.str() + "]").c_str());
+        uint32_t shape_colors_loc = glGetUniformLocation(shader_program, ("shape_colors[" + ss.str() + "]").c_str());
+        uint32_t shape_ambients_loc = glGetUniformLocation(shader_program, ("shape_ambients[" + ss.str() + "]").c_str());
+        uint32_t shape_diffuses_loc = glGetUniformLocation(shader_program, ("shape_diffuses[" + ss.str() + "]").c_str());
+        uint32_t shape_speculars_loc = glGetUniformLocation(shader_program, ("shape_speculars[" + ss.str() + "]").c_str());
+        uint32_t shape_shininesses_loc = glGetUniformLocation(shader_program, ("shape_shininesses[" + ss.str() + "]").c_str());
+        uint32_t shape_reflections_loc = glGetUniformLocation(shader_program, ("shape_reflections[" + ss.str() + "]").c_str());
+
+        glUniform1f(shape_a_loc, shape_a[i]);
+        glUniform1f(shape_b_loc, shape_b[i]);
+        glUniform1f(shape_c_loc, shape_c[i]);
+        glUniform1f(shape_d_loc, shape_d[i]);
+        glUniform1f(shape_e_loc, shape_e[i]);
+        glUniform1f(shape_f_loc, shape_f[i]);
+        glUniform1f(shape_g_loc, shape_g[i]);
+        glUniform1f(shape_h_loc, shape_h[i]);
+        glUniform1f(shape_i_loc, shape_i[i]);
+        glUniform1f(shape_j_loc, shape_j[i]);
+        glUniform3fv(shape_colors_loc, 1, glm::value_ptr(shape_colors[i]));
+        glUniform1f(shape_ambients_loc, shape_ambients[i]);
+        glUniform1f(shape_diffuses_loc, shape_diffuses[i]);
+        glUniform1f(shape_speculars_loc, shape_speculars[i]);
+        glUniform1f(shape_shininesses_loc, shape_shininesses[i]);
+        glUniform1f(shape_reflections_loc, shape_reflections[i]);
+    }
+
     glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
     glUniform1f(dx_loc, 0.5f / screen::window_width());
     glUniform1f(dy_loc, 0.5f / screen::window_height());

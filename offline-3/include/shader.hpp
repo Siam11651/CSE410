@@ -51,6 +51,23 @@ R"(
     uniform vec3 triangle_vertices0[1];
     uniform vec3 triangle_vertices1[1];
     uniform vec3 triangle_vertices2[1];
+    int shape_count = 1;
+    uniform float shape_a[1];
+    uniform float shape_b[1];
+    uniform float shape_c[1];
+    uniform float shape_d[1];
+    uniform float shape_e[1];
+    uniform float shape_f[1];
+    uniform float shape_g[1];
+    uniform float shape_h[1];
+    uniform float shape_i[1];
+    uniform float shape_j[1];
+    uniform vec3 shape_colors[1];
+    uniform float shape_ambients[1];
+    uniform float shape_diffuses[1];
+    uniform float shape_speculars[1];
+    uniform float shape_shininesses[1];
+    uniform float shape_reflections[1];
 
     float circle_distance(vec3 center, vec3 source, vec3 ray)
     {
@@ -204,6 +221,49 @@ R"(
         return t;
     }
 
+    float shape_distance(vec3 source, vec3 ray, int index)
+    {
+        float a = shape_a[index];
+        float b = shape_b[index];
+        float c = shape_c[index];
+        float d = shape_d[index];
+        float e = shape_e[index];
+        float f = shape_f[index];
+        float g = shape_g[index];
+        float h = shape_h[index];
+        float i = shape_i[index];
+        float j = shape_j[index];
+        float sx = source.x;
+        float sy = source.y;
+        float sz = source.z;
+        float rx = ray.x;
+        float ry = ray.y;
+        float rz = ray.z;
+        float _a = a * rx * rx + b * ry * ry + c * rz * rz + d * rx * ry + e * ry * rz + f * rz * rx;
+        float _b = 2.0f * (a * sx * rx + b * sy * ry + c * sz * rz) + d * (sy * rx + sx * ry) + e * (sz * ry + sy * rz) + f * (sx * rz + sz * rx) + g * rx + h * ry + i * rz;
+        float _c = a * sx * sx + b * sy * sy + c * sz * sz + d * sx * sy + e * sy * sz + f * sz * sx + g * sx + h * sy + i * sz + j;
+        float _d = _b * _b - 4.0f * _c * _a;
+
+        if(_d < 0.0f)
+        {
+            return -1.0f;
+        }
+
+        float t = (-_b - sqrt(_d)) / (2.0f * _a);
+
+        if(t < 0.0f)
+        {
+            t = (-_b + sqrt(_b * _b - 4.0f * _a * _c)) / (2.0f * _a);
+        }
+
+        if(t < 0.0f)
+        {
+            return -2.0f;
+        }
+
+        return t;
+    }
+
     bool hit_other(float target_t, vec3 source, vec3 ray)
     {
         for(int j = 0; j < circle_count; ++j)
@@ -259,12 +319,13 @@ R"(
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float reflection_fraction = 1.0f;
 
-        for(int j = 0; j < 4; ++j)
+        for(int j = 0; j < 1; ++j)
         {
             float min_t = -1.0f;
             int min_object = -1;
             int min_circle_index = -1;
             int min_triangle_index = -1;
+            int min_shape_index = -1;
 
             for(int i = 0; i < circle_count; ++i)
             {
@@ -327,6 +388,29 @@ R"(
                         min_t = t;
                         min_object = 3;
                     }   
+                }
+            }
+
+            for(int i = 0; i < shape_count; ++i)
+            {
+                float t = shape_distance(cam_pos, ray, i);
+
+                if(t <= 0.001f)
+                {
+                    continue;
+                }
+
+                if(min_t == -1.0f)
+                {
+                    min_t = t;
+                    min_shape_index = i;
+                    min_object = 4;
+                }
+                else if(t < min_t)
+                {
+                    min_t = t;
+                    min_shape_index = i;
+                    min_object = 4;
                 }
             }
 
@@ -459,6 +543,10 @@ R"(
                 ray = ray + 2.0f * dot(-ray, normal) * normal;
                 cam_pos = point;
                 reflection_fraction *= ground_reflection;
+            }
+            else if(min_object == 4)
+            {
+                color += shape_colors[min_shape_index] * shape_ambients[min_shape_index] * reflection_fraction;
             }
             else
             {
