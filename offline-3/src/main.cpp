@@ -301,7 +301,7 @@ int main(int argc, char **argv)
     float circle_speculars[] = {0.3f, 0.2f};
     int32_t circle_shininesses[] = {5, 7};
     float circle_reflections[] = {0.1f, 0.15f};
-    glm::vec3 circle_centers[] = {glm::vec3(-3.75f, 2.0f, 0.0f), glm::vec3(3.5f, 3.0f, 0.0f)};
+    glm::vec3 circle_centers[] = {glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
 
     for(size_t i = 0; i < 2; ++i)
     {
@@ -379,6 +379,8 @@ int main(int argc, char **argv)
     float shape_speculars[] = {0.5f};
     int32_t shape_shininesses[] = {1};
     float shape_reflections[] = {0.35f};
+    glm::vec3 shape_cube_positions[] = {glm::vec3(2.0f, 1.0f, 0.0f)};
+    glm::vec3 shape_cube_dimensions[] = {glm::vec3(2.0f, 2.0f, 2.0f)};
 
     for(size_t i = 0; i < 1; ++i)
     {
@@ -402,6 +404,8 @@ int main(int argc, char **argv)
         uint32_t shape_speculars_loc = glGetUniformLocation(shader_program, ("shape_speculars[" + ss.str() + "]").c_str());
         uint32_t shape_shininesses_loc = glGetUniformLocation(shader_program, ("shape_shininesses[" + ss.str() + "]").c_str());
         uint32_t shape_reflections_loc = glGetUniformLocation(shader_program, ("shape_reflections[" + ss.str() + "]").c_str());
+        uint32_t shape_cube_positions_loc = glGetUniformLocation(shader_program, ("shape_cube_positions[" + ss.str() + "]").c_str());
+        uint32_t shape_cube_dimensions_loc = glGetUniformLocation(shader_program, ("shape_cube_dimensions[" + ss.str() + "]").c_str());
 
         glUniform1f(shape_a_loc, shape_a[i]);
         glUniform1f(shape_b_loc, shape_b[i]);
@@ -419,6 +423,8 @@ int main(int argc, char **argv)
         glUniform1f(shape_speculars_loc, shape_speculars[i]);
         glUniform1f(shape_shininesses_loc, shape_shininesses[i]);
         glUniform1f(shape_reflections_loc, shape_reflections[i]);
+        glUniform3fv(shape_cube_positions_loc, 1, glm::value_ptr(shape_cube_positions[i]));
+        glUniform3fv(shape_cube_dimensions_loc, 1, glm::value_ptr(shape_cube_dimensions[i]));
     }
 
     glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());

@@ -68,13 +68,15 @@ R"(
     uniform float shape_speculars[1];
     uniform float shape_shininesses[1];
     uniform float shape_reflections[1];
+    uniform vec3 shape_cube_positions[1];
+    uniform vec3 shape_cube_dimensions[1];
 
     float circle_distance(vec3 center, vec3 source, vec3 ray)
     {
         vec3 _camera_pos = source - center;
         float a = dot(ray, ray);
         float b = 2.0f * dot(ray, _camera_pos);
-        float c = dot(_camera_pos, _camera_pos) - 0.5f;
+        float c = dot(_camera_pos, _camera_pos) - 0.25f;
         float discriminant = b * b - 4 * c * a;
 
         if(discriminant < 0.0f)
@@ -261,6 +263,47 @@ R"(
             return -2.0f;
         }
 
+        vec3 point = source + t * ray;
+
+        if(shape_cube_dimensions[index].x > 0.0f)
+        {
+            if(shape_cube_positions[index].x - shape_cube_dimensions[index].x / 2.0f > point.x)
+            {
+                return -3.0f;
+            }
+
+            if(point.x > shape_cube_positions[index].x + shape_cube_dimensions[index].x / 2.0f)
+            {
+                return -4.0f;
+            }
+        }
+
+        if(shape_cube_dimensions[index].y > 0.0f)
+        {
+            if(shape_cube_positions[index].y - shape_cube_dimensions[index].y / 2.0f > point.y)
+            {
+                return -5.0f;
+            }
+
+            if(point.y > shape_cube_positions[index].y + shape_cube_dimensions[index].y / 2.0f)
+            {
+                return -6.0f;
+            }
+        }
+
+        if(shape_cube_dimensions[index].z > 0.0f)
+        {
+            if(shape_cube_positions[index].z - shape_cube_dimensions[index].z / 2.0f > point.z)
+            {
+                return -7.0f;
+            }
+
+            if(point.z > shape_cube_positions[index].z + shape_cube_dimensions[index].z / 2.0f)
+            {
+                return -8.0f;
+            }
+        }
+
         return t;
     }
 
@@ -329,7 +372,7 @@ R"(
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float reflection_fraction = 1.0f;
 
-        for(int j = 0; j < 4; ++j)
+        for(int j = 0; j < 1; ++j)
         {
             float min_t = -1.0f;
             int min_object = -1;
@@ -407,6 +450,13 @@ R"(
 
                 if(t <= 0.001f)
                 {
+                    if(t == -7.0f)
+                    {
+                        frag_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+                        return;
+                    }
+
                     continue;
                 }
 
