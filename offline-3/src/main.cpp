@@ -295,12 +295,34 @@ int main(int argc, char **argv)
         glUniform3fv(point_light_colors_uinform_loc, 1, glm::value_ptr(point_light_colors[i]));
     }
 
+    glm::vec3 spot_light_positions[] = {glm::vec3(5.0f, 5.0f, 5.0f)};
+    glm::vec3 spot_light_directions[] = {glm::vec3(0.0f, -1.0f, 0.0f)};
+    glm::vec3 spot_light_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f)};
+    float spot_light_angles[] = {12.0f};
+
+    for(size_t i = 0; i < 1; ++i)
+    {
+        std::stringstream ss;
+
+        ss << i;
+
+        uint32_t spot_light_positions_loc = glGetUniformLocation(shader_program, ("spot_light_positions[" + ss.str() + "]").c_str());
+        uint32_t spot_light_directions_loc = glGetUniformLocation(shader_program, ("spot_light_directions[" + ss.str() + "]").c_str());
+        uint32_t spot_light_colors_loc = glGetUniformLocation(shader_program, ("spot_light_colors[" + ss.str() + "]").c_str());
+        uint32_t spot_light_angles_loc = glGetUniformLocation(shader_program, ("spot_light_angles[" + ss.str() + "]").c_str());
+
+        glUniform3fv(spot_light_positions_loc, 1, glm::value_ptr(spot_light_positions[i]));
+        glUniform3fv(spot_light_directions_loc, 1, glm::value_ptr(spot_light_directions[i]));
+        glUniform3fv(spot_light_colors_loc, 1, glm::value_ptr(spot_light_colors[i]));
+        glUniform1f(spot_light_angles_loc, spot_light_angles[i]);
+    }
+
     glm::vec3 circle_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
     float circle_ambients[] = {0.6f, 0.5f};
     float circle_diffuses[] = {0.2f, 0.3f};
     float circle_speculars[] = {0.3f, 0.2f};
     int32_t circle_shininesses[] = {5, 7};
-    float circle_reflections[] = {0.1f, 0.15f};
+    float circle_reflections[] = {0.1f, 0.9f};
     glm::vec3 circle_centers[] = {glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
     float circle_radius[] = {1.0f, 2.0f};
 
