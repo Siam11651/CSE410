@@ -15,6 +15,7 @@
 #include <shader.hpp>
 #include <scene.hpp>
 #include <iostream>
+#include <regex>
 
 constexpr float fovy = M_PI / 4.0f;
 constexpr float camera_speed = 2.0f;
@@ -274,10 +275,10 @@ int main(int argc, char **argv)
     uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
     uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
     uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
-    glm::vec3 point_light_positions[] = {glm::vec3(0.0f, 10.0f, -5.0f)};
-    glm::vec3 point_light_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
+    std::vector<glm::vec3> point_light_positions{glm::vec3(0.0f, 10.0f, -5.0f)};
+    std::vector<glm::vec3> point_light_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
 
-    for(size_t i = 0; i < 1; ++i)
+    for(size_t i = 0; i < point_light_positions.size(); ++i)
     {
         std::stringstream ss;
 
@@ -290,12 +291,12 @@ int main(int argc, char **argv)
         glUniform3fv(point_light_colors_uinform_loc, 1, glm::value_ptr(point_light_colors[i]));
     }
 
-    glm::vec3 spot_light_positions[] = {glm::vec3(5.0f, 5.0f, 5.0f)};
-    glm::vec3 spot_light_directions[] = {glm::vec3(0.0f, -1.0f, 0.0f)};
-    glm::vec3 spot_light_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f)};
-    float spot_light_angles[] = {12.0f};
+    std::vector<glm::vec3> spot_light_positions{glm::vec3(5.0f, 5.0f, 5.0f)};
+    std::vector<glm::vec3> spot_light_directions{glm::vec3(0.0f, -1.0f, 0.0f)};
+    std::vector<glm::vec3> spot_light_colors{glm::vec3(1.0f, 0.0f, 0.0f)};
+    std::vector<float> spot_light_angles{12.0f};
 
-    for(size_t i = 0; i < 1; ++i)
+    for(size_t i = 0; i < spot_light_positions.size(); ++i)
     {
         std::stringstream ss;
 
@@ -312,16 +313,16 @@ int main(int argc, char **argv)
         glUniform1f(spot_light_angles_loc, spot_light_angles[i]);
     }
 
-    glm::vec3 circle_colors[] = {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
-    float circle_ambients[] = {0.6f, 0.5f};
-    float circle_diffuses[] = {0.2f, 0.3f};
-    float circle_speculars[] = {0.3f, 0.2f};
-    int32_t circle_shininesses[] = {5, 7};
-    float circle_reflections[] = {0.1f, 0.15f};
-    glm::vec3 circle_centers[] = {glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
-    float circle_radius[] = {1.0f, 2.0f};
+    std::vector<glm::vec3> circle_colors{glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
+    std::vector<float> circle_ambients{0.6f, 0.5f};
+    std::vector<float> circle_diffuses{0.2f, 0.3f};
+    std::vector<float> circle_speculars{0.3f, 0.2f};
+    std::vector<int32_t> circle_shininesses{5, 7};
+    std::vector<float> circle_reflections{0.1f, 0.15f};
+    std::vector<glm::vec3> circle_centers{glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
+    std::vector<float> circle_radius{1.0f, 2.0f};
 
-    for(size_t i = 0; i < 2; ++i)
+    for(size_t i = 0; i < circle_colors.size(); ++i)
     {
         std::stringstream ss;
 
@@ -346,15 +347,15 @@ int main(int argc, char **argv)
         glUniform1f(circle_radius_uinform_loc, circle_radius[i]);
     }
 
-    glm::vec3 triangle_colors[] = {glm::vec3(1.0f, 1.0f, 1.0f)};
-    float triangle_ambients[] = {0.3f};
-    float triangle_diffuses[] = {0.5f};
-    float triangle_speculars[] = {0.9f};
-    int32_t triangle_shininesses[] = {90};
-    float triangle_reflections[] = {0.25f};
-    glm::vec3 triangle_vertices0[] = {glm::vec3(-1.0f, 1.0f, 5.0f)};
-    glm::vec3 triangle_vertices1[] = {glm::vec3(1.0f, 1.0f, 5.0f)};
-    glm::vec3 triangle_vertices2[] = {glm::vec3(0.0f, 1.0f, 4.5f)};
+    std::vector<glm::vec3> triangle_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
+    std::vector<float> triangle_ambients{0.3f};
+    std::vector<float> triangle_diffuses{0.5f};
+    std::vector<float> triangle_speculars{0.9f};
+    std::vector<int32_t> triangle_shininesses{90};
+    std::vector<float> triangle_reflections{0.25f};
+    std::vector<glm::vec3> triangle_vertices0{glm::vec3(-1.0f, 1.0f, 5.0f)};
+    std::vector<glm::vec3> triangle_vertices1{glm::vec3(1.0f, 1.0f, 5.0f)};
+    std::vector<glm::vec3> triangle_vertices2{glm::vec3(0.0f, 1.0f, 4.5f)};
 
     for(size_t i = 0; i < 1; ++i)
     {
@@ -383,26 +384,26 @@ int main(int argc, char **argv)
         glUniform3fv(triangle_vertices2_uinform_loc, 1, glm::value_ptr(triangle_vertices2[i]));
     }
 
-    float shape_a[] = {1.0f};
-    float shape_b[] = {0.0f};
-    float shape_c[] = {1.0f};
-    float shape_d[] = {0.0f};
-    float shape_e[] = {0.0f};
-    float shape_f[] = {0.0f};
-    float shape_g[] = {0.0f};
-    float shape_h[] = {0.0f};
-    float shape_i[] = {0.0f};
-    float shape_j[] = {-1.0f};
-    glm::vec3 shape_colors[] = {glm::vec3(1.0f, 0.0f, 1.0f)};
-    float shape_ambients[] = {0.4f};
-    float shape_diffuses[] = {0.1f};
-    float shape_speculars[] = {0.5f};
-    int32_t shape_shininesses[] = {1};
-    float shape_reflections[] = {0.35f};
-    glm::vec3 shape_cube_positions[] = {glm::vec3(1.0f, 1.0f, 0.0f)};
-    glm::vec3 shape_cube_dimensions[] = {glm::vec3(3.0f, 1.0f, 0.0f)};
+    std::vector<float> shape_a{1.0f};
+    std::vector<float> shape_b{0.0f};
+    std::vector<float> shape_c{1.0f};
+    std::vector<float> shape_d{0.0f};
+    std::vector<float> shape_e{0.0f};
+    std::vector<float> shape_f{0.0f};
+    std::vector<float> shape_g{0.0f};
+    std::vector<float> shape_h{0.0f};
+    std::vector<float> shape_i{0.0f};
+    std::vector<float> shape_j{-1.0f};
+    std::vector<glm::vec3> shape_colors{glm::vec3(1.0f, 0.0f, 1.0f)};
+    std::vector<float> shape_ambients{0.4f};
+    std::vector<float> shape_diffuses{0.1f};
+    std::vector<float> shape_speculars{0.5f};
+    std::vector<int32_t> shape_shininesses{1};
+    std::vector<float> shape_reflections{0.35f};
+    std::vector<glm::vec3> shape_cube_positions{glm::vec3(1.0f, 1.0f, 0.0f)};
+    std::vector<glm::vec3> shape_cube_dimensions{glm::vec3(3.0f, 1.0f, 0.0f)};
 
-    for(size_t i = 0; i < 1; ++i)
+    for(size_t i = 0; i < shape_a.size(); ++i)
     {
         std::stringstream ss;
 
