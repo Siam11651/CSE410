@@ -286,6 +286,9 @@ int main(int argc, char **argv)
 
                 std::swap(cube_position.y, cube_position.z);
                 std::swap(cube_dimension.y, cube_dimension.z);
+                std::swap(b, c);
+                std::swap(d, e);
+                std::swap(h, i);
                 shape_a.push_back(a);
                 shape_b.push_back(b);
                 shape_c.push_back(c);
