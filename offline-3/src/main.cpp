@@ -10,7 +10,6 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <arg_parser.hpp>
 #include <time.hpp>
 #include <screen.hpp>
 #include <shader.hpp>
