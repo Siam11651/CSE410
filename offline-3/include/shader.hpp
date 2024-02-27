@@ -33,7 +33,7 @@ R"(
     uniform vec3 spot_light_directions[__2__];
     uniform vec3 spot_light_colors[__2__];
     uniform float spot_light_angles[__2__];
-    float ground_dimension = 100.0f;
+    float ground_dimension = 1000.0f;
     float ground_ambient = 0.5f;
     float ground_diffuse = 0.3f;
     float ground_specular = 0.25f;
@@ -611,8 +611,8 @@ R"(
                 vec3 point = cam_pos + ray * min_t;
                 vec3 v0 = vec3(-ground_dimension / 2.0f, 0.0f, -ground_dimension / 2.0f);
                 vec3 P = point - v0;
-                int x = int(P.x);
-                int z = int(P.z);
+                int x = int(P.x) / 20;
+                int z = int(P.z) / 20;
                 vec3 og_color;
 
                 if(x % 2 == 0)
