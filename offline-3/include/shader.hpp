@@ -58,7 +58,7 @@ R"(
     uniform vec3 triangle_vertices0[1];
     uniform vec3 triangle_vertices1[1];
     uniform vec3 triangle_vertices2[1];
-    int shape_count = 1;
+    uniform uint shape_count;
     uniform float shape_a[1];
     uniform float shape_b[1];
     uniform float shape_c[1];
@@ -73,7 +73,7 @@ R"(
     uniform float shape_ambients[1];
     uniform float shape_diffuses[1];
     uniform float shape_speculars[1];
-    uniform float shape_shininesses[1];
+    uniform uint shape_shininesses[1];
     uniform float shape_reflections[1];
     uniform vec3 shape_cube_positions[1];
     uniform vec3 shape_cube_dimensions[1];

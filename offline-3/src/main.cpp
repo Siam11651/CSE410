@@ -403,6 +403,12 @@ int main(int argc, char **argv)
     std::vector<glm::vec3> shape_cube_positions{glm::vec3(1.0f, 1.0f, 0.0f)};
     std::vector<glm::vec3> shape_cube_dimensions{glm::vec3(3.0f, 1.0f, 0.0f)};
 
+    {
+        uint32_t shape_count_loc = glGetUniformLocation(shader_program, ("shape_count"));
+        
+        glUniform1ui(shape_count_loc, (uint32_t)shape_a.size());
+    }
+
     for(size_t i = 0; i < shape_a.size(); ++i)
     {
         std::stringstream ss;
@@ -442,7 +448,7 @@ int main(int argc, char **argv)
         glUniform1f(shape_ambients_loc, shape_ambients[i]);
         glUniform1f(shape_diffuses_loc, shape_diffuses[i]);
         glUniform1f(shape_speculars_loc, shape_speculars[i]);
-        glUniform1f(shape_shininesses_loc, shape_shininesses[i]);
+        glUniform1ui(shape_shininesses_loc, shape_shininesses[i]);
         glUniform1f(shape_reflections_loc, shape_reflections[i]);
         glUniform3fv(shape_cube_positions_loc, 1, glm::value_ptr(shape_cube_positions[i]));
         glUniform3fv(shape_cube_dimensions_loc, 1, glm::value_ptr(shape_cube_dimensions[i]));
