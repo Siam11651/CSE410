@@ -14,11 +14,7 @@
 #include <screen.hpp>
 #include <shader.hpp>
 #include <scene.hpp>
-// #include <input.hpp>
-// #include <conc_scene/rtx_scene.hpp>
 #include <iostream>
-
-// scene *current_scene = nullptr;
 
 constexpr float fovy = M_PI / 4.0f;
 constexpr float camera_speed = 2.0f;
@@ -461,10 +457,8 @@ int main(int argc, char **argv)
 
     glUniform3fv(bot_left_loc, 1, glm::value_ptr(bot_left));
 
-    // current_scene = new rtx_scene();
     double mouse_pos_x;
     double mouse_pos_y;
-
     camera.transform.position.y = 2.0f;
     camera.transform.position.z = -10.0f;
 
@@ -486,8 +480,6 @@ int main(int argc, char **argv)
         glfwSwapBuffers(window);
         time::end_frame();
     }
-
-    // delete current_scene;
 
     glfwTerminate();
 
