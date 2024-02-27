@@ -215,6 +215,7 @@ int main(int argc, char **argv)
                 ifstrm >> ambient >> diffuse >> specular >> reflection;
                 ifstrm >> shininess;
 
+                // std::swap(center.y, center.z);
                 circle_centers.push_back(center);
                 circle_radius.push_back(radius);
                 circle_colors.push_back(color);
@@ -223,6 +224,89 @@ int main(int argc, char **argv)
                 circle_speculars.push_back(specular);
                 circle_reflections.push_back(reflection);
                 circle_shininesses.push_back(shininess);
+            }
+            else if(object_type == "triangle")
+            {
+                glm::vec3 v0;
+                glm::vec3 v1;
+                glm::vec3 v2;
+                glm::vec3 color;
+                float ambient;
+                float diffuse;
+                float specular;
+                float reflection;
+                uint32_t shininess;
+
+                ifstrm >> v0.x >> v0.y >> v0.z;
+                ifstrm >> v1.x >> v1.y >> v1.z;
+                ifstrm >> v2.x >> v2.y >> v2.z;
+                ifstrm >> color.x >> color.y >> color.z;
+                ifstrm >> ambient >> diffuse >> specular >> reflection;
+                ifstrm >> shininess;
+
+                std::swap(v0.y, v0.z);
+                std::swap(v1.y, v1.z);
+                std::swap(v2.y, v2.z);
+                triangle_vertices0.push_back(v0);
+                triangle_vertices1.push_back(v1);
+                triangle_vertices2.push_back(v2);
+                triangle_colors.push_back(color);
+                triangle_ambients.push_back(ambient);
+                triangle_diffuses.push_back(diffuse);
+                triangle_speculars.push_back(specular);
+                triangle_reflections.push_back(reflection);
+                triangle_shininesses.push_back(shininess);
+            }
+            else if(object_type == "general")
+            {
+                float a;
+                float b;
+                float c;
+                float d;
+                float e;
+                float f;
+                float g;
+                float h;
+                float i;
+                float j;
+                glm::vec3 cube_position;
+                glm::vec3 cube_dimension;
+                glm::vec3 color;
+                float ambient;
+                float diffuse;
+                float specular;
+                float reflection;
+                uint32_t shininess;
+
+                ifstrm >> a >> b >> c >> d >> e >> f >> g >> h >> i >> j;
+                ifstrm >> cube_position.x >> cube_position.y >> cube_position.z >> cube_dimension.x >> cube_dimension.y >> cube_dimension.z;
+                ifstrm >> color.x >> color.y >> color.z;
+                ifstrm >> ambient >> diffuse >> specular >> reflection;
+                ifstrm >> shininess;
+
+                std::swap(cube_position.y, cube_position.z);
+                std::swap(cube_dimension.y, cube_dimension.z);
+                std::swap(b, c);
+                std::swap(d, f);
+                std::swap(h, i);
+                shape_a.push_back(a);
+                shape_b.push_back(b);
+                shape_c.push_back(c);
+                shape_d.push_back(d);
+                shape_e.push_back(e);
+                shape_f.push_back(f);
+                shape_g.push_back(g);
+                shape_h.push_back(h);
+                shape_i.push_back(i);
+                shape_j.push_back(j);
+                shape_cube_positions.push_back(cube_position);
+                shape_cube_dimensions.push_back(cube_dimension);
+                shape_colors.push_back(color);
+                shape_ambients.push_back(ambient);
+                shape_diffuses.push_back(diffuse);
+                shape_speculars.push_back(specular);
+                shape_reflections.push_back(reflection);
+                shape_shininesses.push_back(shininess);
             }
         }
 
