@@ -19,7 +19,7 @@
 #include <regex>
 
 constexpr float fovy = M_PI / 4.0f;
-constexpr float camera_speed = 2.0f;
+constexpr float camera_speed = 50.0f;
 constexpr float m_camera_spin = 0.5f;
 o3::camera camera;
 
@@ -630,8 +630,9 @@ int main(int argc, char **argv)
 
     double mouse_pos_x;
     double mouse_pos_y;
-    camera.transform.position.y = 20.0f;
+    camera.transform.position.y = 120.0f;
     camera.transform.position.z = -120.0f;
+    camera.transform.rotation = glm::quat(glm::vec3(glm::radians(45.0f), 0.0f, 0.0f));
 
     while(!glfwWindowShouldClose(window))
     {
