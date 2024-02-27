@@ -322,6 +322,12 @@ int main(int argc, char **argv)
     std::vector<glm::vec3> circle_centers{glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
     std::vector<float> circle_radius{1.0f, 2.0f};
 
+    {
+        uint32_t circle_count_loc = glGetUniformLocation(shader_program, ("circle_count"));
+        
+        glUniform1ui(circle_count_loc, (uint32_t)circle_colors.size());
+    }
+
     for(size_t i = 0; i < circle_colors.size(); ++i)
     {
         std::stringstream ss;
@@ -341,7 +347,7 @@ int main(int argc, char **argv)
         glUniform1f(circle_ambient_uinform_loc, circle_ambients[i]);
         glUniform1f(circle_diffuses_uinform_loc, circle_diffuses[i]);
         glUniform1f(circle_speculars_uinform_loc, circle_speculars[i]);
-        glUniform1f(circle_shininesses_uinform_loc, circle_shininesses[i]);
+        glUniform1ui(circle_shininesses_uinform_loc, circle_shininesses[i]);
         glUniform1f(circle_reflections_uinform_loc, circle_reflections[i]);
         glUniform3fv(circle_center_uinform_loc, 1, glm::value_ptr(circle_centers[i]));
         glUniform1f(circle_radius_uinform_loc, circle_radius[i]);
@@ -363,7 +369,7 @@ int main(int argc, char **argv)
         glUniform1ui(triangle_count_loc, (uint32_t)triangle_colors.size());
     }
 
-    for(size_t i = 0; i < 1; ++i)
+    for(size_t i = 0; i < triangle_colors.size(); ++i)
     {
         std::stringstream ss;
 

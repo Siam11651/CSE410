@@ -39,12 +39,12 @@ R"(
     float ground_specular = 0.25f;
     int ground_shininess = 50;
     float ground_reflection = 0.125f;
-    int circle_count = 2;
+    uniform uint circle_count;
     uniform vec3 circle_colors[2];
     uniform float circle_ambients[2];
     uniform float circle_diffuses[2];
     uniform float circle_speculars[2];
-    uniform float circle_shininesses[2];
+    uniform uint circle_shininesses[2];
     uniform float circle_reflections[2];
     uniform vec3 circle_centers[2];
     uniform float circle_radius[2];
