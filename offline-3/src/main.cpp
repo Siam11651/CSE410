@@ -357,6 +357,12 @@ int main(int argc, char **argv)
     std::vector<glm::vec3> triangle_vertices1{glm::vec3(1.0f, 1.0f, 5.0f)};
     std::vector<glm::vec3> triangle_vertices2{glm::vec3(0.0f, 1.0f, 4.5f)};
 
+    {
+        uint32_t triangle_count_loc = glGetUniformLocation(shader_program, ("triangle_count"));
+        
+        glUniform1ui(triangle_count_loc, (uint32_t)triangle_colors.size());
+    }
+
     for(size_t i = 0; i < 1; ++i)
     {
         std::stringstream ss;
@@ -377,7 +383,7 @@ int main(int argc, char **argv)
         glUniform1f(triangle_ambient_uinform_loc, triangle_ambients[i]);
         glUniform1f(triangle_diffuses_uinform_loc, triangle_diffuses[i]);
         glUniform1f(triangle_speculars_uinform_loc, triangle_speculars[i]);
-        glUniform1f(triangle_shininesses_uinform_loc, triangle_shininesses[i]);
+        glUniform1ui(triangle_shininesses_uinform_loc, triangle_shininesses[i]);
         glUniform1f(triangle_reflections_uinform_loc, triangle_reflections[i]);
         glUniform3fv(triangle_vertices0_uinform_loc, 1, glm::value_ptr(triangle_vertices0[i]));
         glUniform3fv(triangle_vertices1_uinform_loc, 1, glm::value_ptr(triangle_vertices1[i]));

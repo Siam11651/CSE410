@@ -48,12 +48,12 @@ R"(
     uniform float circle_reflections[2];
     uniform vec3 circle_centers[2];
     uniform float circle_radius[2];
-    int triangle_count = 1;
+    uniform uint triangle_count;
     uniform vec3 triangle_colors[1];
     uniform float triangle_ambients[1];
     uniform float triangle_diffuses[1];
     uniform float triangle_speculars[1];
-    uniform float triangle_shininesses[1];
+    uniform uint triangle_shininesses[1];
     uniform float triangle_reflections[1];
     uniform vec3 triangle_vertices0[1];
     uniform vec3 triangle_vertices1[1];
