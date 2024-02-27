@@ -296,6 +296,12 @@ int main(int argc, char **argv)
     std::vector<glm::vec3> spot_light_colors{glm::vec3(1.0f, 0.0f, 0.0f)};
     std::vector<float> spot_light_angles{12.0f};
 
+    {
+        uint32_t spot_light_count_loc = glGetUniformLocation(shader_program, ("spot_light_count"));
+        
+        glUniform1ui(spot_light_count_loc, (uint32_t)spot_light_positions.size());
+    }
+
     for(size_t i = 0; i < spot_light_positions.size(); ++i)
     {
         std::stringstream ss;
