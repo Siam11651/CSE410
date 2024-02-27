@@ -25,7 +25,7 @@ R"(
     uniform vec3 bot_left;
     uniform float dx;
     uniform float dy;
-    int point_light_count = 1;
+    uniform uint point_light_count;
     uniform vec3 point_light_positions[1];
     uniform vec3 point_light_colors[1];
     uniform uint spot_light_count;

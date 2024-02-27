@@ -278,6 +278,12 @@ int main(int argc, char **argv)
     std::vector<glm::vec3> point_light_positions{glm::vec3(0.0f, 10.0f, -5.0f)};
     std::vector<glm::vec3> point_light_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
 
+    {
+        uint32_t point_light_count_loc = glGetUniformLocation(shader_program, ("point_light_count"));
+        
+        glUniform1ui(point_light_count_loc, (uint32_t)point_light_positions.size());
+    }
+
     for(size_t i = 0; i < point_light_positions.size(); ++i)
     {
         std::stringstream ss;
