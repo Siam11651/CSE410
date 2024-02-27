@@ -192,91 +192,148 @@ int main(int argc, char **argv)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    uint32_t vertex_shader;
-    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    // point light objects
+    std::vector<glm::vec3> point_light_positions{glm::vec3(0.0f, 10.0f, -5.0f)};
+    std::vector<glm::vec3> point_light_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
 
-    glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
-    glCompileShader(vertex_shader);
+    // spot light objects
+    std::vector<glm::vec3> spot_light_positions{glm::vec3(5.0f, 5.0f, 5.0f)};
+    std::vector<glm::vec3> spot_light_directions{glm::vec3(0.0f, -1.0f, 0.0f)};
+    std::vector<glm::vec3> spot_light_colors{glm::vec3(1.0f, 0.0f, 0.0f)};
+    std::vector<float> spot_light_angles{12.0f};
 
-    {
-        int32_t success;
-        char info_log[512];
+    // sphere objects
+    std::vector<glm::vec3> circle_colors{glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
+    std::vector<float> circle_ambients{0.6f, 0.5f};
+    std::vector<float> circle_diffuses{0.2f, 0.3f};
+    std::vector<float> circle_speculars{0.3f, 0.2f};
+    std::vector<int32_t> circle_shininesses{5, 7};
+    std::vector<float> circle_reflections{0.1f, 0.15f};
+    std::vector<glm::vec3> circle_centers{glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
+    std::vector<float> circle_radius{1.0f, 2.0f};
 
-        glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
+    // triangle objects
+    std::vector<glm::vec3> triangle_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
+    std::vector<float> triangle_ambients{0.3f};
+    std::vector<float> triangle_diffuses{0.5f};
+    std::vector<float> triangle_speculars{0.9f};
+    std::vector<int32_t> triangle_shininesses{90};
+    std::vector<float> triangle_reflections{0.25f};
+    std::vector<glm::vec3> triangle_vertices0{glm::vec3(-1.0f, 1.0f, 5.0f)};
+    std::vector<glm::vec3> triangle_vertices1{glm::vec3(1.0f, 1.0f, 5.0f)};
+    std::vector<glm::vec3> triangle_vertices2{glm::vec3(0.0f, 1.0f, 4.5f)};
 
-        if(!success)
-        {
-            glGetShaderInfoLog(vertex_shader, 512, NULL, info_log);
+    // shape objects
+    std::vector<float> shape_a{1.0f};
+    std::vector<float> shape_b{0.0f};
+    std::vector<float> shape_c{1.0f};
+    std::vector<float> shape_d{0.0f};
+    std::vector<float> shape_e{0.0f};
+    std::vector<float> shape_f{0.0f};
+    std::vector<float> shape_g{0.0f};
+    std::vector<float> shape_h{0.0f};
+    std::vector<float> shape_i{0.0f};
+    std::vector<float> shape_j{-1.0f};
+    std::vector<glm::vec3> shape_colors{glm::vec3(1.0f, 0.0f, 1.0f)};
+    std::vector<float> shape_ambients{0.4f};
+    std::vector<float> shape_diffuses{0.1f};
+    std::vector<float> shape_speculars{0.5f};
+    std::vector<int32_t> shape_shininesses{1};
+    std::vector<float> shape_reflections{0.35f};
+    std::vector<glm::vec3> shape_cube_positions{glm::vec3(1.0f, 1.0f, 0.0f)};
+    std::vector<glm::vec3> shape_cube_dimensions{glm::vec3(3.0f, 1.0f, 0.0f)};
 
-            std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << info_log << std::endl;
-
-            glfwTerminate();
-
-            return -1;
-        }
-    }
-
-    uint32_t fragment_shader;
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
-    glCompileShader(fragment_shader);
-
-    {
-        int32_t success;
-        char info_log[512];
-
-        glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-
-        if(!success)
-        {
-            glGetShaderInfoLog(fragment_shader, 512, NULL, info_log);
-
-            std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << info_log << std::endl;
-
-            glfwTerminate();
-
-            return -1;
-        }
-    }
-
+    // compile shaders
     uint32_t shader_program;
-    shader_program = glCreateProgram();
-
-    glAttachShader(shader_program, vertex_shader);
-    glAttachShader(shader_program, fragment_shader);
-    glLinkProgram(shader_program);
 
     {
-        int32_t success;
-        char info_log[512];
+        uint32_t vertex_shader;
+        vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 
-        glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+        glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
+        glCompileShader(vertex_shader);
 
-        if(!success)
         {
-            glGetProgramInfoLog(shader_program, 512, NULL, info_log);
+            int32_t success;
+            char info_log[512];
 
-            std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << info_log << std::endl;
+            glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
 
-            glfwTerminate();
+            if(!success)
+            {
+                glGetShaderInfoLog(vertex_shader, 512, NULL, info_log);
 
-            return -1;
+                std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << info_log << std::endl;
+
+                glfwTerminate();
+
+                return -1;
+            }
         }
+
+        uint32_t fragment_shader;
+        fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+
+        glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
+        glCompileShader(fragment_shader);
+
+        {
+            int32_t success;
+            char info_log[512];
+
+            glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
+
+            if(!success)
+            {
+                glGetShaderInfoLog(fragment_shader, 512, NULL, info_log);
+
+                std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << info_log << std::endl;
+
+                glfwTerminate();
+
+                return -1;
+            }
+        }
+
+        shader_program = glCreateProgram();
+
+        glAttachShader(shader_program, vertex_shader);
+        glAttachShader(shader_program, fragment_shader);
+        glLinkProgram(shader_program);
+
+        {
+            int32_t success;
+            char info_log[512];
+
+            glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+
+            if(!success)
+            {
+                glGetProgramInfoLog(shader_program, 512, NULL, info_log);
+
+                std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << info_log << std::endl;
+
+                glfwTerminate();
+
+                return -1;
+            }
+        }
+
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
     }
 
     glUseProgram(shader_program);
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader); 
 
-    uint32_t screen_dimension_loc = glGetUniformLocation(shader_program, "screen_dimension");
-    uint32_t camera_pos_loc = glGetUniformLocation(shader_program, "camera_pos");
-    uint32_t camera_transform_loc = glGetUniformLocation(shader_program, "camera_transform");
-    uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
-    uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
-    uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
-    std::vector<glm::vec3> point_light_positions{glm::vec3(0.0f, 10.0f, -5.0f)};
-    std::vector<glm::vec3> point_light_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
+    {
+        uint32_t screen_dimension_loc = glGetUniformLocation(shader_program, "screen_dimension");
+        uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
+        uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
+
+        glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
+        glUniform1f(dx_loc, 0.5f / screen::window_width());
+        glUniform1f(dy_loc, 0.5f / screen::window_height());
+    }
 
     {
         uint32_t point_light_count_loc = glGetUniformLocation(shader_program, ("point_light_count"));
@@ -296,11 +353,6 @@ int main(int argc, char **argv)
         glUniform3fv(point_light_position_uinform_loc, 1, glm::value_ptr(point_light_positions[i]));
         glUniform3fv(point_light_colors_uinform_loc, 1, glm::value_ptr(point_light_colors[i]));
     }
-
-    std::vector<glm::vec3> spot_light_positions{glm::vec3(5.0f, 5.0f, 5.0f)};
-    std::vector<glm::vec3> spot_light_directions{glm::vec3(0.0f, -1.0f, 0.0f)};
-    std::vector<glm::vec3> spot_light_colors{glm::vec3(1.0f, 0.0f, 0.0f)};
-    std::vector<float> spot_light_angles{12.0f};
 
     {
         uint32_t spot_light_count_loc = glGetUniformLocation(shader_program, ("spot_light_count"));
@@ -324,15 +376,6 @@ int main(int argc, char **argv)
         glUniform3fv(spot_light_colors_loc, 1, glm::value_ptr(spot_light_colors[i]));
         glUniform1f(spot_light_angles_loc, spot_light_angles[i]);
     }
-
-    std::vector<glm::vec3> circle_colors{glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
-    std::vector<float> circle_ambients{0.6f, 0.5f};
-    std::vector<float> circle_diffuses{0.2f, 0.3f};
-    std::vector<float> circle_speculars{0.3f, 0.2f};
-    std::vector<int32_t> circle_shininesses{5, 7};
-    std::vector<float> circle_reflections{0.1f, 0.15f};
-    std::vector<glm::vec3> circle_centers{glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
-    std::vector<float> circle_radius{1.0f, 2.0f};
 
     {
         uint32_t circle_count_loc = glGetUniformLocation(shader_program, ("circle_count"));
@@ -364,16 +407,6 @@ int main(int argc, char **argv)
         glUniform3fv(circle_center_uinform_loc, 1, glm::value_ptr(circle_centers[i]));
         glUniform1f(circle_radius_uinform_loc, circle_radius[i]);
     }
-
-    std::vector<glm::vec3> triangle_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
-    std::vector<float> triangle_ambients{0.3f};
-    std::vector<float> triangle_diffuses{0.5f};
-    std::vector<float> triangle_speculars{0.9f};
-    std::vector<int32_t> triangle_shininesses{90};
-    std::vector<float> triangle_reflections{0.25f};
-    std::vector<glm::vec3> triangle_vertices0{glm::vec3(-1.0f, 1.0f, 5.0f)};
-    std::vector<glm::vec3> triangle_vertices1{glm::vec3(1.0f, 1.0f, 5.0f)};
-    std::vector<glm::vec3> triangle_vertices2{glm::vec3(0.0f, 1.0f, 4.5f)};
 
     {
         uint32_t triangle_count_loc = glGetUniformLocation(shader_program, ("triangle_count"));
@@ -407,25 +440,6 @@ int main(int argc, char **argv)
         glUniform3fv(triangle_vertices1_uinform_loc, 1, glm::value_ptr(triangle_vertices1[i]));
         glUniform3fv(triangle_vertices2_uinform_loc, 1, glm::value_ptr(triangle_vertices2[i]));
     }
-
-    std::vector<float> shape_a{1.0f};
-    std::vector<float> shape_b{0.0f};
-    std::vector<float> shape_c{1.0f};
-    std::vector<float> shape_d{0.0f};
-    std::vector<float> shape_e{0.0f};
-    std::vector<float> shape_f{0.0f};
-    std::vector<float> shape_g{0.0f};
-    std::vector<float> shape_h{0.0f};
-    std::vector<float> shape_i{0.0f};
-    std::vector<float> shape_j{-1.0f};
-    std::vector<glm::vec3> shape_colors{glm::vec3(1.0f, 0.0f, 1.0f)};
-    std::vector<float> shape_ambients{0.4f};
-    std::vector<float> shape_diffuses{0.1f};
-    std::vector<float> shape_speculars{0.5f};
-    std::vector<int32_t> shape_shininesses{1};
-    std::vector<float> shape_reflections{0.35f};
-    std::vector<glm::vec3> shape_cube_positions{glm::vec3(1.0f, 1.0f, 0.0f)};
-    std::vector<glm::vec3> shape_cube_dimensions{glm::vec3(3.0f, 1.0f, 0.0f)};
 
     {
         uint32_t shape_count_loc = glGetUniformLocation(shader_program, ("shape_count"));
@@ -478,15 +492,16 @@ int main(int argc, char **argv)
         glUniform3fv(shape_cube_dimensions_loc, 1, glm::value_ptr(shape_cube_dimensions[i]));
     }
 
-    glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
-    glUniform1f(dx_loc, 0.5f / screen::window_width());
-    glUniform1f(dy_loc, 0.5f / screen::window_height());
-
     const float plane_distance = 1.0f / std::tan(fovy / 2.0f);
+    uint32_t camera_pos_loc = glGetUniformLocation(shader_program, "camera_pos");
+    uint32_t camera_transform_loc = glGetUniformLocation(shader_program, "camera_transform");
 
-    glm::vec3 bot_left = glm::vec3(-0.5f, -0.5f, plane_distance);
+    {
+        uint32_t bot_left_loc = glGetUniformLocation(shader_program, "bot_left");
+        glm::vec3 bot_left = glm::vec3(-0.5f, -0.5f, plane_distance);
 
-    glUniform3fv(bot_left_loc, 1, glm::value_ptr(bot_left));
+        glUniform3fv(bot_left_loc, 1, glm::value_ptr(bot_left));
+    }
 
     double mouse_pos_x;
     double mouse_pos_y;
