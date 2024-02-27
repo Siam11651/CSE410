@@ -243,6 +243,42 @@ int main(int argc, char **argv)
     std::vector<glm::vec3> shape_cube_positions{glm::vec3(1.0f, 1.0f, 0.0f)};
     std::vector<glm::vec3> shape_cube_dimensions{glm::vec3(3.0f, 1.0f, 0.0f)};
 
+    std::string frag_shader_src_str(fragment_shader_source);
+
+    {
+        std::stringstream ss;
+
+        ss << point_light_positions.size();
+
+        frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__1__"), ss.str());
+
+        ss.str("");
+
+        ss << spot_light_positions.size();
+
+        frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__2__"), ss.str());
+
+        ss.str("");
+
+        ss << circle_centers.size();
+
+        frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__3__"), ss.str());
+
+        ss.str("");
+
+        ss << triangle_colors.size();
+
+        frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__4__"), ss.str());
+
+        ss.str("");
+
+        ss << shape_colors.size();
+
+        frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__5__"), ss.str());
+    }
+
+    const char *frag_shader_src_parameterised = frag_shader_src_str.c_str();
+
     // compile shaders
     uint32_t shader_program;
 
@@ -274,7 +310,7 @@ int main(int argc, char **argv)
         uint32_t fragment_shader;
         fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 
-        glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
+        glShaderSource(fragment_shader, 1, &frag_shader_src_parameterised, NULL);
         glCompileShader(fragment_shader);
 
         {
