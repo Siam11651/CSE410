@@ -15,6 +15,7 @@
 #include <shader.hpp>
 #include <scene.hpp>
 #include <iostream>
+#include <fstream>
 #include <regex>
 
 constexpr float fovy = M_PI / 4.0f;
@@ -123,11 +124,114 @@ void handle_inputs(GLFWwindow *window)
 
 int main(int argc, char **argv)
 {
+    // other data
+    size_t level;
+    size_t window_dimension;
+
+    // point light objects
+    std::vector<glm::vec3> point_light_positions{glm::vec3(0.0f, 10.0f, -5.0f)};
+    std::vector<glm::vec3> point_light_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
+
+    // spot light objects
+    std::vector<glm::vec3> spot_light_positions{glm::vec3(5.0f, 5.0f, 5.0f)};
+    std::vector<glm::vec3> spot_light_directions{glm::vec3(0.0f, -1.0f, 0.0f)};
+    std::vector<glm::vec3> spot_light_colors{glm::vec3(1.0f, 0.0f, 0.0f)};
+    std::vector<float> spot_light_angles{12.0f};
+
+    // sphere objects
+    std::vector<glm::vec3> circle_colors;
+    std::vector<float> circle_ambients;
+    std::vector<float> circle_diffuses;
+    std::vector<float> circle_speculars;
+    std::vector<int32_t> circle_shininesses;
+    std::vector<float> circle_reflections;
+    std::vector<glm::vec3> circle_centers;
+    std::vector<float> circle_radius;
+
+    // triangle objects
+    std::vector<glm::vec3> triangle_colors;
+    std::vector<float> triangle_ambients;
+    std::vector<float> triangle_diffuses;
+    std::vector<float> triangle_speculars;
+    std::vector<int32_t> triangle_shininesses;
+    std::vector<float> triangle_reflections;
+    std::vector<glm::vec3> triangle_vertices0;
+    std::vector<glm::vec3> triangle_vertices1;
+    std::vector<glm::vec3> triangle_vertices2;
+
+    // shape objects
+    std::vector<float> shape_a;
+    std::vector<float> shape_b;
+    std::vector<float> shape_c;
+    std::vector<float> shape_d;
+    std::vector<float> shape_e;
+    std::vector<float> shape_f;
+    std::vector<float> shape_g;
+    std::vector<float> shape_h;
+    std::vector<float> shape_i;
+    std::vector<float> shape_j;
+    std::vector<glm::vec3> shape_colors;
+    std::vector<float> shape_ambients;
+    std::vector<float> shape_diffuses;
+    std::vector<float> shape_speculars;
+    std::vector<int32_t> shape_shininesses;
+    std::vector<float> shape_reflections;
+    std::vector<glm::vec3> shape_cube_positions;
+    std::vector<glm::vec3> shape_cube_dimensions;
+
+    // take input
+    {
+        std::ifstream ifstrm("inputs/input.txt");
+
+        ifstrm >> level;
+        ifstrm >> window_dimension;
+
+        screen::window_width() = window_dimension;
+        screen::window_height() = window_dimension;
+        size_t object_count;
+
+        ifstrm >> object_count;
+
+        for(size_t i = 0; i < object_count; ++i)
+        {
+            std::string object_type;
+
+            ifstrm >> object_type;
+
+            if(object_type == "sphere")
+            {
+                glm::vec3 center;
+                float radius;
+                glm::vec3 color;
+                float ambient;
+                float diffuse;
+                float specular;
+                float reflection;
+                uint32_t shininess;
+
+                ifstrm >> center.x >> center.y >> center.y;
+                ifstrm >> radius;
+                ifstrm >> color.x >> color.y >> color.z;
+                ifstrm >> ambient >> diffuse >> specular >> reflection;
+                ifstrm >> shininess;
+
+                circle_centers.push_back(center);
+                circle_radius.push_back(radius);
+                circle_colors.push_back(color);
+                circle_ambients.push_back(ambient);
+                circle_diffuses.push_back(diffuse);
+                circle_speculars.push_back(specular);
+                circle_reflections.push_back(reflection);
+                circle_shininesses.push_back(shininess);
+            }
+        }
+
+        ifstrm.close();
+    }
+
     time::initialise();
 
     screen::window_title() = "offline-3";
-    screen::window_width() = 768;
-    screen::window_height() = 768;
 
     if(!glfwInit())
     {
@@ -192,87 +296,72 @@ int main(int argc, char **argv)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // point light objects
-    std::vector<glm::vec3> point_light_positions{glm::vec3(0.0f, 10.0f, -5.0f)};
-    std::vector<glm::vec3> point_light_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
-
-    // spot light objects
-    std::vector<glm::vec3> spot_light_positions{glm::vec3(5.0f, 5.0f, 5.0f)};
-    std::vector<glm::vec3> spot_light_directions{glm::vec3(0.0f, -1.0f, 0.0f)};
-    std::vector<glm::vec3> spot_light_colors{glm::vec3(1.0f, 0.0f, 0.0f)};
-    std::vector<float> spot_light_angles{12.0f};
-
-    // sphere objects
-    std::vector<glm::vec3> circle_colors{glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)};
-    std::vector<float> circle_ambients{0.6f, 0.5f};
-    std::vector<float> circle_diffuses{0.2f, 0.3f};
-    std::vector<float> circle_speculars{0.3f, 0.2f};
-    std::vector<int32_t> circle_shininesses{5, 7};
-    std::vector<float> circle_reflections{0.1f, 0.15f};
-    std::vector<glm::vec3> circle_centers{glm::vec3(-3.0f, 2.0f, 0.0f), glm::vec3(3.0f, 2.0f, 0.0f)};
-    std::vector<float> circle_radius{1.0f, 2.0f};
-
-    // triangle objects
-    std::vector<glm::vec3> triangle_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
-    std::vector<float> triangle_ambients{0.3f};
-    std::vector<float> triangle_diffuses{0.5f};
-    std::vector<float> triangle_speculars{0.9f};
-    std::vector<int32_t> triangle_shininesses{90};
-    std::vector<float> triangle_reflections{0.25f};
-    std::vector<glm::vec3> triangle_vertices0{glm::vec3(-1.0f, 1.0f, 5.0f)};
-    std::vector<glm::vec3> triangle_vertices1{glm::vec3(1.0f, 1.0f, 5.0f)};
-    std::vector<glm::vec3> triangle_vertices2{glm::vec3(0.0f, 1.0f, 4.5f)};
-
-    // shape objects
-    std::vector<float> shape_a{1.0f};
-    std::vector<float> shape_b{0.0f};
-    std::vector<float> shape_c{1.0f};
-    std::vector<float> shape_d{0.0f};
-    std::vector<float> shape_e{0.0f};
-    std::vector<float> shape_f{0.0f};
-    std::vector<float> shape_g{0.0f};
-    std::vector<float> shape_h{0.0f};
-    std::vector<float> shape_i{0.0f};
-    std::vector<float> shape_j{-1.0f};
-    std::vector<glm::vec3> shape_colors{glm::vec3(1.0f, 0.0f, 1.0f)};
-    std::vector<float> shape_ambients{0.4f};
-    std::vector<float> shape_diffuses{0.1f};
-    std::vector<float> shape_speculars{0.5f};
-    std::vector<int32_t> shape_shininesses{1};
-    std::vector<float> shape_reflections{0.35f};
-    std::vector<glm::vec3> shape_cube_positions{glm::vec3(1.0f, 1.0f, 0.0f)};
-    std::vector<glm::vec3> shape_cube_dimensions{glm::vec3(3.0f, 1.0f, 0.0f)};
-
+    // modify shader source
     std::string frag_shader_src_str(fragment_shader_source);
 
     {
         std::stringstream ss;
 
-        ss << point_light_positions.size();
+        if(point_light_positions.size() > 0)
+        {
+            ss << point_light_positions.size();
+        }
+        else
+        {
+            ss << "1";
+        }
 
         frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__1__"), ss.str());
 
         ss.str("");
 
-        ss << spot_light_positions.size();
+        if(spot_light_positions.size() > 0)
+        {
+            ss << spot_light_positions.size();
+        }
+        else
+        {
+            ss << "1";
+        }
 
         frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__2__"), ss.str());
 
         ss.str("");
 
-        ss << circle_centers.size();
+        if(circle_centers.size() > 0)
+        {
+            ss << circle_centers.size();
+        }
+        else
+        {
+            ss << "1";
+        }
 
         frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__3__"), ss.str());
 
         ss.str("");
 
-        ss << triangle_colors.size();
+        if(triangle_colors.size() > 0)
+        {
+            ss << triangle_colors.size();
+        }
+        else
+        {
+            ss << "1";
+        }
 
         frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__4__"), ss.str());
 
         ss.str("");
 
-        ss << shape_colors.size();
+        if(shape_colors.size() > 0)
+        {
+            ss << shape_colors.size();
+        }
+        else
+        {
+            ss << "1";
+        }
 
         frag_shader_src_str = std::regex_replace(frag_shader_src_str, std::regex("__5__"), ss.str());
     }
@@ -541,8 +630,8 @@ int main(int argc, char **argv)
 
     double mouse_pos_x;
     double mouse_pos_y;
-    camera.transform.position.y = 2.0f;
-    camera.transform.position.z = -10.0f;
+    camera.transform.position.y = 20.0f;
+    camera.transform.position.z = -120.0f;
 
     while(!glfwWindowShouldClose(window))
     {
