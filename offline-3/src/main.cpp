@@ -129,14 +129,14 @@ int main(int argc, char **argv)
     size_t window_dimension;
 
     // point light objects
-    std::vector<glm::vec3> point_light_positions{glm::vec3(0.0f, 10.0f, -5.0f)};
-    std::vector<glm::vec3> point_light_colors{glm::vec3(1.0f, 1.0f, 1.0f)};
+    std::vector<glm::vec3> point_light_positions;
+    std::vector<glm::vec3> point_light_colors;
 
     // spot light objects
-    std::vector<glm::vec3> spot_light_positions{glm::vec3(5.0f, 5.0f, 5.0f)};
-    std::vector<glm::vec3> spot_light_directions{glm::vec3(0.0f, -1.0f, 0.0f)};
-    std::vector<glm::vec3> spot_light_colors{glm::vec3(1.0f, 0.0f, 0.0f)};
-    std::vector<float> spot_light_angles{12.0f};
+    std::vector<glm::vec3> spot_light_positions;
+    std::vector<glm::vec3> spot_light_directions;
+    std::vector<glm::vec3> spot_light_colors;
+    std::vector<float> spot_light_angles;
 
     // sphere objects
     std::vector<glm::vec3> circle_colors;
@@ -209,13 +209,13 @@ int main(int argc, char **argv)
                 float reflection;
                 uint32_t shininess;
 
-                ifstrm >> center.x >> center.y >> center.y;
+                ifstrm >> center.x >> center.y >> center.z;
                 ifstrm >> radius;
                 ifstrm >> color.x >> color.y >> color.z;
                 ifstrm >> ambient >> diffuse >> specular >> reflection;
                 ifstrm >> shininess;
 
-                // std::swap(center.y, center.z);
+                std::swap(center.y, center.z);
                 circle_centers.push_back(center);
                 circle_radius.push_back(radius);
                 circle_colors.push_back(color);
@@ -286,9 +286,6 @@ int main(int argc, char **argv)
 
                 std::swap(cube_position.y, cube_position.z);
                 std::swap(cube_dimension.y, cube_dimension.z);
-                std::swap(b, c);
-                std::swap(d, f);
-                std::swap(h, i);
                 shape_a.push_back(a);
                 shape_b.push_back(b);
                 shape_c.push_back(c);
@@ -308,6 +305,44 @@ int main(int argc, char **argv)
                 shape_reflections.push_back(reflection);
                 shape_shininesses.push_back(shininess);
             }
+        }
+
+        size_t point_light_count;
+
+        ifstrm >> point_light_count;
+
+        for(size_t i = 0; i < point_light_count; ++i)
+        {
+            glm::vec3 position;
+            glm::vec3 color;
+
+            ifstrm >> position.x >> position.y >> position.z;
+            ifstrm >> color.x >> color.y >> color.z;
+
+            point_light_positions.push_back(position);
+            point_light_colors.push_back(color);
+        }
+
+        size_t spot_light_count;
+
+        ifstrm >> spot_light_count;
+
+        for(size_t i = 0; i < spot_light_count; ++i)
+        {
+            glm::vec3 position;
+            glm::vec3 color;
+            glm::vec3 direction;
+            float angle;
+
+            ifstrm >> position.x >> position.y >> position.z;
+            ifstrm >> color.x >> color.y >> color.z;
+            ifstrm >> direction.x >> direction.y >> direction.z;
+            ifstrm >> angle;
+
+            spot_light_positions.push_back(position);
+            spot_light_colors.push_back(color);
+            spot_light_directions.push_back(direction);
+            spot_light_angles.push_back(angle);
         }
 
         ifstrm.close();

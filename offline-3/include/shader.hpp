@@ -264,7 +264,7 @@ R"(
 
         for(int i = 0; i < 2; ++i)
         {
-            if(t[i] < 0.001f)
+            if(t[i] < 0.01f)
             {
                 continue;
             }
@@ -322,7 +322,7 @@ R"(
         {
             float t = circle_distance(circle_centers[j], source, ray, circle_radius[j]);
 
-            if(t <= 0.001f)
+            if(t <= 0.01f)
             {
                 continue;
             }
@@ -337,7 +337,7 @@ R"(
         {
             float t = triangle_distance(source, ray, j);
 
-            if(t <= 0.001f)
+            if(t <= 0.01f)
             {
                 continue;
             }
@@ -351,7 +351,7 @@ R"(
         {
             float t = ground_distance(source, ray);
 
-            if(t > 0.001f && t < target_t)
+            if(t > 0.01f && t < target_t)
             {
                 return false;
             }
@@ -361,7 +361,7 @@ R"(
         {
             float t = shape_distance(source, ray, j);
 
-            if(t <= 0.001f)
+            if(t <= 0.01f)
             {
                 continue;
             }
@@ -398,7 +398,7 @@ R"(
             {
                 float t = circle_distance(circle_centers[i], cam_pos, ray, circle_radius[i]);
 
-                if(t <= 0.001f)
+                if(t <= 0.01f)
                 {
                     continue;
                 }
@@ -421,7 +421,7 @@ R"(
             {
                 float t = triangle_distance(cam_pos, ray, i);
 
-                if(t <= 0.001f)
+                if(t <= 0.01f)
                 {
                     continue;
                 }
@@ -443,7 +443,7 @@ R"(
             {
                 float t = ground_distance(cam_pos, ray);
 
-                if(t > 0.001f)
+                if(t > 0.01f)
                 {
                     if(min_t == -1.0f)
                     {
@@ -462,7 +462,7 @@ R"(
             {
                 float t = shape_distance(cam_pos, ray, i);
 
-                if(t <= 0.001f)
+                if(t <= 0.01f)
                 {
                     continue;
                 }
