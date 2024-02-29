@@ -386,7 +386,7 @@ R"(
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float reflection_fraction = 1.0f;
 
-        for(int j = 0; j < 4; ++j)
+        for(int j = 0; j < 2; ++j)
         {
             float min_t = -1.0f;
             int min_object = -1;

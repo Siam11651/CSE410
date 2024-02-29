@@ -322,6 +322,7 @@ int main(int argc, char **argv)
             ifstrm >> position.x >> position.y >> position.z;
             ifstrm >> color.x >> color.y >> color.z;
 
+            std::swap(position.y, position.z);
             point_light_positions.push_back(position);
             point_light_colors.push_back(color);
         }
@@ -342,6 +343,8 @@ int main(int argc, char **argv)
             ifstrm >> direction.x >> direction.y >> direction.z;
             ifstrm >> angle;
 
+            std::swap(position.y, position.z);
+            std::swap(direction.y, direction.z);
             spot_light_positions.push_back(position);
             spot_light_colors.push_back(color);
             spot_light_directions.push_back(direction);
