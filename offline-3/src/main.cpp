@@ -808,6 +808,11 @@ int main(int argc, char **argv)
         time::end_frame();
     }
 
+    glDeleteShader(shader_program);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glfwDestroyWindow(window);
     glfwTerminate();
 
     return 0;
