@@ -348,7 +348,7 @@ int main(int argc, char **argv)
             spot_light_positions.push_back(position);
             spot_light_colors.push_back(color);
             spot_light_directions.push_back(direction);
-            spot_light_angles.push_back(angle);
+            spot_light_angles.push_back(glm::radians(angle));
         }
 
         ifstrm.close();
