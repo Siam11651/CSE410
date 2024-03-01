@@ -125,7 +125,7 @@ void handle_inputs(GLFWwindow *window)
 int main(int argc, char **argv)
 {
     // other data
-    size_t level;
+    uint32_t level;
     size_t window_dimension;
 
     // point light objects
@@ -579,10 +579,12 @@ int main(int argc, char **argv)
         uint32_t screen_dimension_loc = glGetUniformLocation(shader_program, "screen_dimension");
         uint32_t dx_loc = glGetUniformLocation(shader_program, "dx");
         uint32_t dy_loc = glGetUniformLocation(shader_program, "dy");
+        uint32_t level_loc = glGetUniformLocation(shader_program, "level");
 
-        glUniform1i(screen_dimension_loc, (int32_t)screen::window_width());
+        glUniform1ui(screen_dimension_loc, (uint32_t)screen::window_width());
         glUniform1f(dx_loc, 0.5f / screen::window_width());
         glUniform1f(dy_loc, 0.5f / screen::window_height());
+        glUniform1ui(level_loc, level);
     }
 
     {

@@ -19,12 +19,13 @@ R"(
 
     in vec4 gl_FragCoord;
     out vec4 frag_color;
-    uniform int screen_dimension;
+    uniform uint screen_dimension;
     uniform vec3 camera_pos;
     uniform mat4 camera_transform;
     uniform vec3 bot_left;
     uniform float dx;
     uniform float dy;
+    uniform uint level;
     uniform uint point_light_count;
     uniform vec3 point_light_positions[__1__];
     uniform vec3 point_light_colors[__1__];
@@ -386,7 +387,7 @@ R"(
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float reflection_fraction = 1.0f;
 
-        for(int j = 0; j < 2; ++j)
+        for(int j = 0; j < level; ++j)
         {
             float min_t = -1.0f;
             int min_object = -1;
