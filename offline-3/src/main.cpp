@@ -22,6 +22,10 @@ constexpr float fovy = M_PI / 4.0f;
 constexpr float camera_speed = 50.0f;
 constexpr float m_camera_spin = 0.5f;
 o3::camera camera;
+bool rtx_prev_press = false;
+bool lights_prev_press = false;
+bool rtx_on = false;
+bool lights_on = true;
 
 void handle_inputs(GLFWwindow *window)
 {
@@ -120,6 +124,26 @@ void handle_inputs(GLFWwindow *window)
         const float qz = std::sin(angle / 2.0f) * forward.z;
         camera.transform.rotation = glm::quat(qw, qx, qy, qz) * camera.transform.rotation;
     }
+
+    if(glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    {
+        if(rtx_prev_press)
+        {
+            rtx_on = !rtx_on;
+        }
+    }
+
+    rtx_prev_press = glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE;
+
+    if(glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+    {
+        if(lights_prev_press)
+        {
+            lights_on = !lights_on;
+        }
+    }
+
+    lights_prev_press = glfwGetKey(window, GLFW_KEY_L) == GLFW_RELEASE;
 }
 
 int main(int argc, char **argv)
@@ -755,6 +779,8 @@ int main(int argc, char **argv)
         glUniform3fv(bot_left_loc, 1, glm::value_ptr(bot_left));
     }
 
+    uint32_t rtx_loc = glGetUniformLocation(shader_program, "rtx_on");
+    uint32_t lights_loc = glGetUniformLocation(shader_program, "lights_on");
     double mouse_pos_x;
     double mouse_pos_y;
     camera.transform.position.y = 120.0f;
@@ -775,6 +801,8 @@ int main(int argc, char **argv)
 
         glUniform3fv(camera_pos_loc, 1, glm::value_ptr(camera.transform.position));
         glUniformMatrix4fv(camera_transform_loc, 1, GL_FALSE, glm::value_ptr(camera_transform));
+        glUniform1ui(rtx_loc, (uint32_t)rtx_on);
+        glUniform1ui(lights_loc, (uint32_t)lights_on);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         time::end_frame();

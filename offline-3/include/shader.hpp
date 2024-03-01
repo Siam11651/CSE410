@@ -19,6 +19,8 @@ R"(
 
     in vec4 gl_FragCoord;
     out vec4 frag_color;
+    uniform bool rtx_on;
+    uniform bool lights_on;
     uniform uint screen_dimension;
     uniform vec3 camera_pos;
     uniform mat4 camera_transform;
@@ -386,8 +388,18 @@ R"(
         vec3 color = vec3(0.0f, 0.0f, 0.0f);
         vec3 ray = normalize(vec3(x, y, z) - camera_pos);
         float reflection_fraction = 1.0f;
+        uint temp_level;
 
-        for(int j = 0; j < level; ++j)
+        if(rtx_on)
+        {
+            temp_level = level;
+        }
+        else
+        {
+            temp_level = 1;
+        }
+
+        for(int j = 0; j < temp_level; ++j)
         {
             float min_t = -1.0f;
             int min_object = -1;
@@ -490,7 +502,7 @@ R"(
                     vec3 point = cam_pos + ray * min_t;
                     vec3 normal = normalize(point - circle_centers[min_circle_index]);
 
-                    for(int i = 0; i < point_light_count; ++i)
+                    for(int i = 0; lights_on && i < point_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - point_light_positions[i]);
                         float target_t = circle_distance(circle_centers[min_circle_index], point_light_positions[i], light_ray, circle_radius[min_circle_index]);
@@ -508,7 +520,7 @@ R"(
                         }
                     }
 
-                    for(int i = 0; i < spot_light_count; ++i)
+                    for(int i = 0; lights_on && i < spot_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - spot_light_positions[i]);
                         float dot_value = dot(light_ray, spot_light_directions[i]);
@@ -554,7 +566,7 @@ R"(
                     vec3 v2 = triangle_vertices2[min_triangle_index];
                     vec3 normal = normalize(cross(v2 - v0, v1 - v0));
 
-                    for(int i = 0; i < point_light_count; ++i)
+                    for(int i = 0; lights_on && i < point_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - point_light_positions[i]);
                         float target_t = triangle_distance(point_light_positions[i], light_ray, min_triangle_index);
@@ -572,7 +584,7 @@ R"(
                         }
                     }
 
-                    for(int i = 0; i < spot_light_count; ++i)
+                    for(int i = 0; lights_on && i < spot_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - spot_light_positions[i]);
                         float dot_value = dot(light_ray, spot_light_directions[i]);
@@ -642,7 +654,7 @@ R"(
                 color += og_color * ground_ambient * reflection_fraction;
                 vec3 normal = vec3(0.0f, 1.0f, 0.0f);
 
-                for(int i = 0; i < point_light_count; ++i)
+                for(int i = 0; lights_on && i < point_light_count; ++i)
                 {
                     vec3 light_ray = normalize(point - point_light_positions[i]);
                     float target_t = ground_distance(point_light_positions[i], light_ray);
@@ -660,7 +672,7 @@ R"(
                     }
                 }
 
-                for(int i = 0; i < spot_light_count; ++i)
+                for(int i = 0; lights_on && i < spot_light_count; ++i)
                 {
                     vec3 light_ray = normalize(point - spot_light_positions[i]);
                     float dot_value = dot(light_ray, spot_light_directions[i]);
@@ -701,7 +713,7 @@ R"(
                     float norm_z = 2.0f * shape_c[min_shape_index] * point.z + shape_e[min_shape_index] * point.x + shape_f[min_shape_index] * point.y;
                     vec3 normal = normalize(vec3(norm_x, norm_y, norm_z));
 
-                    for(int i = 0; i < point_light_count; ++i)
+                    for(int i = 0; lights_on && i < point_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - point_light_positions[i]);
                         float target_t = shape_distance(point_light_positions[i], light_ray, min_shape_index);
@@ -719,7 +731,7 @@ R"(
                         }
                     }
 
-                    for(int i = 0; i < spot_light_count; ++i)
+                    for(int i = 0; lights_on && i < spot_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - spot_light_positions[i]);
                         float dot_value = dot(light_ray, spot_light_directions[i]);
