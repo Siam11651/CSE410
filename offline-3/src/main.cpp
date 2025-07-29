@@ -2,11 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <sstream>
-#include <optional>
-#include <chrono>
-#include <set>
-#include <functional>
-#include <thread>
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
