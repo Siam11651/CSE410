@@ -1,3 +1,6 @@
+#include <cstdint>
+#define _USE_MATH_DEFINES
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -13,7 +16,7 @@
 #include <fstream>
 #include <regex>
 
-constexpr float fovy = M_PI / 4.0f;
+constexpr float fovy = (float)M_PI / 4.0f;
 constexpr float camera_speed = 50.0f;
 constexpr float m_camera_spin = 0.5f;
 o3::camera camera;
@@ -391,7 +394,7 @@ int main(int argc, char **argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    GLFWwindow *window = glfwCreateWindow(screen::window_width(), screen::window_height(), screen::window_title().c_str(), nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow((int32_t)screen::window_width(), (int32_t)screen::window_height(), screen::window_title().c_str(), nullptr, nullptr);
 
     if(!window)
     {
@@ -776,8 +779,6 @@ int main(int argc, char **argv)
 
     uint32_t rtx_loc = glGetUniformLocation(shader_program, "rtx_on");
     uint32_t lights_loc = glGetUniformLocation(shader_program, "lights_on");
-    double mouse_pos_x;
-    double mouse_pos_y;
     camera.transform.position.y = 120.0f;
     camera.transform.position.z = -120.0f;
     camera.transform.rotation = glm::quat(glm::vec3(glm::radians(45.0f), 0.0f, 0.0f));

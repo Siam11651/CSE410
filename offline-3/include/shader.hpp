@@ -377,7 +377,8 @@ R"(
 
         return true;
     }
-
+)"
+R"(
     void main()
     {
         vec4 pixel = camera_transform * vec4(bot_left.x + gl_FragCoord.x / screen_dimension + dx, bot_left.y + gl_FragCoord.y / screen_dimension + dy, bot_left.z, 1.0f);
@@ -730,7 +731,8 @@ R"(
                             color += point_light_colors[i] * shape_speculars[min_shape_index] * c_color_phong * reflection_fraction;
                         }
                     }
-
+)"
+R"(
                     for(int i = 0; lights_on && i < spot_light_count; ++i)
                     {
                         vec3 light_ray = normalize(point - spot_light_positions[i]);

@@ -1,9 +1,11 @@
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
 #include <GL/gl.h>
 #include <scene.hpp>
 #include <time.hpp>
 #include <screen.hpp>
-#include <functional>
-#include <iostream>
 #include <glm/mat4x4.hpp>
 #include <glm/ext.hpp>
 
